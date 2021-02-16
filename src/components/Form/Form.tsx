@@ -43,7 +43,7 @@ import { CREATE_RECORD } from '../../gql/Queries'
 import RecordList from '../Record/RecordList'
 
 const Form = (props: any) => {
-  const [createRecordX, { data }] = useMutation(CREATE_RECORD)
+  const [runCreateRecord, { data }] = useMutation(CREATE_RECORD)
 
   const onPlateNumberChange = (ev: any) => {
     const plate = ev.detail?.value
@@ -102,7 +102,7 @@ const Form = (props: any) => {
     if (draft && draft.reading?.weight && draft.licensePlate?.plate) {
       console.log(draft)
 
-      createRecordX({
+      runCreateRecord({
         variables: {
           weight: draft.reading.weight,
           createdAt: draft.reading.receivedAt.toString(),

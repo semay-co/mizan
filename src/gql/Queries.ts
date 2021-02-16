@@ -31,6 +31,22 @@ export const CREATE_RECORD = gql`
   }
 `
 
+export const FETCH_RECORDS = gql`
+  query FetchRecords {
+    records {
+      id
+      createdAt
+      # vehicle {
+      #   licensePlate {
+      #     code
+      #     region
+      #     plate
+      #   }
+      # }
+    }
+  }
+`
+
 export const SUBSCRIBE_READING = gql`
   subscription {
     reading

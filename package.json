@@ -18,13 +18,11 @@
     "@types/react-dom": "^16.9.10",
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
-    "bootstrap": "^4.6.0",
     "classnames": "^2.2.6",
     "graphql": "^15.5.0",
     "ionicons": "^5.4.0",
     "node-sass": "^4.14.1",
     "react": "^17.0.1",
-    "react-bootstrap": "^1.4.3",
     "react-dom": "^17.0.1",
     "react-redux": "^7.2.2",
     "react-router": "^5.2.0",
@@ -49,7 +47,7 @@
     "workbox-streams": "^5.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "client": "react-scripts start",
     "server": "npm run server --prefix ./electron",
     "build": "react-scripts build",
     "electron": "ionic build && npx cap copy && npx cap open @capacitor-community/electron",
