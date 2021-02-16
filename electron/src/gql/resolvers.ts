@@ -1,5 +1,6 @@
 import { PubSub } from 'apollo-server'
 import PouchDB from 'pouchdb'
+import PouchDBFind from 'pouchdb-find'
 import SerialPort from 'serialport'
 
 const Readline = SerialPort.parsers.Readline
@@ -29,13 +30,12 @@ port.on('data', (data) => {
 		  })
         }
 })
-import PouchDBFind from 'pouchdb-find'
 
 PouchDB.plugin(PouchDBFind)
 
 const db = {
-  records: new PouchDB('records'),
-  vehicles: new PouchDB('vehicles'),
+  records: new PouchDB('__db/records'),
+  vehicles: new PouchDB('__db/vehicles'),
 }
 
 db.records.createIndex({
