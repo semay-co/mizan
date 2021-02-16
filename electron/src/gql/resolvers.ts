@@ -1,5 +1,34 @@
 import { PubSub } from 'apollo-server'
 import PouchDB from 'pouchdb'
+import SerialPort from 'serialport'
+
+const Readline = SerialPort.parsers.Readline
+
+const port = new SerialPort('COM1', {
+        baudRate: 9600,
+        dataBits: 8,
+        stopBits: 1,
+        parity: 'none',
+})
+
+var sign = '+'
+
+port.on('data', (data) => {
+        const snap = data.toString()
+
+        if (snap === '0' || snap === '-') {
+                sign = snap === '0' ? '+' : '-'
+        } else {
+                const reading = snap ? snap.split('=').join('').split('').reverse().join('') : ''
+                const signed = +(sign + +reading)
+
+		
+
+		  pubsub.publish('NEW_READING', {
+		    reading: signed,
+		  })
+        }
+})
 
 const db = {
   records: new PouchDB('records'),
@@ -12,11 +41,6 @@ export enum events {
 const pubsub = new PubSub()
 
 setInterval(() => {
-  const rand = Math.floor(Math.random() * 1000) * 10
-
-  pubsub.publish('NEW_READING', {
-    reading: rand,
-  })
 }, 1000)
 
 const resolvers = {

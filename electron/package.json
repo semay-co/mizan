@@ -16,14 +16,17 @@
     "@types/express": "^4.17.11",
     "@types/pouchdb": "^6.4.0",
     "@types/pouchdb-find": "^6.3.6",
+    "@types/serialport": "^8.0.1",
     "apollo-server": "^2.21.0",
     "express": "^4.17.1",
     "express-graphql": "^0.12.0",
     "graphql": "^15.5.0",
     "pouchdb": "^7.2.2",
-    "pouchdb-find": "^7.2.2"
+    "pouchdb-find": "^7.2.2",
+    "serialport": "^9.0.6"
   },
   "devDependencies": {
+    "@serialport/parser-delimiter": "^9.0.1",
     "electron": "~10.3.1",
     "electron-builder": "^22.9.1",
     "nodemon": "^2.0.7",
