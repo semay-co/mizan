@@ -1,0 +1,83 @@
+type Query {
+  users: [User]
+}
+
+type User {
+  id: ID!
+  name: Name!
+  createdAt: String!
+}
+
+type Product {
+  id: ID!
+  name: String!
+}
+
+type LicensePlateRegion {
+  code: String!
+  name: String!
+}
+
+type LicensePlate {
+  code: Int
+  region: LicensePlateRegion
+  plate: String!
+}
+
+type Vehicle {
+  id: ID!
+  licencePlate: LicensePlate!
+}
+
+type Country {
+  phoneCode: Int
+  name: String!
+}
+
+type PhoneNumber {
+  number: String!
+  countryCode: Country!
+}
+
+type Customer {
+  id: ID!
+  createdAt: String!
+  name: Name!
+  phoneNumber: PhoneNumber
+}
+
+type Name {
+  display: String
+  first: String
+  last: String
+}
+
+type Weighing {
+  createdAt: String!
+  weight: Int!
+}
+
+type Record {
+  id: ID!
+  createdAt: String!
+  updatedAt: String
+  customer: Customer
+  operator: User
+  vehicle: Vehicle!
+  product: Product
+  weighings: [Weighing]
+}
+
+type Subscription {
+  reading: Int!
+}
+
+type Mutation {
+  createRecord(
+    createdAt: String!
+    weight: Int!
+    plateNumber: String!
+    plateCode: Int!
+    plateRegion: String!
+  ): Int
+}

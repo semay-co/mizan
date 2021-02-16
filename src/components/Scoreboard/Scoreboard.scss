@@ -1,0 +1,32 @@
+$indicator-green: #00ff00;
+$indicator-background: #03060d;
+$indicator-error: #ff3849;
+
+.scoreboard {
+  color: $indicator-green;
+  padding: 1rem 3rem;
+  font-weight: bold;
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: start;
+  background-color: $indicator-background;
+  font-family: 'DotMatrixTwo';
+  text-shadow: 2px 3px 15px transparentize($indicator-green, $amount: 0.7);
+  font-size: 3rem;
+
+  &.error {
+    color: $indicator-error;
+    text-shadow: 2px 3px 15px transparentize($indicator-error, $amount: 0.7);
+  }
+
+  .reading {
+    margin-right: 0.5rem;
+  }
+
+  .unit {
+    background-color: $indicator-green;
+    color: $indicator-background;
+    padding: 0 0.3rem;
+    border-radius: 0.4rem;
+  }
+}
