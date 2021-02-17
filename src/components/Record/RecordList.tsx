@@ -31,7 +31,7 @@ const RecordList = (props: any) => {
             <IonGrid>
               <IonRow className="header-row">
                 <IonCol>
-                  <IonTitle>License Plate</IonTitle>
+                  <IonTitle>Vehicle</IonTitle>
                 </IonCol>
 
                 <IonCol>

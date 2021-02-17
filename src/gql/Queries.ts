@@ -36,6 +36,13 @@ export const FETCH_RECORDS = gql`
     records {
       id
       createdAt
+      # vehicle {
+      #   licensePlate {
+      #     code
+      #     region
+      #     plate
+      #   }
+      # }
     }
   }
 `

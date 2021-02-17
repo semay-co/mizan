@@ -47,7 +47,7 @@
     "workbox-streams": "^5.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "client": "react-scripts start",
     "server": "npm run server --prefix ./electron",
     "build": "react-scripts build",
     "electron": "ionic build && npx cap copy && npx cap open @capacitor-community/electron",

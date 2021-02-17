@@ -1,9 +1,25 @@
 import { PubSub } from 'apollo-server'
 import PouchDB from 'pouchdb'
+import PouchDBFind from 'pouchdb-find'
+
+PouchDB.plugin(PouchDBFind)
 
 const db = {
   records: new PouchDB('records'),
+  vehicles: new PouchDB('vehicles'),
 }
+
+db.records.createIndex({
+  index: {
+    fields: ['createdAt', 'vehicleId'],
+  },
+})
+
+db.vehicles.createIndex({
+  index: {
+    fields: ['createdAt', 'plateNumber', 'plateCode', 'plateRegion'],
+  },
+})
 
 export enum events {
   NEW_READING = 'NEW_READING',
@@ -21,30 +37,48 @@ setInterval(() => {
 
 const resolvers = {
   Query: {
-    users: () => [
-      {
-        id: '0001',
-        name: {
-          first: 'Ameer',
-        },
-      },
-    ],
-    records: () => {
-      console.log('records...')
+    records: async () => {
+      const records = await db.records.allDocs({
+        include_docs: true,
+      })
 
-      return db.records
-        .allDocs({
-          include_docs: true,
-        })
-        .then((docs) => {
-          console.log(docs.rows)
-          return docs.rows.map((row) => {
+      console.log(records)
+
+      return (
+        records.rows
+          // .map((row: any) => {})
+          .filter((row: any) => {
+            return row.doc.docType === 'record'
+          })
+          .map(async (record) => {
+            const vehicle = await db.vehicles
+              .get((record.doc as any).vehicleId)
+              .then((doc) => {
+                const vehicleDoc = doc as any
+
+                console.log('vehicle doc')
+                console.log(vehicleDoc)
+                return {
+                  id: doc._id,
+                  licensePlate: {
+                    plate: vehicleDoc.licensePlateNumber,
+                    code: vehicleDoc.licensePlateCode,
+                    region: vehicleDoc.licensePlateRegion,
+                  },
+                }
+              })
+              .catch(console.error)
+
+            console.log('vehicle')
+            console.log(vehicle)
+
             return {
-              ...row.doc,
-              id: row.id,
+              ...record.doc,
+              id: record.id,
+              vehicle,
             }
           })
-        })
+      )
     },
   },
   Subscription: {
@@ -56,23 +90,65 @@ const resolvers = {
     createRecord: (parent: any, args: any, context: any, info: any) => {
       console.log(args)
 
-      db.records
-        .put({
-          _id: new Date().getTime().toString(),
-          createdAt: args.createdAt,
-          weights: [
-            {
-              createdAt: args.createdAt,
-              weight: args.weight,
-            },
-          ],
-          licensePlate: {
-            number: args.plateNumber,
-            code: args.plateCode,
-            region: args.plateRegion,
+      const saveRecord = (vehicleId: string) => {
+        db.records
+          .put({
+            _id: new Date().getTime().toString(),
+            docType: 'record',
+            createdAt: args.createdAt,
+            weights: [
+              {
+                createdAt: args.createdAt,
+                weight: args.weight,
+              },
+            ],
+            vehicleId,
+          })
+          .then(console.log)
+          .catch(console.error)
+      }
+
+      db.vehicles
+        .find({
+          selector: {
+            licensePlateNumber: args.plateNumber,
           },
+          fields: ['createdAt', 'plateNumber', 'plateCode', 'plateRegion'],
         })
-        .then(console.log)
+        .then((res) => {
+          console.log('find result:')
+          console.log(res)
+
+          if (res.docs.length > 0) {
+            console.log('vehicle found:')
+            console.log(res.docs)
+
+            const vehicleId = res.docs[0]._id
+
+            saveRecord(vehicleId)
+          } else {
+            console.log('no vehicle found, creating')
+
+            db.vehicles
+              .put({
+                _id: new Date().getTime().toString(),
+                licensePlateNumber: args.plateNumber,
+                licensePlateCode: args.plateCode,
+                licensePlateRegion: args.plateRegion,
+                docType: 'vehicle',
+              })
+              .then((res) => {
+                console.log('vehicle created:')
+                console.log(res)
+                const vehicleId = res.id
+
+                saveRecord(vehicleId)
+              })
+              .catch(console.error)
+          }
+        })
+        .catch(console.error)
+
       return args.plateNumber.length
     },
   },
