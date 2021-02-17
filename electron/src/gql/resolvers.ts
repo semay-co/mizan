@@ -3,39 +3,56 @@ import PouchDB from 'pouchdb'
 import PouchDBFind from 'pouchdb-find'
 import SerialPort from 'serialport'
 
-const Readline = SerialPort.parsers.Readline
+const pubsub = new PubSub()
+const comPort = 'COM1'
 
-const port = new SerialPort('COM1', {
-        baudRate: 9600,
-        dataBits: 8,
-        stopBits: 1,
-        parity: 'none',
-})
+const publish = (reading: number) => {
+  pubsub.publish('NEW_READING', {
+    reading,
+  })
+}
 
-var sign = '+'
+SerialPort.list().then((ports) => {
+  const search = ports
+    .map((port) => port.path.toLowerCase())
+    .filter((path) => path === comPort.toLowerCase())
 
-port.on('data', (data) => {
-        const snap = data.toString()
+  if (search.length > 0) {
+    const port = new SerialPort(comPort, {
+      baudRate: 9600,
+      dataBits: 8,
+      stopBits: 1,
+      parity: 'none',
+    })
 
-        if (snap === '0' || snap === '-') {
-                sign = snap === '0' ? '+' : '-'
-        } else {
-                const reading = snap ? snap.split('=').join('').split('').reverse().join('') : ''
-                const signed = +(sign + +reading)
+    var sign = '+'
 
-		
+    port.on('data', (data) => {
+      const snap = data.toString()
 
-		  pubsub.publish('NEW_READING', {
-		    reading: signed,
-		  })
-        }
+      if (snap === '0' || snap === '-') {
+        sign = snap === '0' ? '+' : '-'
+      } else {
+        const reading = snap
+          ? snap.split('=').join('').split('').reverse().join('')
+          : ''
+        const signed = +(sign + +reading)
+
+        publish(signed)
+      }
+    })
+  } else {
+    setInterval(() => {
+      publish(Math.floor(Math.random() * 1000) * 10)
+    }, 1000)
+  }
 })
 
 PouchDB.plugin(PouchDBFind)
 
 const db = {
-  records: new PouchDB('__db/records'),
-  vehicles: new PouchDB('__db/vehicles'),
+  records: new PouchDB('.db/records'),
+  vehicles: new PouchDB('.db/vehicles'),
 }
 
 db.records.createIndex({
@@ -54,10 +71,7 @@ export enum events {
   NEW_READING = 'NEW_READING',
 }
 
-const pubsub = new PubSub()
-
-setInterval(() => {
-}, 1000)
+setInterval(() => {}, 1000)
 
 const resolvers = {
   Query: {

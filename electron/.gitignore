@@ -27,4 +27,5 @@ yarn-error.log*
 # Optional eslint cache
 .eslintcache
 
-__db
+/.db
+/app
