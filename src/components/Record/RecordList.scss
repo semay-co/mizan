@@ -1,0 +1,11 @@
+ion-row.header-row {
+  background-color: transparentize($color: #000000, $amount: 0.8);
+  padding: 1rem;
+
+  ion-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding: 0;
+  }
+}

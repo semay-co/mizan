@@ -1,22 +1,22 @@
-$indicator-green: #00ff00;
+$indicator-green: #00ff80;
 $indicator-background: #03060d;
-$indicator-error: #ff3849;
+$indicator-error: #ff3869;
 
 .scoreboard {
   color: $indicator-green;
-  padding: 1rem 3rem;
+  padding: 2rem 4rem;
   font-weight: bold;
   display: grid;
   grid-auto-flow: column;
-  justify-content: start;
+  justify-content: end;
   background-color: $indicator-background;
   font-family: 'DotMatrixTwo';
-  text-shadow: 2px 3px 15px transparentize($indicator-green, $amount: 0.7);
-  font-size: 3rem;
+  text-shadow: 2px 3px 10px transparentize($indicator-green, $amount: 0.7);
+  font-size: 4rem;
 
   &.error {
     color: $indicator-error;
-    text-shadow: 2px 3px 15px transparentize($indicator-error, $amount: 0.7);
+    text-shadow: 2px 3px 10px transparentize($indicator-error, $amount: 0.7);
   }
 
   .reading {

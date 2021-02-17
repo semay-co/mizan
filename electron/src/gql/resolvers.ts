@@ -29,6 +29,23 @@ const resolvers = {
         },
       },
     ],
+    records: () => {
+      console.log('records...')
+
+      return db.records
+        .allDocs({
+          include_docs: true,
+        })
+        .then((docs) => {
+          console.log(docs.rows)
+          return docs.rows.map((row) => {
+            return {
+              ...row.doc,
+              id: row.id,
+            }
+          })
+        })
+    },
   },
   Subscription: {
     reading: {
