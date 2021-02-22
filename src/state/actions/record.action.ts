@@ -7,6 +7,12 @@ export const updateRecordDraft = (draft: RecordDraft) => (dispatch: any) =>
     payload: draft,
   })
 
+export const updateRecordQuery = (payload: string) => (dispatch: any) =>
+  dispatch({
+    type: Actions.UPDATE_RECORD_QUERY,
+    payload,
+  })
+
 export const deleteRecordDraft = () => (dispatch: any) =>
   dispatch({
     type: Actions.DELETE_RECORD_DRAFT,

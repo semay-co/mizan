@@ -1,3 +1,5 @@
+$light-card-bg: #383838;
+
 .uppercase {
   text-transform: uppercase !important;
 }
@@ -10,8 +12,9 @@ ion-card {
   max-width: 60rem;
 }
 
-.full-button {
+.big-record-button {
   width: 100%;
+  margin: 4rem 2rem;
 }
 
 .current-weight-card {
@@ -32,4 +35,101 @@ ion-card {
       color: #fff;
     }
   }
+}
+
+.card-action-buttons {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.license-plate-form {
+  ion-item {
+    --background: #00000066;
+    --border-color: #00000033;
+  }
+}
+
+.vehicle-suggestions {
+  background: #333;
+
+  ion-item-divider {
+    margin-top: 1rem;
+    background: #00000022;
+    font-size: 1.4rem;
+    text-align: center;
+    color: #ffffff;
+    text-transform: uppercase;
+
+    ion-label {
+      text-align: center;
+    }
+  }
+
+  ion-item {
+    --background: $light-card-bg;
+    --border-color: #00000033;
+  }
+
+  .vehicle-form {
+    display: grid;
+    width: 100%;
+
+    .vehicle-form-content {
+      display: grid;
+      gap: 1rem;
+      grid-auto-flow: column;
+      grid-template-columns: auto 1fr;
+
+      .vehicle-size {
+        padding: 0.5rem 0;
+
+        ion-label {
+          text-transform: uppercase;
+          margin-bottom: 1rem;
+        }
+      }
+    }
+  }
+}
+
+.selected-vehicle-wrap {
+  background: $light-card-bg;
+  display: grid;
+  justify-content: stretch;
+
+  ion-item {
+    --background: none;
+  }
+
+  .title-row {
+    display: grid;
+    grid-auto-flow: column;
+    width: 100%;
+    grid-template-columns: 1fr auto;
+
+    ion-title {
+      text-transform: uppercase;
+      font-size: 1.4rem;
+    }
+  }
+
+  .content-row {
+    display: grid;
+    grid-template-columns: 1fr 0;
+    width: 100%;
+    background: $light-card-bg;
+    padding: 1rem 0;
+  }
+}
+
+.create-button {
+  margin-top: 2rem;
+  display: grid;
+  justify-content: stretch;
+}
+
+.new-record-card {
+  margin-top: 3rem;
 }

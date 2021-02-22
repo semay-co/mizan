@@ -1,0 +1,60 @@
+.record-card {
+  color: #ffffff;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  border-bottom: 5px solid #ffffff33;
+
+  .card-left-content {
+    background-color: #00000033;
+  }
+
+  .card-right-content {
+    margin-bottom: 1rem;
+
+    .weight-entry {
+      border-bottom: 1px dashed #ffffff33;
+      padding: 1rem 0.5rem;
+      display: grid;
+      justify-content: start;
+
+      .record-date,
+      .record-pending {
+        text-transform: uppercase;
+        opacity: 0.6;
+        font-size: 1rem;
+      }
+
+      h3 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        font-size: 1.3rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3rem;
+        justify-self: start;
+      }
+
+      .record-pending-button,
+      .weight-measure {
+        margin: 1.5rem 0 0.5rem;
+        justify-self: start;
+      }
+
+      .weight-measure {
+        justify-self: start;
+        font-size: 1.6rem;
+      }
+    }
+
+    .bottom-button {
+      display: grid;
+      justify-content: end;
+      margin-top: 2rem;
+
+      ion-button {
+        --border-radius: 0.3rem 0 0 0.3rem;
+      }
+    }
+  }
+}
