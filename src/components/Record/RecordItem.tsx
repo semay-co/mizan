@@ -11,7 +11,7 @@ import {
   deleteRecordDraft,
 } from '../../state/actions/record.action'
 import { useMutation } from '@apollo/client'
-import { ADD_SECOND_WEIGHT } from '../../gql/queries'
+import { ADD_SECOND_WEIGHT } from '../../gql/mutations/record.mutations'
 
 const RecordItem = (props: any) => {
   const record = props.record

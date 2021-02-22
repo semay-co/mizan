@@ -1,6 +1,5 @@
 import { useQuery } from '@apollo/client'
 import { connect } from 'react-redux'
-import { FETCH_RECORDS } from '../../gql/queries'
 import { updateReading } from '../../state/actions/scoreboard.action'
 import { updateRecordQuery } from '../../state/actions/record.action'
 
@@ -15,6 +14,7 @@ import {
 } from '@ionic/react'
 import React from 'react'
 import { hourglassOutline, receiptOutline } from 'ionicons/icons'
+import { FETCH_RECORDS } from '../../gql/queries/record.queries'
 
 const RecordList = (props: any) => {
   const { data } = useQuery(FETCH_RECORDS, {

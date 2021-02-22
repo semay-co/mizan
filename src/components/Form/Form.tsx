@@ -3,8 +3,6 @@ import {
   IonCard,
   IonCardTitle,
   IonCardContent,
-  IonCol,
-  IonGrid,
   IonIcon,
   IonInput,
   IonItem,
@@ -37,17 +35,17 @@ import {
 } from '../../model/vehicle.model'
 import { useMutation, useQuery } from '@apollo/client'
 import {
-  CREATE_RECORD,
-  CREATE_VEHICLE,
-  FETCH_RECORDS,
   FETCH_VEHICLE,
   FETCH_VEHICLES,
-} from '../../gql/queries'
+} from '../../gql/queries/vehicle.queries'
+import { FETCH_RECORDS } from '../../gql/queries/record.queries'
 import LicensePlate from '../LicensePlate/LicensePlate'
 import $ from 'jquery'
 import React from 'react'
 import * as _ from 'ramda'
 import RecordItem from '../Record/RecordItem'
+import { CREATE_RECORD } from '../../gql/mutations/record.mutations'
+import { CREATE_VEHICLE } from '../../gql/mutations/vehicle.mutations'
 
 const Form = (props: any) => {
   const [runCreateRecord] = useMutation(CREATE_RECORD)
