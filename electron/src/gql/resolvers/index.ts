@@ -10,7 +10,7 @@ import {
 } from './record.resolvers'
 
 const pubsub = new PubSub()
-const comPort = 'COM1'
+const comPort = '/dev/ttyS0'
 
 const publish = (reading: number) => {
   pubsub.publish('NEW_READING', {
