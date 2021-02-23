@@ -15,7 +15,7 @@ const server = () => {
     }),
   })
 
-  server.listen(8989, () => console.info(`Mizan is running`))
+  server.listen(8989, () => console.info(`Mizan server is running`))
 }
 
 server()

@@ -1,0 +1,13 @@
+.wrap {
+  margin: 2rem 1rem;
+  display: grid;
+  justify-content: center;
+
+  .content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    width: 100rem;
+    max-width: 100vw;
+  }
+}

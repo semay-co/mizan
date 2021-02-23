@@ -1,6 +1,6 @@
 import { app } from 'electron'
 import { createCapacitorElectronApp } from '@capacitor-community/electron'
-import server from './server'
+//import server from './server'
 
 const cap = createCapacitorElectronApp({
   mainWindow: {
@@ -33,4 +33,4 @@ app.on('activate', function () {
   if (cap.getMainWindow().isDestroyed()) cap.init()
 })
 
-server()
+//server()

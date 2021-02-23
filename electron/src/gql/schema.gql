@@ -1,6 +1,20 @@
 type Query {
   users: [User]
-  records: [Record]
+  records(query: String, limit: Int, vehicleId: String): [Record]
+  vehicles(query: String, limit: Int): [Vehicle]
+  vehicle(id: String): Vehicle
+  record(id: String): Record
+}
+
+type Mutation {
+  createRecord(weight: Int!, vehicleId: String!): String
+  createVehicle(
+    size: Int!
+    plateNumber: String!
+    plateCode: Int!
+    plateRegion: String!
+  ): String
+  addSecondWeight(recordId: String!, weight: Int!, createdAt: String!): Record
 }
 
 type User {
@@ -27,7 +41,8 @@ type LicensePlate {
 
 type Vehicle {
   id: ID!
-  licencePlate: LicensePlate!
+  size: Int
+  licensePlate: LicensePlate!
 }
 
 type Country {
@@ -53,8 +68,8 @@ type Name {
   last: String
 }
 
-type Weighing {
-  createdAt: String!
+type Weight {
+  createdAt: String
   weight: Int!
 }
 
@@ -66,19 +81,9 @@ type Record {
   operator: User
   vehicle: Vehicle
   product: Product
-  weighings: [Weighing]
+  weights: [Weight]
 }
 
 type Subscription {
   reading: Int!
-}
-
-type Mutation {
-  createRecord(
-    createdAt: String!
-    weight: Int!
-    plateNumber: String!
-    plateCode: Int!
-    plateRegion: String!
-  ): Int
 }

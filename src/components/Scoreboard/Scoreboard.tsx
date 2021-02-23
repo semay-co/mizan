@@ -2,10 +2,10 @@ import { connect } from 'react-redux'
 import './Scoreboard.scss'
 import { updateReading } from '../../state/actions/scoreboard.action'
 import { deleteRecordDraft } from '../../state/actions/record.action'
-import { SUBSCRIBE_READING } from '../../gql/Queries'
 import { useEffect } from 'react'
 import { useSubscription } from '@apollo/client'
 import classNames from 'classnames'
+import { SUBSCRIBE_READING } from '../../gql/subscriptions'
 
 const Scoreboard = (props: any) => {
   const { error, loading, data } = useSubscription(SUBSCRIBE_READING)
