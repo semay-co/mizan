@@ -78,6 +78,8 @@ const Form = (props: any) => {
 
     ev.target.value = plate
 
+    console.log(props.draft)
+
     props.updateRecordDraft({
       ...props.draft,
       licensePlate: {
@@ -127,21 +129,23 @@ const Form = (props: any) => {
   }
 
   const capture = () => {
-    props.updateRecordDraft({
-      ...props.draft,
-      reading: props.reading,
-      licensePlate: {
-        plate: props.draft?.licensePlate?.plate || '',
-        code: props.draft?.licensePlate?.code || 3,
-        region: props.draft?.licensePlate?.region || 'AA',
-      },
-    })
+    if (props.reading) {
+      props.updateRecordDraft({
+        ...props.draft,
+        reading: props.reading,
+        licensePlate: {
+          plate: props.draft?.licensePlate?.plate || '',
+          code: props.draft?.licensePlate?.code || 3,
+          region: props.draft?.licensePlate?.region || 'AA',
+        },
+      })
 
-    setTimeout(() => {
-      const input = $('#license-plate-input').find('input').first()
-      input.focus()
-      input.val = props.draft?.licensePlate?.plate
-    }, 200)
+      setTimeout(() => {
+        const input = $('#license-plate-input').find('input').first()
+        input.focus()
+        input.val = props.draft?.licensePlate?.plate
+      }, 200)
+    }
   }
 
   const createRecord = () => {
@@ -233,7 +237,7 @@ const Form = (props: any) => {
             <IonCard>
               <IonCardTitle>Recorded Weight</IonCardTitle>
               <IonCardContent>
-                <h1>{props.draft.reading.weight} KG</h1>
+                <h1>{props.draft?.reading?.weight} KG</h1>
                 <IonButton onClick={capture} fill="solid">
                   <IonIcon slot="start" icon={speedometerOutline}></IonIcon>
                   Update
@@ -309,60 +313,61 @@ const Form = (props: any) => {
                               />
                             </IonItem>
                           ))}
-                          <IonItemGroup>
-                            <IonItemDivider>
-                              <IonLabel>Create New Vehicle</IonLabel>
-                            </IonItemDivider>
-
-                            <IonItem>
-                              <div className="vehicle-form">
-                                <div className="vehicle-form-content">
-                                  <div>
-                                    <LicensePlate
-                                      number={props.draft.licensePlate.plate}
-                                      code={props.draft.licensePlate.code}
-                                      region={{
-                                        code: props.draft.licensePlate.region,
-                                      }}
-                                    />
-                                  </div>
-                                  <div className="vehicle-size">
-                                    <IonLabel>Select Vehicle Size:</IonLabel>
-                                    <div>
-                                      {VEHICLE_SIZES.map(
-                                        (size: string, i: number) => (
-                                          <IonButton
-                                            onClick={() => selectVehicleType(i)}
-                                            shape="round"
-                                            fill={
-                                              props.draft.vehicle?.size === i
-                                                ? 'solid'
-                                                : 'outline'
-                                            }
-                                            color="secondary"
-                                          >
-                                            {size}
-                                          </IonButton>
-                                        )
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                                <IonButton
-                                  onClick={createVehicle}
-                                  disabled={
-                                    props.draft?.licensePlate?.plate?.length <
-                                      5 || isNaN(props.draft?.vehicle?.size)
-                                  }
-                                >
-                                  <IonIcon icon={checkmark} />
-                                  Create Vehicle
-                                </IonButton>
-                              </div>
-                            </IonItem>
-                          </IonItemGroup>
                         </IonItemGroup>
                       )}
+
+                      <IonItemGroup>
+                        <IonItemDivider>
+                          <IonLabel>Create New Vehicle</IonLabel>
+                        </IonItemDivider>
+
+                        <IonItem>
+                          <div className="vehicle-form">
+                            <div className="vehicle-form-content">
+                              <div>
+                                <LicensePlate
+                                  number={props.draft.licensePlate.plate}
+                                  code={props.draft.licensePlate.code}
+                                  region={{
+                                    code: props.draft.licensePlate.region,
+                                  }}
+                                />
+                              </div>
+                              <div className="vehicle-size">
+                                <IonLabel>Select Vehicle Size:</IonLabel>
+                                <div>
+                                  {VEHICLE_SIZES.map(
+                                    (size: string, i: number) => (
+                                      <IonButton
+                                        onClick={() => selectVehicleType(i)}
+                                        shape="round"
+                                        fill={
+                                          props.draft.vehicle?.size === i
+                                            ? 'solid'
+                                            : 'outline'
+                                        }
+                                        color="secondary"
+                                      >
+                                        {size}
+                                      </IonButton>
+                                    )
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                            <IonButton
+                              onClick={createVehicle}
+                              disabled={
+                                props.draft?.licensePlate?.plate?.length < 5 ||
+                                isNaN(props.draft?.vehicle?.size)
+                              }
+                            >
+                              <IonIcon icon={checkmark} />
+                              Create Vehicle
+                            </IonButton>
+                          </div>
+                        </IonItem>
+                      </IonItemGroup>
                     </IonList>
                   </IonCard>
                 )}

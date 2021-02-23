@@ -55,7 +55,7 @@ export const vehicles = async (parent: any, args: any) => {
     )
     .map((vehicle) => {
       return {
-        id: vehicle.id,
+        id: vehicle.id.toString(),
         size: vehicle.size,
         licensePlate: {
           code: vehicle.licensePlateCode,
