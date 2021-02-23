@@ -1,4 +1,4 @@
-$light-card-bg: #383838;
+$light-card-bg: #0f141a;
 
 .uppercase {
   text-transform: uppercase !important;
@@ -52,7 +52,7 @@ ion-card {
 }
 
 .vehicle-suggestions {
-  background: #333;
+  background: $light-card-bg;
 
   ion-item-divider {
     margin-top: 1rem;
