@@ -32,5 +32,5 @@ export const VEHICLE_SIZES = [
   'MEDIUM',
   'LARGE',
   'EXTRA LARGE',
-  'TRAILER',
+  'TRAILER TRUCK',
 ]

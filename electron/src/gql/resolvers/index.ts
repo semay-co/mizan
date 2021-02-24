@@ -23,7 +23,7 @@ SerialPort.list().then((ports) => {
     .map((port) => port.path.toLowerCase())
     .filter((path) => path === comPort.toLowerCase())
 
-  if (search.length > 0) {
+  if (search.length > 0 && !process.env.TEST_SERIAL_PORT) {
     const port = new SerialPort(comPort, {
       baudRate: 9600,
       dataBits: 8,
@@ -33,20 +33,22 @@ SerialPort.list().then((ports) => {
 
     var sign = '+'
 
-    port.on('data', (data) => {
-      const snap = data.toString()
+    port
+      .on('data', (data) => {
+        const snap = data.toString()
 
-      if (snap === '0' || snap === '-') {
-        sign = snap === '0' ? '+' : '-'
-      } else {
-        const reading = snap
-          ? snap.split('=').join('').split('').reverse().join('')
-          : ''
-        const signed = +(sign + +reading)
+        if (snap === '0' || snap === '-') {
+          sign = snap === '0' ? '+' : '-'
+        } else {
+          const reading = snap
+            ? snap.split('=').join('').split('').reverse().join('')
+            : ''
+          const signed = +(sign + +reading)
 
-        publish(signed)
-      }
-    })
+          publish(signed)
+        }
+      })
+      .on('error', (error) => console.error)
   } else {
     setInterval(() => {
       publish(Math.floor(Math.random() * 1000) * 10)
@@ -57,8 +59,6 @@ SerialPort.list().then((ports) => {
 export enum events {
   NEW_READING = 'NEW_READING',
 }
-
-setInterval(() => {}, 1000)
 
 const resolvers = {
   Query: {

@@ -22,6 +22,7 @@
     "@types/react-router-dom": "^5.1.7",
     "@types/uuid": "^8.3.0",
     "classnames": "^2.2.6",
+    "dotenv": "^8.2.0",
     "graphql": "^15.5.0",
     "ionicons": "^5.4.0",
     "jquery": "^3.5.1",

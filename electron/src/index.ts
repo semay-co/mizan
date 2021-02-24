@@ -1,6 +1,9 @@
 import { app } from 'electron'
 import { createCapacitorElectronApp } from '@capacitor-community/electron'
 //import server from './server'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 const cap = createCapacitorElectronApp({
   mainWindow: {

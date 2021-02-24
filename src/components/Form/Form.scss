@@ -17,23 +17,44 @@ ion-card {
   margin: 4rem 2rem;
 }
 
+.form-wrap {
+  padding: 1rem;
+
+  .entity-card {
+    background: $light-card-bg;
+    padding: 0;
+
+    ion-card-header {
+      display: grid;
+      grid-auto-flow: column;
+      justify-content: space-between;
+      text-transform: uppercase;
+      color: #ffffffaa;
+      align-items: center;
+      font-size: 1.3rem;
+      background: #eeeeff22;
+      // font-weight: 600;
+      letter-spacing: 0.2rem;
+    }
+
+    ion-card-content {
+      padding: 1rem;
+    }
+  }
+}
+
 .current-weight-card {
   padding: 1rem;
-  box-shadow: none;
 
-  ion-card-title {
-    text-transform: uppercase;
-    font-weight: bold;
-  }
-
-  ion-card-content {
-    padding: 0;
-    margin-top: 2rem;
-
-    h1 {
-      font-size: 2.5rem;
-      color: #fff;
-    }
+  .current-weight-measure {
+    font-size: 2.5rem;
+    display: grid;
+    color: #ffffff;
+    grid-template-columns: auto auto;
+    justify-content: start;
+    padding: 2rem;
+    align-items: center;
+    gap: 1rem;
   }
 }
 
@@ -46,8 +67,12 @@ ion-card {
 
 .license-plate-form {
   ion-item {
-    --background: #00000066;
-    --border-color: #00000033;
+    --background: $light-card-bg;
+
+    ion-input {
+      --padding-top: 3rem;
+      --padding-bottom: 3rem;
+    }
   }
 }
 
@@ -56,7 +81,8 @@ ion-card {
 
   ion-item-divider {
     margin-top: 1rem;
-    background: #00000022;
+    margin-bottom: 1rem;
+    // background: #00000022;
     font-size: 1.4rem;
     text-align: center;
     color: #ffffff;
@@ -115,21 +141,21 @@ ion-card {
     }
   }
 
-  .content-row {
+  ion-card-content.content-row {
     display: grid;
-    grid-template-columns: 1fr 0;
+    grid-template-columns: auto auto;
+    justify-content: start;
     width: 100%;
-    background: $light-card-bg;
-    padding: 1rem 0;
+    gap: 1rem;
+
+    ion-label {
+      text-transform: uppercase;
+    }
   }
 }
 
-.create-button {
+.create-button-card {
   margin-top: 2rem;
   display: grid;
   justify-content: stretch;
-}
-
-.new-record-card {
-  margin-top: 3rem;
 }
