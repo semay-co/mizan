@@ -127,5 +127,5 @@ export const printRecord = async (parent: any, args: any) => {
 
   console.log(record)
 
-  return print(record)
+  return print(record) && print(record, "copy")
 }

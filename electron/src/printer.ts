@@ -4,9 +4,12 @@ const printer = require('@thiagoelg/node-printer')
 const html_to_pdf = require('html-pdf-node')
 
 const options = { format: 'A4' }
-const companyName = 'Furi Truck Scale Service'
 
-export const print = (record: any) => {
+const company = 'Furi Truck Scale Service'
+const address = 'Sebeta, Furi - Around Police Club'
+const phone = '+251 118 83 8403'
+
+export const print = (record: any, stamp: string = 'Original') => {
   const watermarkText = Array(600)
     .fill(0)
     .map((_, i: number) => {
@@ -14,7 +17,7 @@ export const print = (record: any) => {
       return `
 			<span class="tag-wrap">
 				<span class="${tag}">
-					${companyName.toUpperCase()}
+					${company.toUpperCase()}
 				</span>
 			<span class="tag-wrap">
 			`
@@ -25,17 +28,17 @@ export const print = (record: any) => {
 	${watermarkText}
 	</p>`
 
-  const file = {
-    content: `<html>
-	<head>
-		<style>
+	const putStamp = (stamp: string = 'Original' ) => `<div id="stamp"><span>${stamp}</span></div>`
+
+	const styles = 
+		`
 			#container {
 				margin: 80px;
 				font-family: sans-serif;
 				overflow: hidden;	
 				position: relative;
-				height: 940px;
-				z-index: 1;
+				height: 940px
+				z-index: 100;
 				padding-left: 10px;
 				border-left: 1px dotted #00000022;
 			}
@@ -62,7 +65,22 @@ export const print = (record: any) => {
 				z-inxex: 0;
 				text-shadow: none;
 				color: #f8f8f888;
-				opacity: .5;
+				opacity: .8;
+			}
+
+			#stamp {
+				position: absolute;
+				bottom: 350px;
+				font-size: 90px;
+				font-weight: bold;
+				letter-spacing: 5px;
+				text-transform: uppercase;
+				transform: rotate(-45deg);
+				z-index: -10;
+				color: #dddddd55;
+				text-shadow: 5px 5px white, -5px 5px white, 5px -5px white, -5px -5px white;
+				width: 100%;
+				text-align: center;
 			}
 
 			#header {
@@ -103,7 +121,7 @@ export const print = (record: any) => {
 			}
 
 			#left-content {
-				border-right: 12px dashed #f3f3f3;
+				border-right: 12px dashed #eee;
 			}
 
 			#license-plate {
@@ -204,22 +222,28 @@ export const print = (record: any) => {
 				text-transform: uppercase;
 				text-align: end;
 			}
+`
+	
+	const header = (company: string, address: string, phone: string) => {
 
-		</style>
-	</head>
-		<body>
-			<div id="container">
-				${watermark}
-				<div id="watermark"></div>
-				<div id="header">
+			return	`<div id="header">
 					<div id="logo">
-						<h1>${companyName}</h1>
+						<h1>${company}</h1>
 					</div>
 					<div id="address">
-						<div>Address: Furi Road, Next to ABC</div>
-						<div>Phone: +251 118 83 843</div>
+						<div>Address: ${address}</div>
+						<div>Phone: ${phone}</div>
 					</div>
-				</div>
+				</div>`
+	}
+
+	const receipt = (stamp: string = 'Original') => {
+
+		return `<div id="container">
+				${watermark}
+				${putStamp(stamp)}
+				<div id="watermark"></div>
+				${header(company, address, phone)}
 				<div id="date">
 					Printed at: ${moment().format('LLLL')}
 				</div>
@@ -231,12 +255,14 @@ export const print = (record: any) => {
 								<div id="license-plate-code">
 									${record.vehicle.licensePlate.code}
 								</div>	
+
 								<div id="license-plate-number">
 									${record.vehicle.licensePlate.plate}
-								</div>	
+								</div>
 								<div id="license-plate-region">
 									${record.vehicle.licensePlate.region}
 								</div>	
+							
 							</div>	
 						</div>
 						<div class="row">
@@ -288,7 +314,18 @@ export const print = (record: any) => {
 						</div>
 					</div>
 				<div>
-			</div>
+			</div>`
+	}
+
+  const file = {
+    content: `<html>
+	<head>
+		<style>
+			${styles}
+		</style>
+	</head>
+		<body>
+			${receipt(stamp)}
 		</body>
 	</html>`,
   }
