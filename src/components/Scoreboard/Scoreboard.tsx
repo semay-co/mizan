@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 import { useSubscription } from '@apollo/client'
 import classNames from 'classnames'
 import { SUBSCRIBE_READING } from '../../gql/subscriptions'
+import { IonButton, IonInput } from '@ionic/react'
 
 const Scoreboard = (props: any) => {
   const { error, loading, data } = useSubscription(SUBSCRIBE_READING)
@@ -24,6 +25,14 @@ const Scoreboard = (props: any) => {
     if (loading) props.deleteRecordDraft()
   }, [data, error, loading, props])
 
+  const manualInput = (ev: any) => {
+    console.log(ev.detail.value)
+    props.updateReading({
+      receivedAt: new Date().getTime(),
+      weight: +ev.detail.value,
+    })
+  }
+
   return (
     <div
       className={classNames({
@@ -31,14 +40,21 @@ const Scoreboard = (props: any) => {
         error: isNaN(+props.reading?.weight),
       })}
     >
-      {!isNaN(+props.reading?.weight) ? (
+      {/* {!isNaN(+props.reading?.weight) ? (
         <>
           <span className="reading">{props.reading?.weight}</span>
           <span className="unit">KG</span>
         </>
-      ) : (
-        <span className="reading">{props.reading || 'no signal'}</span>
-      )}
+      ) : ( */}
+      <IonInput
+        onIonChange={manualInput}
+        className="reading"
+        placeholder="0"
+        type="number"
+      ></IonInput>
+      <span className="unit">KG</span>
+      {/* // <span className="reading">{props.reading || 'no signal'}</span> */}
+      {/* )} */}
     </div>
   )
 }

@@ -2,7 +2,8 @@ $indicator-green: #00ff80;
 $indicator-background: #030610;
 $indicator-error: #ff3869;
 
-.scoreboard {
+.scoreboard,
+.scoreboard ion-input {
   color: $indicator-green;
   padding: 2rem 4rem;
   font-weight: bold;
@@ -13,6 +14,7 @@ $indicator-error: #ff3869;
   font-family: 'DotMatrixTwo';
   text-shadow: 2px 3px 10px transparentize($indicator-green, $amount: 0.7);
   font-size: 4rem;
+  text-align: end;
 
   &.error {
     color: $indicator-error;
