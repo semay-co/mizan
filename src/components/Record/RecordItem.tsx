@@ -1,8 +1,17 @@
 import React from 'react'
 import './RecordItem.scss'
 
-import { IonButton, IonCard, IonIcon } from '@ionic/react'
-import { checkmark, speedometerOutline } from 'ionicons/icons'
+import {
+  IonButton,
+  IonCard,
+  IonChip,
+  IonIcon,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonText,
+} from '@ionic/react'
+import { checkmark, printOutline, speedometerOutline } from 'ionicons/icons'
 import moment from 'moment'
 import LicensePlate from '../LicensePlate/LicensePlate'
 import { connect } from 'react-redux'
@@ -10,12 +19,15 @@ import {
   updateRecordDraft,
   deleteRecordDraft,
 } from '../../state/actions/record.action'
-import { useMutation } from '@apollo/client'
+import { useMutation, useQuery } from '@apollo/client'
 import { ADD_SECOND_WEIGHT } from '../../gql/mutations/record.mutations'
+import { VEHICLE_SIZES } from '../../model/vehicle.model'
+import { PRINT_RECORD } from '../../gql/mutations/record.mutations'
 
 const RecordItem = (props: any) => {
   const record = props.record
   const secondWeightDraft = props.secondWeightDraft
+  const [printRecord] = useMutation(PRINT_RECORD)
 
   const [addSecondWeight] = useMutation(ADD_SECOND_WEIGHT)
 
@@ -39,6 +51,14 @@ const RecordItem = (props: any) => {
     })
   }
 
+  const onPrint = () => {
+    printRecord({
+      variables: {
+        id: record.id,
+      },
+    }).catch(console.error)
+  }
+
   return (
     <>
       <IonCard className="record-card">
@@ -48,6 +68,16 @@ const RecordItem = (props: any) => {
             region={record.vehicle?.licensePlate?.region}
             number={record.vehicle?.licensePlate?.plate}
           />
+          <IonList>
+            <IonItem>
+              <IonLabel>
+                <h2>Vehicle Size</h2>
+                <IonChip outline color="primary">
+                  {VEHICLE_SIZES[record.vehicle?.size]}
+                </IonChip>
+              </IonLabel>
+            </IonItem>
+          </IonList>
         </div>
 
         <div className="card-right-content">
@@ -97,6 +127,14 @@ const RecordItem = (props: any) => {
             <h3>Net Weight</h3>
             <div className="weight-measure">{getNetWeight()}</div>
           </div>
+          {record.weights.length > 1 && (
+            <div className="bottom-button">
+              <IonButton onClick={onPrint}>
+                <IonIcon icon={printOutline} />
+                Print
+              </IonButton>
+            </div>
+          )}
 
           {secondWeightDraft && (
             <div className="bottom-button">

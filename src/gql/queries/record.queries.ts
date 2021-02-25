@@ -11,6 +11,7 @@ export const FETCH_RECORDS = gql`
       }
       vehicle {
         id
+        size
         licensePlate {
           code
           region {

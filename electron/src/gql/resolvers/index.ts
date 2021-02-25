@@ -6,6 +6,7 @@ import {
   record,
   records,
   createRecord,
+  printRecord,
   addSecondWeight,
 } from './record.resolvers'
 
@@ -76,6 +77,7 @@ const resolvers = {
     createRecord,
     createVehicle,
     addSecondWeight,
+    printRecord,
   },
 }
 

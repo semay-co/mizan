@@ -20,3 +20,9 @@ export const ADD_SECOND_WEIGHT = gql`
     }
   }
 `
+
+export const PRINT_RECORD = gql`
+  mutation PrintRecord($id: String!) {
+    printRecord(id: $id)
+  }
+`

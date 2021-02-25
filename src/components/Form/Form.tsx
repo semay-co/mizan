@@ -28,48 +28,6 @@ const Form = (props: any) => {
     },
   })
 
-  const onPlateNumberChange = (ev: any) => {
-    const plate = ev.detail?.value
-      .split(/[^a-zA-Z0-9]/)
-      .join('')
-      .trim()
-      .toUpperCase()
-
-    ev.target.value = plate
-
-    console.log(props.draft)
-
-    props.updateRecordDraft({
-      ...props.draft,
-      licensePlate: {
-        ...props.draft?.licensePlate,
-        plate,
-      },
-    })
-  }
-
-  const onPlateCodeChange = (ev: any) => {
-    const code = ev.detail?.value
-    props.updateRecordDraft({
-      ...props.draft,
-      licensePlate: {
-        ...props.draft?.licensePlate,
-        code,
-      },
-    })
-  }
-
-  const onPlateRegionChange = (ev: any) => {
-    const region = ev.detail?.value
-    props.updateRecordDraft({
-      ...props.draft,
-      licensePlate: {
-        ...props.draft?.licensePlate,
-        region,
-      },
-    })
-  }
-
   const clearSelectedVehicle = () => {
     props.updateRecordDraft({
       ...props.draft,
@@ -124,13 +82,9 @@ const Form = (props: any) => {
       {props.draft ? (
         <>
           <RecordedWeight onRecord={recordReading} />
-          {!props.draft.vehicleId && (
-            <LicensePlateForm
-              onPlateNumberChange={onPlateNumberChange}
-              onPlateCodeChange={onPlateCodeChange}
-              onPlateRegionChange={onPlateRegionChange}
-            />
-          )}
+
+          {!props.draft.vehicleId && <LicensePlateForm />}
+
           {props.draft.vehicleId && (
             <>
               {selectedVehicleRecords.data?.records &&

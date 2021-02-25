@@ -26,13 +26,55 @@ const LicensePlateForm = (props: any) => {
     },
   })
 
+  const onPlateNumberChange = (ev: any) => {
+    const plate = ev.detail?.value
+      .split(/[^a-zA-Z0-9]/)
+      .join('')
+      .trim()
+      .toUpperCase()
+
+    ev.target.value = plate
+
+    console.log(props.draft)
+
+    props.updateRecordDraft({
+      ...props.draft,
+      licensePlate: {
+        ...props.draft?.licensePlate,
+        plate,
+      },
+    })
+  }
+
+  const onPlateCodeChange = (ev: any) => {
+    const code = ev.detail?.value
+    props.updateRecordDraft({
+      ...props.draft,
+      licensePlate: {
+        ...props.draft?.licensePlate,
+        code,
+      },
+    })
+  }
+
+  const onPlateRegionChange = (ev: any) => {
+    const region = ev.detail?.value
+    props.updateRecordDraft({
+      ...props.draft,
+      licensePlate: {
+        ...props.draft?.licensePlate,
+        region,
+      },
+    })
+  }
+
   return (
     <IonList lines="none">
       <IonCard className="license-plate-form entity-card">
         <IonItem>
           <IonInput
             id="license-plate-input"
-            onIonChange={props.onPlateNumberChange}
+            onIonChange={onPlateNumberChange}
             maxlength={6}
             size={6}
             required
@@ -44,7 +86,7 @@ const LicensePlateForm = (props: any) => {
           />
 
           <IonSelect
-            onIonChange={props.onPlateCodeChange}
+            onIonChange={onPlateCodeChange}
             value={
               typeof props.draft?.licensePlate?.code === 'number'
                 ? props.draft.licensePlate.code
@@ -61,7 +103,7 @@ const LicensePlateForm = (props: any) => {
 
           <IonSelect
             id="plate-region-select"
-            onIonChange={props.onPlateRegionChange}
+            onIonChange={onPlateRegionChange}
             value={props.draft?.licensePlate?.region || 'AA'}
             interface="action-sheet"
           >

@@ -72,7 +72,6 @@ export const vehicles = async (parent: any, args: any) => {
 export const vehicle = async (parent: any, args: any) => {
   const vehicle = (await DB.vehicles.get(args.id)) as any
 
-  console.log(vehicle)
   return {
     ...vehicle,
     id: vehicle._id,

@@ -15,6 +15,7 @@ type Mutation {
     plateRegion: String!
   ): String
   addSecondWeight(recordId: String!, weight: Int!, createdAt: String!): Record
+  printRecord(id: String!): String
 }
 
 type User {

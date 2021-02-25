@@ -1,6 +1,8 @@
 import DB from '../../db'
 import * as _ from 'ramda'
 import { v4 as uuid } from 'uuid'
+import { print } from '../../printer'
+import { VEHICLE_SIZES } from '../../../../src/model/vehicle.model'
 
 export const records = async (parent: any, args: any) => {
   const docs = await DB.records.allDocs({
@@ -16,6 +18,7 @@ export const records = async (parent: any, args: any) => {
         .then((vehicle) => vehicle as any)
         .then((vehicle) => ({
           id: vehicle._id,
+          size: vehicle.size,
           licensePlate: {
             plate: vehicle.licensePlateNumber,
             code: vehicle.licensePlateCode,
@@ -45,9 +48,7 @@ export const records = async (parent: any, args: any) => {
         ?.toLowerCase()
         .includes(args.query.toLowerCase())
   )(filteredByVehicle)
-  console.log(filtered)
 
-  console.log(args)
   return filtered
 }
 
@@ -89,3 +90,40 @@ export const addSecondWeight = async (parent: any, args: any) => {
 }
 
 export const record = async (parent: any, args: any) => {}
+
+export const printRecord = async (parent: any, args: any) => {
+  const recordOnly = await DB.records
+    .get(args.id)
+    .then((record) => record as any)
+    .then((record) => ({
+      id: record._id,
+      ...record,
+    }))
+
+  console.log(recordOnly)
+
+  const vehicle = await DB.vehicles
+    .get(recordOnly.vehicleId)
+    .then((vehicle) => vehicle as any)
+    .then((vehicle) => ({
+      id: vehicle._id,
+      size: VEHICLE_SIZES[vehicle.size],
+      licensePlate: {
+        plate: vehicle.licensePlateNumber,
+        code: vehicle.licensePlateCode,
+        region: vehicle.licensePlateRegion,
+      },
+    }))
+
+  const record = {
+    ...recordOnly,
+    netWeight: Math.abs(
+      recordOnly.weights[0].weight - recordOnly.weights[1].weight
+    ),
+    vehicle,
+  }
+
+  console.log(record)
+
+  return print(record)
+}
