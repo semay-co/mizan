@@ -35,8 +35,6 @@ const LicensePlateForm = (props: any) => {
 
     ev.target.value = plate
 
-    console.log(props.draft)
-
     props.updateRecordDraft({
       ...props.draft,
       licensePlate: {
@@ -44,6 +42,8 @@ const LicensePlateForm = (props: any) => {
         plate,
       },
     })
+
+    vehicles.refetch()
   }
 
   const onPlateCodeChange = (ev: any) => {
@@ -55,6 +55,8 @@ const LicensePlateForm = (props: any) => {
         code,
       },
     })
+
+    vehicles.refetch()
   }
 
   const onPlateRegionChange = (ev: any) => {
@@ -66,6 +68,8 @@ const LicensePlateForm = (props: any) => {
         region,
       },
     })
+
+    vehicles.refetch()
   }
 
   return (

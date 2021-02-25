@@ -4,7 +4,7 @@ const printer = require('@thiagoelg/node-printer')
 const html_to_pdf = require('html-pdf-node')
 
 const options = { format: 'A4' }
-const companyName = 'Furi Truck Weighing Service'
+const companyName = 'Furi Truck Scale Service'
 
 export const print = (record: any) => {
   const watermarkText = Array(600)
@@ -36,17 +36,19 @@ export const print = (record: any) => {
 				position: relative;
 				height: 940px;
 				z-index: 1;
+				padding-left: 10px;
+				border-left: 1px dotted #00000022;
 			}
 
 			#watermark {
 				position: absolute;
 				width: 200vw; 
 				line-height: 25px; 
-				color: #fdfdfd; 
+				color: #fdfdfdaa; 
 				text-wrap: no-wrap;
 				font-size: 10px;
 				transform: rotate(-45deg) scale(1.3) translate(-100px, -150px);
-				opacity: .3;
+				opacity: .4;
 				text-shadow: 1px 1px white, -1px 1px white, 1px -1px white, -1px -1px white;
 			}
 
@@ -59,7 +61,7 @@ export const print = (record: any) => {
 				position: relative;
 				z-inxex: 0;
 				text-shadow: none;
-				color: #f8f8f8;
+				color: #f8f8f888;
 				opacity: .5;
 			}
 
@@ -123,11 +125,15 @@ export const print = (record: any) => {
 				margin: 10px;
 				justify-content: center;
 				align-items: center;
+				align-content: center;
 				display: grid;
+				padding-top: 2px;
+				box-sizing: border-box;
 			}
 
 			#license-plate-number {
 				font-size: 20px;
+				padding-top: 4px;
 			}
 
 			#license-plate-region {
@@ -135,6 +141,7 @@ export const print = (record: any) => {
 				text-orientation: upright;
 				margin: 5px 10px;
 				font-size: 15px;
+				padding-top: 4px;
 			}
 
 			.row {

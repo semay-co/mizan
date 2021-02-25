@@ -12,6 +12,11 @@ export const record = (state = [], action: any) => {
         ...state,
         recordDraft: undefined,
       }
+    case Actions.UPDATE_RECORD_RESULT:
+      return {
+        ...state,
+        recordResult: action.payload,
+      }
     case Actions.UPDATE_RECORD_QUERY:
       return {
         ...state,

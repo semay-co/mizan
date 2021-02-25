@@ -67,13 +67,15 @@ export const createRecord = async (parent: any, args: any) => {
       vehicleId,
     })
 
-    return creation.then((doc) => doc.id)
+    return creation.then((doc) => doc)
   }
 
   const vehicle = await DB.vehicles.get(args.vehicleId)
 
   if (vehicle) {
-    saveRecord(vehicle._id)
+    const newRecord = await saveRecord(vehicle._id)
+
+    return newRecord.id
   }
 }
 

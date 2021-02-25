@@ -5,6 +5,7 @@ import { updateReading } from '../../state/actions/scoreboard.action'
 import {
   updateRecordDraft,
   deleteRecordDraft,
+  updateRecordResult,
 } from '../../state/actions/record.action'
 import { addOutline, speedometerOutline } from 'ionicons/icons'
 import { VEHICLE_SIZES } from '../../model/vehicle.model'
@@ -67,6 +68,12 @@ const Form = (props: any) => {
           weight: draft.reading.weight,
           vehicleId: draft.vehicleId,
         },
+      }).then((record) => {
+        console.log('record', record)
+        props.updateRecordResult({
+          ...props.draft,
+          recordResult: record.data.createRecord,
+        })
       })
     } else {
       alert('Record information incomplete')
@@ -78,58 +85,64 @@ const Form = (props: any) => {
   }
 
   return (
-    <IonCard className="form-wrap">
-      {props.draft ? (
-        <>
-          <RecordedWeight onRecord={recordReading} />
-
-          {!props.draft.vehicleId && <LicensePlateForm />}
-
-          {props.draft.vehicleId && (
-            <>
-              {selectedVehicleRecords.data?.records &&
-                selectedVehicleRecords.data.records
-                  .filter((record: any) => record.weights.length < 2)
-                  .map((pending: any) => (
-                    <RecordItem
-                      record={pending}
-                      secondWeightDraft={props.draft.reading}
-                    />
-                  ))}
-
-              <SelectedVehicleCard
-                getVehicleSize={getVehicleSize}
-                onClear={clearSelectedVehicle}
+    <div>
+      {props.draft &&
+        props.draft.vehicleId &&
+        selectedVehicleRecords.data?.records &&
+        selectedVehicleRecords.data.records
+          .filter((record: any) => record.weights.length < 2)
+          .map((pending: any) => (
+            <div className="existing-record">
+              <RecordItem
+                record={pending}
+                secondWeightDraft={props.draft.reading}
               />
+            </div>
+          ))}
 
-              <IonCard className="create-button-card">
-                <IonButton size="large" onClick={createRecord}>
-                  <IonIcon icon={addOutline} />
-                  Create New Record
-                </IonButton>
-              </IonCard>
-            </>
-          )}
-        </>
-      ) : (
-        <IonList lines="full">
-          <IonItem>
-            <IonButton
-              className="big-record-button"
-              color="primary"
-              size="large"
-              // shape="round"
-              fill="solid"
-              expand="block"
-              onClick={recordReading}
-            >
-              <IonIcon slot="start" icon={speedometerOutline}></IonIcon>
-              Record Current Weight
-            </IonButton>
-          </IonItem>
-        </IonList>
-      )}
-    </IonCard>
+      <IonCard className="form-wrap">
+        {props.draft ? (
+          <>
+            <RecordedWeight onRecord={recordReading} />
+
+            {!props.draft.vehicleId && <LicensePlateForm />}
+
+            {props.draft.vehicleId && (
+              <>
+                <SelectedVehicleCard
+                  getVehicleSize={getVehicleSize}
+                  onClear={clearSelectedVehicle}
+                />
+
+                <IonCard className="create-button-card">
+                  <IonButton size="large" onClick={createRecord}>
+                    <IonIcon icon={addOutline} />
+                    Create New Record
+                  </IonButton>
+                </IonCard>
+              </>
+            )}
+          </>
+        ) : (
+          <IonList lines="full">
+            <IonItem>
+              <IonButton
+                className="big-record-button"
+                color="primary"
+                size="large"
+                // shape="round"
+                fill="solid"
+                expand="block"
+                onClick={recordReading}
+              >
+                <IonIcon slot="start" icon={speedometerOutline}></IonIcon>
+                Record Current Weight
+              </IonButton>
+            </IonItem>
+          </IonList>
+        )}
+      </IonCard>
+    </div>
   )
 }
 
@@ -143,5 +156,6 @@ const mapStateToProps = (state: any) => {
 export default connect(mapStateToProps, {
   updateReading,
   updateRecordDraft,
+  updateRecordResult,
   deleteRecordDraft,
 })(Form)

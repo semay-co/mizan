@@ -16,7 +16,7 @@ import moment from 'moment'
 import LicensePlate from '../LicensePlate/LicensePlate'
 import { connect } from 'react-redux'
 import {
-  updateRecordDraft,
+  updateRecordResult,
   deleteRecordDraft,
 } from '../../state/actions/record.action'
 import { useMutation, useQuery } from '@apollo/client'
@@ -48,6 +48,11 @@ const RecordItem = (props: any) => {
         weight: secondWeightDraft.weight,
         createdAt: secondWeightDraft.receivedAt.toString(),
       },
+    })
+
+    props.updateRecordResult({
+      ...props.draft,
+      recordResult: record.id,
     })
   }
 
@@ -158,6 +163,6 @@ const mapStateToProps = (state: any) => {
 }
 
 export default connect(mapStateToProps, {
-  updateRecordDraft,
+  updateRecordResult,
   deleteRecordDraft,
 })(RecordItem)
