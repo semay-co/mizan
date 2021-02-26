@@ -40,21 +40,23 @@ const Scoreboard = (props: any) => {
         error: isNaN(+props.reading?.weight),
       })}
     >
-      {/* {!isNaN(+props.reading?.weight) ? (
+      {!isNaN(+props.reading?.weight) ? (
         <>
-          <span className="reading">{props.reading?.weight.toLocaleString()}</span>
+          <span className="reading">
+            {props.reading?.weight.toLocaleString()}
+          </span>
           <span className="unit">KG</span>
         </>
-      ) : ( */}
-      <IonInput
-        onIonChange={manualInput}
-        className="reading"
-        placeholder="0"
-        type="number"
-      ></IonInput>
-      <span className="unit">KG</span>
-      {/* // <span className="reading">{props.reading || 'no signal'}</span> */}
-      {/* )} */}
+      ) : (
+        // <IonInput
+        //   onIonChange={manualInput}
+        //   className="reading"
+        //   placeholder="0"
+        //   type="number"
+        // ></IonInput>
+        // <span className="unit">KG</span>
+        <span className="reading">{props.reading || 'no signal'}</span>
+      )}
     </div>
   )
 }
