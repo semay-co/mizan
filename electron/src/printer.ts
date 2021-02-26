@@ -7,7 +7,7 @@ const options = { format: 'A4' }
 
 const company = 'Furi Truck Scale Service'
 const address = 'Sebeta, Furi - Around Police Club'
-const phone = '+251 118 83 8403'
+const phone = '+251 118 83 8043'
 
 export const print = (record: any, stamp: string = 'Original') => {
   const watermarkText = Array(600)
