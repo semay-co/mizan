@@ -42,7 +42,7 @@ const Scoreboard = (props: any) => {
     >
       {/* {!isNaN(+props.reading?.weight) ? (
         <>
-          <span className="reading">{props.reading?.weight}</span>
+          <span className="reading">{props.reading?.weight.toLocaleString()}</span>
           <span className="unit">KG</span>
         </>
       ) : ( */}

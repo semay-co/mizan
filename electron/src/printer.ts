@@ -24,23 +24,53 @@ export const print = (record: any, stamp: string = 'Original') => {
     })
     .join(' . ')
 
+  const leftDetail = `<div id="left-detail">${Array(16)
+    .fill(0)
+    .map((_, i: number) => {
+      return `<span class="${i % 5 === 0 && 'fifth'} ${
+        i % 10 === 0 && 'tenth'
+      }"></span>`
+    })}</div>`
+
   const watermark = `<p id="watermark">
 	${watermarkText}
 	</p>`
 
-	const putStamp = (stamp: string = 'Original' ) => `<div id="stamp"><span>${stamp}</span></div>`
+  const putStamp = (stamp: string = 'Original') =>
+    `<div id="stamp"><span>${stamp}</span></div>`
 
-	const styles = 
-		`
+  const styles = `
 			#container {
 				margin: 80px;
 				font-family: sans-serif;
 				overflow: hidden;	
 				position: relative;
-				height: 940px
+				height: 940px;
 				z-index: 100;
 				padding-left: 10px;
-				border-left: 1px dotted #00000022;
+			}
+
+			#left-detail {
+				display: grid;
+				position: absolute;
+				height: 940px;
+				align-content: space-between;
+				margin-left: 35px;
+				width: 20px;
+				color: #ffffff00;
+				padding-right: 10px;
+				border-right: 2px dotted #0000001b;
+			}
+
+			#left-detail span {
+				width: 12px;
+				height: 12px;
+				border: 1px dotted #ccccccaa;
+				border-radius: 20px;
+			}
+
+			#left-detail .fifth {
+				border-radius: 0;
 			}
 
 			#watermark {
@@ -70,10 +100,10 @@ export const print = (record: any, stamp: string = 'Original') => {
 
 			#stamp {
 				position: absolute;
-				bottom: 350px;
+				bottom: 450px;
 				font-size: 90px;
 				font-weight: bold;
-				letter-spacing: 5px;
+				letter-spacing: 20px;
 				text-transform: uppercase;
 				transform: rotate(-45deg);
 				z-index: -10;
@@ -121,7 +151,7 @@ export const print = (record: any, stamp: string = 'Original') => {
 			}
 
 			#left-content {
-				border-right: 12px dashed #eee;
+				border-right: 12px dashed #cccccc44;
 			}
 
 			#license-plate {
@@ -223,34 +253,34 @@ export const print = (record: any, stamp: string = 'Original') => {
 				text-align: end;
 			}
 `
-	
-	const header = (company: string, address: string, phone: string) => {
 
-			return	`<div id="header">
-					<div id="logo">
-						<h1>${company}</h1>
-					</div>
-					<div id="address">
-						<div>Address: ${address}</div>
-						<div>Phone: ${phone}</div>
-					</div>
-				</div>`
-	}
+  const header = (company: string, address: string, phone: string) => {
+    return `<div id="header">
+				<div id="logo">
+					<h1>${company}</h1>
+				</div>
+				<div id="address">
+					<div>Address: ${address}</div>
+					<div>Phone: ${phone}</div>
+				</div>
+			</div>`
+  }
 
-	const receipt = (stamp: string = 'Original') => {
-
-		return `<div id="container">
+  const receipt = (stamp: string = 'Original') => {
+    return `
+		${leftDetail}
+			<div id="container">
 				${watermark}
 				${putStamp(stamp)}
 				<div id="watermark"></div>
 				${header(company, address, phone)}
 				<div id="date">
-					Printed at: ${moment().format('LLLL')}
+					Printed: ${moment().format('LLLL')}
 				</div>
 				<div id="grid">
 					<div id="left-content">
 						<div class="row">
-							<h3>License Plate</h3>
+							<h3>License Plate No.</h3>
 							<div id="license-plate">
 								<div id="license-plate-code">
 									${record.vehicle.licensePlate.code}
@@ -273,7 +303,6 @@ export const print = (record: any, stamp: string = 'Original') => {
 						</div>
 					</div>
 					<div id="right-content">
-
 						<div class="row">
 							<h3>First Weight</h3>
 							<div class="weight-date">
@@ -281,28 +310,32 @@ export const print = (record: any, stamp: string = 'Original') => {
 							</div>
 
 							<div class="weight-measure">
-								${record.weights[0].weight} KG
+								${record.weights[0].weight.toLocaleString()} KG
 							</div>
 						</div>
 						
-						<div class="row">
-							<h3>Second Weight</h3>
-							<div class="weight-date">
-								${moment(record.weights[1].createdAt).format('LLLL')}
-							</div>
+						${
+              record.weights[1]
+                ? `<div class="row">
+								<h3>Second Weight</h3>
+								<div class="weight-date">
+									${moment(record.weights[1].createdAt).format('LLLL')}
+								</div>
 
-							<div class="weight-measure">
-								${record.weights[1].weight} KG
+								<div class="weight-measure">
+									${record.weights[1].weight.toLocaleString()} KG
+								</div>
 							</div>
-						</div>
 				
-						<div class="row">
-							<h3>Net Weight</h3>
+							<div class="row">
+								<h3>Net Weight</h3>
 
-							<div class="net-weight weight-measure">
-								${record.netWeight} KG
-							</div>
-						</div>
+								<div class="net-weight weight-measure">
+									${record.netWeight.toLocaleString()} KG
+								</div>
+							</div>`
+                : ''
+            }
 
 					</div>
 				</div>
@@ -315,7 +348,7 @@ export const print = (record: any, stamp: string = 'Original') => {
 					</div>
 				<div>
 			</div>`
-	}
+  }
 
   const file = {
     content: `<html>
@@ -336,6 +369,7 @@ export const print = (record: any, stamp: string = 'Original') => {
       console.log(printer.getPrinters())
 
       return printer.printDirect({
+        name: 'psst',
         data: pdfBuffer,
         type: 'PDF',
         success: (job: any) => {

@@ -23,3 +23,27 @@ export const FETCH_RECORDS = gql`
     }
   }
 `
+
+export const FETCH_RECORD = gql`
+  query FetchRecord($id: String!) {
+    record(id: $id) {
+      id
+      createdAt
+      weights {
+        weight
+        createdAt
+      }
+      vehicle {
+        id
+        size
+        licensePlate {
+          code
+          region {
+            code
+          }
+          plate
+        }
+      }
+    }
+  }
+`

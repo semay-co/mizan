@@ -30,7 +30,6 @@ export const records = async (parent: any, args: any) => {
 
       return {
         ...row.doc,
-        sweet: 'home',
         id: row.id,
         vehicle,
       }
@@ -91,7 +90,38 @@ export const addSecondWeight = async (parent: any, args: any) => {
   })
 }
 
-export const record = async (parent: any, args: any) => {}
+export const record = async (parent: any, args: any) => {
+  console.log(args.id)
+  const recordOnly = await DB.records
+    .get(args.id)
+    .then((record) => record as any)
+    .then((record) => ({
+      id: record._id,
+      ...record,
+    }))
+
+  const vehicle = await DB.vehicles
+    .get(recordOnly.vehicleId)
+    .then((vehicle) => vehicle as any)
+    .then((vehicle) => ({
+      id: vehicle._id,
+      size: vehicle.size,
+      licensePlate: {
+        plate: vehicle.licensePlateNumber,
+        code: vehicle.licensePlateCode,
+        region: {
+          code: vehicle.licensePlateRegion,
+        },
+      },
+    }))
+
+  const record = {
+    ...recordOnly,
+    vehicle,
+  }
+
+  return record
+}
 
 export const printRecord = async (parent: any, args: any) => {
   const recordOnly = await DB.records
@@ -120,12 +150,12 @@ export const printRecord = async (parent: any, args: any) => {
   const record = {
     ...recordOnly,
     netWeight: Math.abs(
-      recordOnly.weights[0].weight - recordOnly.weights[1].weight
+      recordOnly.weights[0]?.weight - recordOnly.weights[1]?.weight
     ),
     vehicle,
   }
 
-  console.log(record)
-
-  return print(record) && print(record, "copy")
+  return record.weights?.length > 1
+    ? print(record) && print(record, 'copy')
+    : print(record, 'pending')
 }

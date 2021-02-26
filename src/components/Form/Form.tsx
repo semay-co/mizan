@@ -7,10 +7,15 @@ import {
   deleteRecordDraft,
   updateRecordResult,
 } from '../../state/actions/record.action'
-import { addOutline, speedometerOutline } from 'ionicons/icons'
+import {
+  addOutline,
+  closeOutline,
+  homeOutline,
+  speedometerOutline,
+} from 'ionicons/icons'
 import { VEHICLE_SIZES } from '../../model/vehicle.model'
 import { useMutation, useQuery } from '@apollo/client'
-import { FETCH_RECORDS } from '../../gql/queries/record.queries'
+import { FETCH_RECORD, FETCH_RECORDS } from '../../gql/queries/record.queries'
 import $ from 'jquery'
 import React from 'react'
 import * as _ from 'ramda'
@@ -22,12 +27,23 @@ import SelectedVehicleCard from './SelectedVehicleCard'
 
 const Form = (props: any) => {
   const [runCreateRecord] = useMutation(CREATE_RECORD)
+  const recordQuery = useQuery(FETCH_RECORD, {
+    variables: {
+      id: props.result,
+    },
+    skip: !props.result,
+  })
 
   const selectedVehicleRecords = useQuery(FETCH_RECORDS, {
     variables: {
       vehicleId: props.draft?.vehicleId,
     },
   })
+
+  const clearForm = () => {
+    props.deleteRecordDraft()
+    props.updateRecordResult(undefined)
+  }
 
   const clearSelectedVehicle = () => {
     props.updateRecordDraft({
@@ -70,10 +86,10 @@ const Form = (props: any) => {
         },
       }).then((record) => {
         console.log('record', record)
-        props.updateRecordResult({
-          ...props.draft,
-          recordResult: record.data.createRecord,
-        })
+        props.updateRecordResult(record.data.createRecord)
+        if (props.result) {
+          recordQuery.refetch()
+        }
       })
     } else {
       alert('Record information incomplete')
@@ -124,22 +140,34 @@ const Form = (props: any) => {
             )}
           </>
         ) : (
-          <IonList lines="full">
-            <IonItem>
-              <IonButton
-                className="big-record-button"
-                color="primary"
-                size="large"
-                // shape="round"
-                fill="solid"
-                expand="block"
-                onClick={recordReading}
-              >
-                <IonIcon slot="start" icon={speedometerOutline}></IonIcon>
-                Record Current Weight
-              </IonButton>
-            </IonItem>
-          </IonList>
+          <>
+            {recordQuery.data ? (
+              <>
+                <IonButton fill="clear" size="large" onClick={clearForm}>
+                  <IonIcon icon={closeOutline}></IonIcon>
+                  Clear
+                </IonButton>
+                <RecordItem record={recordQuery.data.record} />
+              </>
+            ) : (
+              <IonList lines="full">
+                <IonItem>
+                  <IonButton
+                    className="big-record-button"
+                    color="primary"
+                    size="large"
+                    // shape="round"
+                    fill="solid"
+                    expand="block"
+                    onClick={recordReading}
+                  >
+                    <IonIcon slot="start" icon={speedometerOutline}></IonIcon>
+                    Record Current Weight
+                  </IonButton>
+                </IonItem>
+              </IonList>
+            )}
+          </>
         )}
       </IonCard>
     </div>
@@ -150,6 +178,7 @@ const mapStateToProps = (state: any) => {
   return {
     reading: state.scoreboard.reading,
     draft: state.record.recordDraft,
+    result: state.record.recordResult,
   }
 }
 

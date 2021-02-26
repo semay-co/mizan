@@ -3,7 +3,7 @@ type Query {
   records(query: String, limit: Int, vehicleId: String): [Record]
   vehicles(query: String, limit: Int): [Vehicle]
   vehicle(id: String): Vehicle
-  record(id: String): Record
+  record(id: String!): Record
 }
 
 type Mutation {

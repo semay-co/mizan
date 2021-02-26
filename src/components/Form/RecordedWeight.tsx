@@ -30,7 +30,7 @@ const RecordedWeight = (props: any) => {
       </IonCardHeader>
       <IonCardContent>
         <div className="current-weight-measure">
-          {props.draft?.reading?.weight} KG
+          {props.draft?.reading?.weight.toLocaleString()} KG
           <IonButton onClick={props.onRecord} shape="round" fill="clear">
             <IonIcon slot="start" icon={refreshOutline}></IonIcon>
             Update

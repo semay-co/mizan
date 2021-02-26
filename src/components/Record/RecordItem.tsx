@@ -9,7 +9,6 @@ import {
   IonItem,
   IonLabel,
   IonList,
-  IonText,
 } from '@ionic/react'
 import { checkmark, printOutline, speedometerOutline } from 'ionicons/icons'
 import moment from 'moment'
@@ -38,7 +37,9 @@ const RecordItem = (props: any) => {
     const firstWeight = record.weights[0].weight
     const secondWeight = record.weights[1]?.weight || secondWeightDraft?.weight
 
-    return secondWeight ? Math.abs(firstWeight - secondWeight) + ' KG' : '...'
+    return secondWeight
+      ? Math.abs(firstWeight - secondWeight).toLocaleString() + ' KG'
+      : '...'
   }
 
   const onSaveSecondWeight = () => {
@@ -50,10 +51,7 @@ const RecordItem = (props: any) => {
       },
     })
 
-    props.updateRecordResult({
-      ...props.draft,
-      recordResult: record.id,
-    })
+    props.updateRecordResult(record.id)
   }
 
   const onPrint = () => {
@@ -63,6 +61,8 @@ const RecordItem = (props: any) => {
       },
     }).catch(console.error)
   }
+
+  // return <div>{JSON.stringify(record)}</div>
 
   return (
     <>
@@ -92,7 +92,9 @@ const RecordItem = (props: any) => {
               {formatDate(+record.weights[0]?.createdAt)}
             </span>
 
-            <div className="weight-measure">{record.weights[0]?.weight} KG</div>
+            <div className="weight-measure">
+              {record.weights[0]?.weight.toLocaleString()} KG
+            </div>
           </div>
           <div className="weight-entry second-weight">
             {record.weights[1] ? (
@@ -101,7 +103,7 @@ const RecordItem = (props: any) => {
                   {formatDate(+record.weights[1]?.createdAt)}
                 </span>
                 <div className="weight-measure">
-                  {record.weights[1].weight} KG
+                  {record.weights[1].weight.toLocaleString()} KG
                 </div>
               </>
             ) : (
@@ -113,7 +115,7 @@ const RecordItem = (props: any) => {
                       {formatDate(+secondWeightDraft.receivedAt)}
                     </span>
                     <div className="weight-measure">
-                      {secondWeightDraft.weight} KG
+                      {secondWeightDraft.weight.toLocaleString()} KG
                     </div>
                   </>
                 ) : (
@@ -132,20 +134,19 @@ const RecordItem = (props: any) => {
             <h3>Net Weight</h3>
             <div className="weight-measure">{getNetWeight()}</div>
           </div>
-          {record.weights.length > 1 && (
-            <div className="bottom-button">
-              <IonButton onClick={onPrint}>
-                <IonIcon icon={printOutline} />
-                Print
-              </IonButton>
-            </div>
-          )}
 
-          {secondWeightDraft && (
+          {secondWeightDraft ? (
             <div className="bottom-button">
               <IonButton onClick={onSaveSecondWeight}>
                 <IonIcon icon={checkmark} />
                 Use This Record
+              </IonButton>
+            </div>
+          ) : (
+            <div className="bottom-button">
+              <IonButton onClick={onPrint}>
+                <IonIcon icon={printOutline} />
+                Print
               </IonButton>
             </div>
           )}
