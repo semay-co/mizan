@@ -7,18 +7,12 @@ import {
   deleteRecordDraft,
   updateRecordResult,
 } from '../../state/actions/record.action'
-import {
-  addOutline,
-  closeOutline,
-  homeOutline,
-  speedometerOutline,
-} from 'ionicons/icons'
+import { addOutline, closeOutline, speedometerOutline } from 'ionicons/icons'
 import { VEHICLE_SIZES } from '../../model/vehicle.model'
 import { useMutation, useQuery } from '@apollo/client'
 import { FETCH_RECORD, FETCH_RECORDS } from '../../gql/queries/record.queries'
 import $ from 'jquery'
 import React from 'react'
-import * as _ from 'ramda'
 import RecordItem from '../Record/RecordItem'
 import { CREATE_RECORD } from '../../gql/mutations/record.mutations'
 import RecordedWeight from './RecordedWeight'

@@ -1,6 +1,11 @@
 type Query {
   users: [User]
-  records(query: String, limit: Int, vehicleId: String): [Record]
+  records(
+    query: String
+    limit: Int
+    vehicleId: String
+    filters: [String]
+  ): [Record]
   vehicles(query: String, limit: Int): [Vehicle]
   vehicle(id: String): Vehicle
   record(id: String!): Record

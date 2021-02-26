@@ -5,6 +5,8 @@ import { print } from '../../printer'
 import { VEHICLE_SIZES } from '../../../../src/model/vehicle.model'
 
 export const records = async (parent: any, args: any) => {
+  const filters = args.filters
+
   const docs = await DB.records.allDocs({
     include_docs: true,
   })
@@ -36,11 +38,18 @@ export const records = async (parent: any, args: any) => {
     })(rows)
   )
 
+  console.log(filters)
+
+  const filtered =
+    filters && filters.includes('pending')
+      ? _.filter((record: any) => record.weights.length <= 1)(records)
+      : records
+
   const filteredByVehicle = _.filter(
     (record: any) => !args.vehicleId || record.vehicleId === args.vehicleId
-  )(records)
+  )(filtered)
 
-  const filtered = _.filter(
+  const result = _.filter(
     (record: any) =>
       !args.query ||
       record.vehicle?.licensePlate?.plate
@@ -48,7 +57,7 @@ export const records = async (parent: any, args: any) => {
         .includes(args.query.toLowerCase())
   )(filteredByVehicle)
 
-  return filtered
+  return result
 }
 
 export const createRecord = async (parent: any, args: any) => {

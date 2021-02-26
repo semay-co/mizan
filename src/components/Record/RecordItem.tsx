@@ -99,6 +99,7 @@ const RecordItem = (props: any) => {
           <div className="weight-entry second-weight">
             {record.weights[1] ? (
               <>
+                <h3>Second Weight</h3>
                 <span className="record-date">
                   {formatDate(+record.weights[1]?.createdAt)}
                 </span>

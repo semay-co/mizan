@@ -1,5 +1,5 @@
 import { applyMiddleware, compose, createStore } from 'redux'
-import { reducers } from './reducers'
+import { actors } from './actors'
 import thunk from 'redux-thunk'
 
 declare global {
@@ -16,7 +16,7 @@ const initialState = {}
 const middleware = [thunk]
 
 const store = createStore(
-  reducers,
+  actors,
   initialState,
   // componentEnhancers(),
   compose(applyMiddleware(...middleware), componentEnhancers())

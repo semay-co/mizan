@@ -1,8 +1,18 @@
 import { gql } from '@apollo/client'
 
 export const FETCH_RECORDS = gql`
-  query FetchRecords($query: String, $limit: Int, $vehicleId: String) {
-    records(query: $query, limit: $limit, vehicleId: $vehicleId) {
+  query FetchRecords(
+    $query: String
+    $limit: Int
+    $vehicleId: String
+    $filters: [String]
+  ) {
+    records(
+      query: $query
+      limit: $limit
+      vehicleId: $vehicleId
+      filters: $filters
+    ) {
       id
       createdAt
       weights {
