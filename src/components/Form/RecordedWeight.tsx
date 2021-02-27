@@ -12,6 +12,8 @@ import {
   updateRecordDraft,
   deleteRecordDraft,
 } from '../../state/actions/record.action'
+import classNames from 'classnames'
+import './RecordedWeight.scss'
 
 const RecordedWeight = (props: any) => {
   const onClear = () => {
@@ -19,11 +21,23 @@ const RecordedWeight = (props: any) => {
   }
 
   return (
-    <IonCard className="current-weight-card entity-card">
+    <IonCard
+      className={classNames({
+        'current-weight-card': true,
+        'entity-card': true,
+        'red-card': props.reading.weight !== props.draft?.reading?.weight,
+        'green-card': props.reading.weight === props.draft?.reading?.weight,
+      })}
+    >
       <IonCardHeader>
         <div>Recorded Weight</div>
 
-        <IonButton onClick={onClear} shape="round" fill="clear" color="danger">
+        <IonButton
+          onClick={onClear}
+          shape="round"
+          fill="outline"
+          color="danger"
+        >
           <IonIcon slot="start" icon={closeCircleOutline}></IonIcon>
           Clear
         </IonButton>
@@ -31,10 +45,17 @@ const RecordedWeight = (props: any) => {
       <IonCardContent>
         <div className="current-weight-measure">
           {props.draft?.reading?.weight.toLocaleString()} KG
-          <IonButton onClick={props.onRecord} shape="round" fill="clear">
-            <IonIcon slot="start" icon={refreshOutline}></IonIcon>
-            Update
-          </IonButton>
+          {props.draft?.reading?.weight !== props.reading?.weight && (
+            <IonButton
+              onClick={props.onRecord}
+              shape="round"
+              fill="solid"
+              color="success"
+            >
+              <IonIcon slot="start" icon={refreshOutline}></IonIcon>
+              Update
+            </IonButton>
+          )}
         </div>
       </IonCardContent>
     </IonCard>
