@@ -15,7 +15,7 @@ import {
 import LicensePlate from '../LicensePlate/LicensePlate'
 import { useQuery } from '@apollo/client'
 import { FETCH_VEHICLES } from '../../gql/queries/vehicle.queries'
-import PropTypes from 'prop-types'
+import { FETCH_RECORDS } from '../../gql/queries/record.queries'
 
 const VehicleSuggestions = (props: any) => {
   const vehicles = useQuery(FETCH_VEHICLES, {
@@ -25,7 +25,15 @@ const VehicleSuggestions = (props: any) => {
     },
   })
 
+  const selectedVehicleRecords = useQuery(FETCH_RECORDS, {
+    variables: {
+      vehicleId: props.draft?.vehicleId,
+    },
+  })
+
   const onSelectPlate = (vehicleId: string) => {
+    selectedVehicleRecords.refetch()
+
     props.updateRecordDraft({
       ...props.draft,
       vehicleId,

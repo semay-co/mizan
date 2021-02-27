@@ -69,6 +69,9 @@ const Form = (props: any) => {
 
   const createRecord = () => {
     const draft = props.draft
+    selectedVehicleRecords.refetch()
+    console.log(selectedVehicleRecords.data)
+    console.log(selectedVehicleRecords.variables)
 
     if (draft && draft.reading?.weight && draft.licensePlate?.plate) {
       console.log(draft)
@@ -83,6 +86,7 @@ const Form = (props: any) => {
         props.updateRecordResult(record.data.createRecord)
         if (props.result) {
           recordQuery.refetch()
+          selectedVehicleRecords.refetch()
         }
       })
     } else {

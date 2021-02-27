@@ -1,7 +1,7 @@
 import resolvers from './gql/resolvers'
 import typeDefs from './gql/typeDefs'
 import { ApolloServer, PubSub } from 'apollo-server'
-import env from 'dotenv'
+import env from 'dotenv-flow'
 
 env.config()
 

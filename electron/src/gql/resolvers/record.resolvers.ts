@@ -38,7 +38,7 @@ export const records = async (parent: any, args: any) => {
     })(rows)
   )
 
-  console.log(filters)
+  console.log(args)
 
   const filtered =
     filters && filters.includes('pending')

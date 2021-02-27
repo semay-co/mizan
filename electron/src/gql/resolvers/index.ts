@@ -24,6 +24,8 @@ SerialPort.list().then((ports) => {
     .map((port) => port.path.toLowerCase())
     .filter((path) => path === comPort.toLowerCase())
 
+  console.log('env', process.env.TEST_SERIAL_PORT)
+
   if (search.length > 0 && !process.env.TEST_SERIAL_PORT) {
     const port = new SerialPort(comPort, {
       baudRate: 9600,
