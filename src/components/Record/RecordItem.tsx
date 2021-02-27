@@ -10,18 +10,25 @@ import {
   IonLabel,
   IonList,
 } from '@ionic/react'
-import { checkmark, printOutline, speedometerOutline } from 'ionicons/icons'
+import {
+  checkmark,
+  printOutline,
+  refreshOutline,
+  speedometerOutline,
+} from 'ionicons/icons'
 import moment from 'moment'
 import LicensePlate from '../LicensePlate/LicensePlate'
 import { connect } from 'react-redux'
 import {
   updateRecordResult,
   deleteRecordDraft,
+  updateRecordDraft,
 } from '../../state/actions/record.action'
 import { useMutation, useQuery } from '@apollo/client'
 import { ADD_SECOND_WEIGHT } from '../../gql/mutations/record.mutations'
 import { VEHICLE_SIZES } from '../../model/vehicle.model'
 import { PRINT_RECORD } from '../../gql/mutations/record.mutations'
+import classNames from 'classnames'
 
 const RecordItem = (props: any) => {
   const record = props.record
@@ -62,6 +69,20 @@ const RecordItem = (props: any) => {
     }).catch(console.error)
   }
 
+  const recordReading = () => {
+    if (props.reading) {
+      props.updateRecordDraft({
+        ...props.draft,
+        reading: props.reading,
+        licensePlate: {
+          plate: props.draft?.licensePlate?.plate || '',
+          code: props.draft?.licensePlate?.code || 3,
+          region: props.draft?.licensePlate?.region || 'AA',
+        },
+      })
+    }
+  }
+
   // return <div>{JSON.stringify(record)}</div>
 
   return (
@@ -97,9 +118,9 @@ const RecordItem = (props: any) => {
             </div>
           </div>
           <div className="weight-entry second-weight">
+            <h3>Second Weight</h3>
             {record.weights[1] ? (
               <>
-                <h3>Second Weight</h3>
                 <span className="record-date">
                   {formatDate(+record.weights[1]?.createdAt)}
                 </span>
@@ -109,14 +130,32 @@ const RecordItem = (props: any) => {
               </>
             ) : (
               <>
-                <h3>Second Weight</h3>
                 {secondWeightDraft ? (
                   <>
                     <span className="record-date">
                       {formatDate(+secondWeightDraft.receivedAt)}
                     </span>
-                    <div className="weight-measure">
+                    <div
+                      className={classNames({
+                        'weight-measure': true,
+                        'green-draft':
+                          secondWeightDraft.weight === props.reading.weight,
+                        'red-draft':
+                          secondWeightDraft.weight !== props.reading.weight,
+                      })}
+                    >
                       {secondWeightDraft.weight.toLocaleString()} KG
+                      {secondWeightDraft.weight !== props.reading.weight && (
+                        <IonButton
+                          onClick={recordReading}
+                          color="success"
+                          shape="round"
+                          size="small"
+                          fill="clear"
+                        >
+                          <IonIcon icon={refreshOutline} />
+                        </IonButton>
+                      )}
                     </div>
                   </>
                 ) : (
@@ -136,14 +175,7 @@ const RecordItem = (props: any) => {
             <div className="weight-measure">{getNetWeight()}</div>
           </div>
 
-          {secondWeightDraft ? (
-            <div className="bottom-button">
-              <IonButton onClick={onSaveSecondWeight}>
-                <IonIcon icon={checkmark} />
-                Use This Record
-              </IonButton>
-            </div>
-          ) : (
+          {!secondWeightDraft && (
             <div className="bottom-button">
               <IonButton onClick={onPrint}>
                 <IonIcon icon={printOutline} />
@@ -153,6 +185,14 @@ const RecordItem = (props: any) => {
           )}
         </div>
       </IonCard>
+      {secondWeightDraft && (
+        <div className="bottom-button">
+          <IonButton onClick={onSaveSecondWeight} size="large" expand="block">
+            <IonIcon icon={checkmark} />
+            Use This Record
+          </IonButton>
+        </div>
+      )}
     </>
   )
 }
@@ -166,5 +206,6 @@ const mapStateToProps = (state: any) => {
 
 export default connect(mapStateToProps, {
   updateRecordResult,
+  updateRecordDraft,
   deleteRecordDraft,
 })(RecordItem)

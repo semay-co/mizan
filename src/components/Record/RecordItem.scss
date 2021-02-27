@@ -1,3 +1,5 @@
+@import '../../theme/variables.scss';
+
 .record-card {
   color: #ffffff;
   display: grid;
@@ -60,7 +62,20 @@
 
       .weight-measure {
         justify-self: start;
+        display: grid;
+        grid-auto-flow: column;
         font-size: 1.6rem;
+        align-items: center;
+        align-content: center;
+        grid-gap: 1rem;
+
+        &.green-draft {
+          color: var(--ion-color-success);
+        }
+
+        &.red-draft {
+          color: var(--ion-color-danger);
+        }
       }
     }
 
