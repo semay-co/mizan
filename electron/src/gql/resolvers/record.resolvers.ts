@@ -1,7 +1,7 @@
 import DB from '../../db'
 import * as _ from 'ramda'
 import { v4 as uuid } from 'uuid'
-import { print } from '../../printer'
+import { print } from '../../printer/printer'
 import { VEHICLE_SIZES } from '../../../../src/model/vehicle.model'
 
 export const records = async (parent: any, args: any) => {
@@ -167,5 +167,5 @@ export const printRecord = async (parent: any, args: any) => {
 
   return record.weights?.length > 1
     ? print(record) && print(record, 'copy')
-    : print(record, 'attachment')
+    : print(record, 'attachment') && print(record, 'file')
 }

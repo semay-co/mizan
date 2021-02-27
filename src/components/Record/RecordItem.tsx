@@ -136,16 +136,17 @@ const RecordItem = (props: any) => {
                       {formatDate(+secondWeightDraft.receivedAt)}
                     </span>
                     <div
-                      className={classNames({
-                        'weight-measure': true,
-                        'green-draft':
-                          secondWeightDraft.weight === props.reading.weight,
-                        'red-draft':
-                          secondWeightDraft.weight !== props.reading.weight,
-                      })}
+                      className={classNames(
+                        'weight-measure',
+                        secondWeightDraft.weight !== props.reading.weight ||
+                          secondWeightDraft.weight < 100
+                          ? 'red-draft'
+                          : 'green-draft'
+                      )}
                     >
                       {secondWeightDraft.weight.toLocaleString()} KG
-                      {secondWeightDraft.weight !== props.reading.weight && (
+                      {(secondWeightDraft.weight !== props.reading.weight ||
+                        secondWeightDraft.weight < 100) && (
                         <IonButton
                           onClick={recordReading}
                           color="success"
@@ -163,7 +164,7 @@ const RecordItem = (props: any) => {
                     <span className="record-pending">Pending</span>
                     <IonButton className="record-pending-button">
                       <IonIcon icon={speedometerOutline}></IonIcon>
-                      {props.draft?.reading ? 'Use Current Record' : 'Record'}
+                      {props.draft?.reading ? 'Use Current Weight' : 'Record'}
                     </IonButton>
                   </>
                 )}
@@ -172,6 +173,13 @@ const RecordItem = (props: any) => {
           </div>
           <div className="weight-entry net-weight">
             <h3>Net Weight</h3>
+            <span className="record-date">
+              {record.weights[0] &&
+                record.weights[1] &&
+                moment(+record.weights[1].createdAt).from(
+                  +record.weights[0].createdAt
+                )}
+            </span>
             <div className="weight-measure">{getNetWeight()}</div>
           </div>
 

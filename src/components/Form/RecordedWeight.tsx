@@ -22,12 +22,14 @@ const RecordedWeight = (props: any) => {
 
   return (
     <IonCard
-      className={classNames({
-        'current-weight-card': true,
-        'entity-card': true,
-        'red-card': props.reading.weight !== props.draft?.reading?.weight,
-        'green-card': props.reading.weight === props.draft?.reading?.weight,
-      })}
+      className={classNames(
+        'current-weight-card',
+        'entity-card',
+        props.reading.weight !== props.draft?.reading?.weight ||
+          props.draft?.reading?.weight < 100
+          ? 'red-card'
+          : 'green-card'
+      )}
     >
       <IonCardHeader>
         <div>Recorded Weight</div>
@@ -45,7 +47,8 @@ const RecordedWeight = (props: any) => {
       <IonCardContent>
         <div className="current-weight-measure">
           {props.draft?.reading?.weight.toLocaleString()} KG
-          {props.draft?.reading?.weight !== props.reading?.weight && (
+          {(props.draft?.reading?.weight !== props.reading?.weight ||
+            props.draft?.reading?.weight < 100) && (
             <IonButton
               onClick={props.onRecord}
               shape="round"

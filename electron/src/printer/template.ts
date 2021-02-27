@@ -1,58 +1,58 @@
 import moment from 'moment'
 
-const printer = require('@thiagoelg/node-printer')
-const html_to_pdf = require('html-pdf-node')
-
-const options = { format: 'A4' }
-
 const company = 'Furi Truck Scale Service'
 const address = 'Sebeta, Furi - Around Police Club'
 const phone = '+251 118 83 8043'
 
 const getPrice = (size: number) => {
-	switch(size) {
-		case 0: return 75;
-		case 1: return 100;
-		case 2: return 150;
-		case 3: return 200;
-		case 4: return 250;
-		default: return 0;
-	}
+  switch (size) {
+    case 0:
+      return 75
+    case 1:
+      return 100
+    case 2:
+      return 150
+    case 3:
+      return 200
+    case 4:
+      return 250
+    default:
+      return 0
+  }
 }
 
-export const print = (record: any, stamp: string = 'Original') => {
-  const watermarkText = Array(600)
-    .fill(0)
-    .map((_, i: number) => {
-      const tag = i % 2 === 0 ? 'even' : 'odd'
-      return `
+export const watermarkText = Array(600)
+  .fill(0)
+  .map((_, i: number) => {
+    const tag = i % 2 === 0 ? 'even' : 'odd'
+    return `
 			<span class="tag-wrap">
 				<span class="${tag}">
 					${company.toUpperCase()}
 				</span>
 			<span class="tag-wrap">
 			`
-    })
-    .join(' . ')
+  })
+  .join(' . ')
 
-  const leftDetail = `<div id="left-detail">${Array(16)
-    .fill(0)
-    .map((_, i: number) => {
-      return `<span class="${i % 5 === 0 && 'fifth'} ${
-        i % 10 === 0 && 'tenth'
-      }"></span>`
-    })}</div>`
+export const leftDetail = `<div id="left-detail">${Array(16)
+  .fill(0)
+  .map((_, i: number) => {
+    return `<span class="${i % 5 === 0 && 'fifth'} ${
+      i % 10 === 0 && 'tenth'
+    }"></span>`
+  })}</div>`
 
-  const watermark = `<p id="watermark">
+export const watermark = `<p id="watermark">
 	${watermarkText}
 	</p>`
 
-  const putStamp = (stamp: string = 'Original') =>
-    `<div id="stamp"><span>${stamp}</span></div>`
+export const putStamp = (stamp: string = 'Original') =>
+  `<div id="stamp"><span>${stamp}</span></div>`
 
-  const styles = `
+export const styles = `
 			body {
-				transform: scale(50%) rotate(90deg);
+				transform: rotate(-90deg) scale(.80) translate(380px, 15px);
 			}
 
 			#container {
@@ -70,17 +70,19 @@ export const print = (record: any, stamp: string = 'Original') => {
 				position: absolute;
 				height: 940px;
 				align-content: space-between;
-				margin-left: 35px;
+				margin-left: 10px;
 				width: 20px;
 				color: #ffffff00;
 				padding-right: 10px;
+				padding-left: 25px;
 				border-right: 2px dotted #0000001b;
+				border-left: 2px dashed #00000044;
 			}
 
 			#left-detail span {
 				width: 12px;
 				height: 12px;
-				border: 1px dotted #ccccccaa;
+				border: 1px dotted #aaaaaaaa;
 				border-radius: 20px;
 			}
 
@@ -92,7 +94,7 @@ export const print = (record: any, stamp: string = 'Original') => {
 				position: absolute;
 				width: 200vw; 
 				line-height: 25px; 
-				color: #fdfdfdaa; 
+				color: #f8f8f8aa; 
 				text-wrap: no-wrap;
 				font-size: 10px;
 				transform: rotate(-45deg) scale(1.3) translate(-100px, -150px);
@@ -109,7 +111,7 @@ export const print = (record: any, stamp: string = 'Original') => {
 				position: relative;
 				z-inxex: 0;
 				text-shadow: none;
-				color: #f8f8f888;
+				color: #f4f4f488;
 				opacity: .8;
 			}
 
@@ -126,6 +128,8 @@ export const print = (record: any, stamp: string = 'Original') => {
 				text-shadow: 5px 5px white, -5px 5px white, 5px -5px white, -5px -5px white;
 				width: 100%;
 				text-align: center;
+				display: grid;
+				justify-content: center;
 			}
 
 			#header {
@@ -269,20 +273,20 @@ export const print = (record: any, stamp: string = 'Original') => {
 			}
 `
 
-  const header = (company: string, address: string, phone: string) => {
-    return `<div id="header">
-				<div id="logo">
-					<h1>${company}</h1>
-				</div>
-				<div id="address">
-					<div>Address: ${address}</div>
-					<div>Phone: ${phone}</div>
-				</div>
-			</div>`
-  }
+export const header = (company: string, address: string, phone: string) => {
+  return `<div id="header">
+    <div id="logo">
+      <h1>${company}</h1>
+    </div>
+    <div id="address">
+      <div>Address: ${address}</div>
+      <div>Phone: ${phone}</div>
+    </div>
+  </div>`
+}
 
-  const receipt = (stamp: string = 'Original') => {
-    return `
+export const receipt = (record: any, stamp: string = 'Original') => {
+  return `
 		${leftDetail}
 			<div id="container">
 				${watermark}
@@ -349,7 +353,7 @@ export const print = (record: any, stamp: string = 'Original') => {
 									${record.netWeight.toLocaleString()} KG
 								</div>
 							</div>`
-                :  `<div class="row">
+                : `<div class="row">
 								<h3>Price</h3>
 
 								<div class="weight-measure">
@@ -369,42 +373,16 @@ export const print = (record: any, stamp: string = 'Original') => {
 					</div>
 				<div>
 			</div>`
-  }
-
-  const file = {
-    content: `<html>
-	<head>
-		<style>
-			${styles}
-		</style>
-	</head>
-		<body>
-			${receipt(stamp)}
-		</body>
-	</html>`,
-  }
-
-  return html_to_pdf
-    .generatePdf(file, options)
-    .then((pdfBuffer: any) => {
-      console.log(printer.getPrinters())
-
-      return printer.printDirect({
-        name: 'psst',
-        data: pdfBuffer,
-        type: 'PDF',
-        success: (job: any) => {
-          console.log('job id:', job)
-          return JSON.stringify(job)
-        },
-        error: (error: any) => {
-          console.error(error)
-          return JSON.stringify(error)
-        },
-      })
-    })
-    .catch((err: any) => {
-      console.error(err)
-      return 'error:' + JSON.stringify(err)
-    })
 }
+
+export const template = (record: any, stamp: string) =>
+  `<html>
+    <head>
+      <style>
+        ${styles}
+      </style>
+    </head>
+    <body>
+      ${receipt(record, stamp)}
+    </body>
+  </html>`
