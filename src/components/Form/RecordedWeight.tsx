@@ -20,15 +20,19 @@ const RecordedWeight = (props: any) => {
     props.deleteRecordDraft()
   }
 
+  const isGreen = () => {
+    return (
+      props.reading.weight === props.draft?.reading?.weight &&
+      props.draft?.reading?.weight > 100
+    )
+  }
+
   return (
     <IonCard
       className={classNames(
         'current-weight-card',
         'entity-card',
-        props.reading.weight !== props.draft?.reading?.weight ||
-          props.draft?.reading?.weight < 100
-          ? 'red-card'
-          : 'green-card'
+        isGreen() ? 'green-card' : 'red-card'
       )}
     >
       <IonCardHeader>
@@ -37,8 +41,8 @@ const RecordedWeight = (props: any) => {
         <IonButton
           onClick={onClear}
           shape="round"
-          fill="outline"
-          color="danger"
+          fill="clear"
+          color={isGreen() ? 'light' : 'dark'}
         >
           <IonIcon slot="start" icon={closeCircleOutline}></IonIcon>
           Clear

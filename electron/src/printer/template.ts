@@ -348,6 +348,9 @@ export const receipt = (record: any, stamp: string = 'Original') => {
 				
 							<div class="row">
 								<h3>Net Weight</h3>
+								<div class="weight-date">
+									${moment(+record.weights[1].createdAt).from(+record.weights[0].createdAt)}
+								</div>
 
 								<div class="net-weight weight-measure">
 									${record.netWeight.toLocaleString()} KG

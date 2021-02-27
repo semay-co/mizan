@@ -1,18 +1,20 @@
 import { connect } from 'react-redux'
 import './Scoreboard.scss'
 import { updateReading } from '../../state/actions/scoreboard.action'
+import { updateUIState } from '../../state/actions/ui.action'
 import { deleteRecordDraft } from '../../state/actions/record.action'
 import { useEffect } from 'react'
 import { useSubscription } from '@apollo/client'
 import classNames from 'classnames'
 import { SUBSCRIBE_READING } from '../../gql/subscriptions'
-import { IonButton, IonInput } from '@ionic/react'
+import { IonButton, IonIcon, IonInput } from '@ionic/react'
+import { createOutline } from 'ionicons/icons'
 
 const Scoreboard = (props: any) => {
   const { error, loading, data } = useSubscription(SUBSCRIBE_READING)
 
   useEffect(() => {
-    if (data)
+    if (data && !props.ui.manualInput)
       props.updateReading({
         receivedAt: new Date().getTime(),
         weight: data.reading,
@@ -26,10 +28,15 @@ const Scoreboard = (props: any) => {
   }, [data, error, loading, props])
 
   const manualInput = (ev: any) => {
-    console.log(ev.detail.value)
     props.updateReading({
       receivedAt: new Date().getTime(),
       weight: +ev.detail.value,
+    })
+  }
+
+  const toggleManualInput = () => {
+    props.updateUIState({
+      manualInput: !props.ui.manualInput,
     })
   }
 
@@ -40,23 +47,47 @@ const Scoreboard = (props: any) => {
         error: isNaN(+props.reading?.weight),
       })}
     >
-      {!isNaN(+props.reading?.weight) ? (
-        <>
-          <span className="reading">
-            {props.reading?.weight.toLocaleString()}
+      <div className="scoreboard-wrap">
+        <IonButton
+          onClick={() => toggleManualInput()}
+          color="medium"
+          fill="clear"
+          size="large"
+          shape="round"
+          className="manual-input-button"
+        >
+          <IonIcon icon={createOutline} />
+        </IonButton>
+        <div className="scoreboard-text">
+          {!isNaN(+props.reading?.weight) ? (
+            <>
+              {props.ui.manualInput ? (
+                <IonInput
+                  clearInput={true}
+                  onIonChange={manualInput}
+                  className="reading"
+                  placeholder="0"
+                  type="number"
+                ></IonInput>
+              ) : (
+                <span className="reading">
+                  {props.reading?.weight.toLocaleString()}
+                </span>
+              )}
+            </>
+          ) : (
+            <span className="reading">no signal</span>
+          )}
+          <span
+            className={classNames(
+              'unit',
+              props.ui.manualInput && 'manual-input-unit'
+            )}
+          >
+            KG
           </span>
-          <span className="unit">KG</span>
-        </>
-      ) : (
-        // <IonInput
-        //   onIonChange={manualInput}
-        //   className="reading"
-        //   placeholder="0"
-        //   type="number"
-        // ></IonInput>
-        // <span className="unit">KG</span>
-        <span className="reading">{props.reading || 'no signal'}</span>
-      )}
+        </div>
+      </div>
     </div>
   )
 }
@@ -64,10 +95,12 @@ const Scoreboard = (props: any) => {
 const mapStateToProps = (state: any) => {
   return {
     reading: state.scoreboard.reading,
+    ui: state.ui,
   }
 }
 
 export default connect(mapStateToProps, {
   updateReading,
+  updateUIState,
   deleteRecordDraft,
 })(Scoreboard)
