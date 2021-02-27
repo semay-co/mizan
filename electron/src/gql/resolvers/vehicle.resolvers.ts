@@ -33,6 +33,12 @@ export const createVehicle = async (parent: any, args: any) => {
   }
 }
 
+export const editLicensePlate = async (parent: any, args: any) => {
+  const vehicle = args.vehicleId
+
+  console.log(vehicle)
+}
+
 export const vehicles = async (parent: any, args: any) => {
   const vehicles = DB.vehicles.allDocs({
     include_docs: true,

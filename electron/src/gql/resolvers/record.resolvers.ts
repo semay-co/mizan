@@ -148,7 +148,8 @@ export const printRecord = async (parent: any, args: any) => {
     .then((vehicle) => vehicle as any)
     .then((vehicle) => ({
       id: vehicle._id,
-      size: VEHICLE_SIZES[vehicle.size],
+      size: vehicle.size,
+      sizeName: VEHICLE_SIZES[vehicle.size],
       licensePlate: {
         plate: vehicle.licensePlateNumber,
         code: vehicle.licensePlateCode,
@@ -166,5 +167,5 @@ export const printRecord = async (parent: any, args: any) => {
 
   return record.weights?.length > 1
     ? print(record) && print(record, 'copy')
-    : print(record, 'pending')
+    : print(record, 'attachment')
 }

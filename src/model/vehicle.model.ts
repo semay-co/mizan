@@ -28,9 +28,9 @@ export const PLATE_REGIONS = [
 ]
 
 export const VEHICLE_SIZES = [
-  'SMALL',
-  'MEDIUM',
-  'LARGE',
-  'EXTRA LARGE',
+  'PICK UP',
+  'ISUZU',
+   'FSR',
+  'SINO TRUCK',
   'TRAILER TRUCK',
 ]
