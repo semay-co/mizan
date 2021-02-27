@@ -9,6 +9,17 @@ const company = 'Furi Truck Scale Service'
 const address = 'Sebeta, Furi - Around Police Club'
 const phone = '+251 118 83 8043'
 
+const getPrice = (size: number) => {
+	switch(size) {
+		case 0: return 75;
+		case 1: return 100;
+		case 2: return 150;
+		case 3: return 200;
+		case 4: return 250;
+		default: return 0;
+	}
+}
+
 export const print = (record: any, stamp: string = 'Original') => {
   const watermarkText = Array(600)
     .fill(0)
@@ -40,10 +51,14 @@ export const print = (record: any, stamp: string = 'Original') => {
     `<div id="stamp"><span>${stamp}</span></div>`
 
   const styles = `
+			body {
+				transform: scale(50%) rotate(90deg);
+			}
+
 			#container {
 				margin: 80px;
 				font-family: sans-serif;
-				overflow: hidden;	
+				overflow: hidden;
 				position: relative;
 				height: 940px;
 				z-index: 100;
@@ -298,7 +313,7 @@ export const print = (record: any, stamp: string = 'Original') => {
 						<div class="row">
 							<h3>Vehicle Size</h3>
 							<div class="row-field">
-								${record.vehicle.size}
+								${record.vehicle.sizeName}
 							</div>
 						</div>
 					</div>
@@ -334,7 +349,13 @@ export const print = (record: any, stamp: string = 'Original') => {
 									${record.netWeight.toLocaleString()} KG
 								</div>
 							</div>`
-                : ''
+                :  `<div class="row">
+								<h3>Price</h3>
+
+								<div class="weight-measure">
+									${getPrice(record.vehicle.size)} ETB
+								</div>
+							</div>`
             }
 
 					</div>
