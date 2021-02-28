@@ -25,6 +25,8 @@ $indicator-error: #ff3869;
   text-shadow: 2px 3px 10px transparentize($indicator-green, $amount: 0.7);
   font-size: 4rem;
   text-align: end;
+  --padding-top: 0;
+  --padding-bottom: 0;
 
   &.error {
     color: $indicator-error;

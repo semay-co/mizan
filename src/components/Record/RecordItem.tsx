@@ -30,6 +30,8 @@ import { VEHICLE_SIZES } from '../../model/vehicle.model'
 import { PRINT_RECORD } from '../../gql/mutations/record.mutations'
 import classNames from 'classnames'
 
+const base36 = require('base36')
+
 const RecordItem = (props: any) => {
   const record = props.record
   const secondWeightDraft = props.secondWeightDraft
@@ -83,18 +85,32 @@ const RecordItem = (props: any) => {
     }
   }
 
-  // return <div>{JSON.stringify(record)}</div>
+  const isUpdated = () => props.reading.weight === props.draft?.reading?.weight
+
+  const isLoaded = () => props.draft?.reading?.weight > 1000
+
+  const toBase36 = (number: number) => base36.base36encode(number + 1)
 
   return (
     <>
       <IonCard className="record-card">
         <div className="card-left-content">
-          <LicensePlate
-            code={record.vehicle?.licensePlate?.code}
-            region={record.vehicle?.licensePlate?.region}
-            number={record.vehicle?.licensePlate?.plate}
-          />
           <IonList>
+            <IonItem>
+              <IonLabel>
+                <h2>Record Number: {toBase36(record.recordNumber)}</h2>
+              </IonLabel>
+            </IonItem>
+            <IonItem>
+              <IonLabel>
+                <h2>License Plate</h2>
+              </IonLabel>
+              <LicensePlate
+                code={record.vehicle?.licensePlate?.code}
+                region={record.vehicle?.licensePlate?.region}
+                number={record.vehicle?.licensePlate?.plate}
+              />
+            </IonItem>
             <IonItem>
               <IonLabel>
                 <h2>Vehicle Size</h2>
@@ -138,18 +154,15 @@ const RecordItem = (props: any) => {
                     <div
                       className={classNames(
                         'weight-measure',
-                        secondWeightDraft.weight !== props.reading.weight ||
-                          secondWeightDraft.weight < 100
-                          ? 'red-draft'
-                          : 'green-draft'
+                        isLoaded() && isUpdated() ? 'green-draft' : 'red-draft'
                       )}
                     >
                       {secondWeightDraft.weight.toLocaleString()} KG
-                      {(secondWeightDraft.weight !== props.reading.weight ||
-                        secondWeightDraft.weight < 100) && (
+                      {!isUpdated() && (
                         <IonButton
+                          className="update-button"
                           onClick={recordReading}
-                          color="success"
+                          color="dark"
                           shape="round"
                           size="small"
                           fill="clear"

@@ -4,6 +4,7 @@ type Query {
     query: String
     limit: Int
     vehicleId: String
+    recordNumber: Int
     filters: [String]
   ): [Record]
   vehicles(query: String, limit: Int): [Vehicle]
@@ -77,6 +78,7 @@ type Name {
 type Weight {
   createdAt: String
   weight: Int!
+  manual: Boolean
 }
 
 type Record {
@@ -87,6 +89,7 @@ type Record {
   operator: User
   vehicle: Vehicle
   product: Product
+  recordNumber: Int
   weights: [Weight]
 }
 

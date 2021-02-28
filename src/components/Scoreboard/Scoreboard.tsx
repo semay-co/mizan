@@ -3,12 +3,12 @@ import './Scoreboard.scss'
 import { updateReading } from '../../state/actions/scoreboard.action'
 import { updateUIState } from '../../state/actions/ui.action'
 import { deleteRecordDraft } from '../../state/actions/record.action'
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useSubscription } from '@apollo/client'
 import classNames from 'classnames'
 import { SUBSCRIBE_READING } from '../../gql/subscriptions'
-import { IonButton, IonIcon, IonInput } from '@ionic/react'
-import { createOutline } from 'ionicons/icons'
+import { IonButton, IonFabButton, IonIcon, IonInput } from '@ionic/react'
+import { createOutline, speedometerOutline } from 'ionicons/icons'
 
 const Scoreboard = (props: any) => {
   const { error, loading, data } = useSubscription(SUBSCRIBE_READING)
@@ -35,6 +35,12 @@ const Scoreboard = (props: any) => {
   }
 
   const toggleManualInput = () => {
+    !props.ui.manualInput &&
+      props.updateReading({
+        receivedAt: new Date().getTime(),
+        weight: 0,
+      })
+
     props.updateUIState({
       manualInput: !props.ui.manualInput,
     })
@@ -48,16 +54,18 @@ const Scoreboard = (props: any) => {
       })}
     >
       <div className="scoreboard-wrap">
-        <IonButton
+        <IonFabButton
           onClick={() => toggleManualInput()}
-          color="medium"
-          fill="clear"
-          size="large"
-          shape="round"
+          color={props.ui.manualInput ? 'success' : 'light'}
+          // fill="clear"
+          // size="large"
+          // shape="round"
           className="manual-input-button"
         >
-          <IonIcon icon={createOutline} />
-        </IonButton>
+          <IonIcon
+            icon={props.ui.manualInput ? speedometerOutline : createOutline}
+          />
+        </IonFabButton>
         <div className="scoreboard-text">
           {!isNaN(+props.reading?.weight) ? (
             <>

@@ -69,6 +69,14 @@
         align-content: center;
         grid-gap: 1rem;
 
+        ion-button.update-button {
+          margin: 0;
+
+          button {
+            padding: 0;
+          }
+        }
+
         &.green-draft {
           color: var(--ion-color-success);
         }

@@ -5,16 +5,19 @@ export const FETCH_RECORDS = gql`
     $query: String
     $limit: Int
     $vehicleId: String
+    $recordNumber: Int
     $filters: [String]
   ) {
     records(
       query: $query
       limit: $limit
       vehicleId: $vehicleId
+      recordNumber: $recordNumber
       filters: $filters
     ) {
       id
       createdAt
+      recordNumber
       weights {
         weight
         createdAt

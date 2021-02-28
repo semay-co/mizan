@@ -3,14 +3,10 @@ import {
   IonCard,
   IonCardContent,
   IonIcon,
-  IonInput,
-  IonItem,
   IonItemDivider,
   IonItemGroup,
   IonLabel,
   IonList,
-  IonSelect,
-  IonSelectOption,
 } from '@ionic/react'
 import { connect } from 'react-redux'
 import React from 'react'
@@ -18,11 +14,7 @@ import {
   updateRecordDraft,
   deleteRecordDraft,
 } from '../../state/actions/record.action'
-import {
-  PLATE_CODES,
-  PLATE_REGIONS,
-  VEHICLE_SIZES,
-} from '../../model/vehicle.model'
+import { VEHICLE_SIZES } from '../../model/vehicle.model'
 import { addOutline } from 'ionicons/icons'
 import { useMutation } from '@apollo/client'
 import { CREATE_VEHICLE } from '../../gql/mutations/vehicle.mutations'
@@ -111,19 +103,21 @@ const NewVehicleForm = (props: any) => {
                 </div>
               </div>
             </div>
-            <IonButton
-              onClick={createVehicle}
-              disabled={
-                props.draft?.licensePlate?.plate?.length < 5 ||
-                isNaN(props.draft?.vehicle?.size)
-              }
-            >
-              <IonIcon icon={addOutline} />
-              Create New Vehicle
-            </IonButton>
           </IonCardContent>
         </IonItemGroup>
       </IonList>
+
+      <IonButton
+        expand="full"
+        onClick={createVehicle}
+        disabled={
+          props.draft?.licensePlate?.plate?.length < 5 ||
+          isNaN(props.draft?.vehicle?.size)
+        }
+      >
+        <IonIcon icon={addOutline} />
+        Create New Vehicle
+      </IonButton>
     </IonCard>
   )
 }

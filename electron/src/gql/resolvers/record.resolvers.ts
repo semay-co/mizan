@@ -61,29 +61,56 @@ export const records = async (parent: any, args: any) => {
 }
 
 export const createRecord = async (parent: any, args: any) => {
-  const saveRecord = (vehicleId: string) => {
-    const creation = DB.records.put({
-      _id: uuid(),
-      docType: 'record',
-      createdAt: new Date().getTime(),
-      weights: [
-        {
-          createdAt: args.createdAt || new Date().getTime(),
-          weight: args.weight,
-        },
-      ],
-      vehicleId,
-    })
+  const docs = await DB.records.allDocs({
+    include_docs: true,
+  })
 
-    return creation.then((doc) => doc)
-  }
+  const records = _.filter((row: any) => row.doc.docType === 'record')(
+    docs.rows
+  )
 
-  const vehicle = await DB.vehicles.get(args.vehicleId)
+  /** MIGRATION */
+  if (process.env.RECORD_NUMBER_MIGRATION) {
+    records.map((record: any, i: number) =>
+      DB.records.put({
+        ...record.doc,
+        recordNumber: i + 100000,
+      })
+    )
+  } else {
+    const recordNumbers = _.map((row: any) => +row.doc.recordNumber || 0)(
+      records
+    )
+    const highest = _.reduce(_.max, 0)(recordNumbers)
 
-  if (vehicle) {
-    const newRecord = await saveRecord(vehicle._id)
+    console.log(recordNumbers)
+    console.log(highest)
 
-    return newRecord.id
+    const saveRecord = (vehicleId: string) => {
+      const creation = DB.records.put({
+        _id: uuid(),
+        docType: 'record',
+        createdAt: new Date().getTime(),
+        recordNumber: (highest as number) + 1,
+        weights: [
+          {
+            createdAt: args.createdAt || new Date().getTime(),
+            weight: args.weight,
+          },
+        ],
+        vehicleId,
+      })
+
+      return creation.then((doc) => doc)
+    }
+
+    const vehicle = await DB.vehicles.get(args.vehicleId)
+
+    if (vehicle) {
+      const newRecord = await saveRecord(vehicle._id)
+
+      return newRecord.id
+    }
   }
 }
 

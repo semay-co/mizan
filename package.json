@@ -21,6 +21,7 @@
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
     "@types/uuid": "^8.3.0",
+    "base36": "^1.0.0",
     "classnames": "^2.2.6",
     "dotenv": "^8.2.0",
     "graphql": "^15.5.0",
