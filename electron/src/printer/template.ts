@@ -1,5 +1,7 @@
 import moment from 'moment'
 
+const base36 = require('base36')
+
 const company = 'Furi Truck Scale Service'
 const address = 'Sebeta, Furi - Around Police Club'
 const phone = '+251 118 83 8043'
@@ -298,6 +300,12 @@ export const receipt = (record: any, stamp: string = 'Original') => {
 				</div>
 				<div id="grid">
 					<div id="left-content">
+						<div class="row">
+							<h3>
+								Record Number: 
+								<b>${base36.base36encode(record.recordNumber)}</b> 
+							</h3>
+						</div>
 						<div class="row">
 							<h3>License Plate No.</h3>
 							<div id="license-plate">
