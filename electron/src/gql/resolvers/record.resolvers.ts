@@ -5,8 +5,6 @@ import { print } from '../../printer/printer'
 
 const base36 = require('base36')
 
-const base36 = require('base36')
-
 export const records = async (parent: any, args: any) => {
   const filters = args.filters
 
@@ -41,8 +39,6 @@ export const records = async (parent: any, args: any) => {
     })(rows)
   )
 
-  console.log(args)
-
   const filtered =
     filters && filters.includes('pending')
       ? _.filter((record: any) => record.weights.length <= 1)(records)
@@ -52,27 +48,14 @@ export const records = async (parent: any, args: any) => {
     (record: any) => !args.vehicleId || record.vehicleId === args.vehicleId
   )(filtered)
 
-  const result = _.filter((record: any) => {
-
-
-    const queryLower = args.query?.toLowerCase()
-
-    console.log(typeof(base36.base36encode(record.recordNumber)))
-
-    const isInRecordNumber = base36.base36encode(record.recordNumber).
-    toLowerCase().includes(queryLower)(filteredByVehicle)
-    
-    const isInLicensePlate = record.vehicle?.licensePlate?.plate
-        ?.toLowerCase()
-        .includes(args.query.toLowerCase())
-
-
-    return !args.query ||
-      isInRecordNumber || isInLicensePlate
-      
-    })(filteredByVehicle)
-
-  return result
+  return _.filter((record: any) => {
+    return args.query
+      ? record.serial.toLowerCase().includes(args.query.toLowerCase()) ||
+          record.vehicle?.licensePlate?.plate
+            ?.toLowerCase()
+            .includes(args.query.toLowerCase())
+      : true
+  })(filteredByVehicle)
 }
 
 export const createRecord = async (parent: any, args: any) => {
