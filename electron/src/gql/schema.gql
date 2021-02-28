@@ -4,7 +4,7 @@ type Query {
     query: String
     limit: Int
     vehicleId: String
-    recordNumber: Int
+    serial: String
     filters: [String]
   ): [Record]
   vehicles(query: String, limit: Int): [Vehicle]
@@ -15,7 +15,7 @@ type Query {
 type Mutation {
   createRecord(weight: Int!, vehicleId: String!): String
   createVehicle(
-    size: Int!
+    type: Int!
     plateNumber: String!
     plateCode: Int!
     plateRegion: String!
@@ -48,7 +48,7 @@ type LicensePlate {
 
 type Vehicle {
   id: ID!
-  size: Int
+  type: Int
   licensePlate: LicensePlate!
 }
 
@@ -89,7 +89,7 @@ type Record {
   operator: User
   vehicle: Vehicle
   product: Product
-  recordNumber: Int
+  serial: String
   weights: [Weight]
 }
 

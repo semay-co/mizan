@@ -82,18 +82,18 @@ const Scoreboard = (props: any) => {
                   {props.reading?.weight.toLocaleString()}
                 </span>
               )}
+              <span
+                className={classNames(
+                  'unit',
+                  props.ui.manualInput && 'manual-input-unit'
+                )}
+              >
+                KG
+              </span>
             </>
           ) : (
             <span className="reading">no signal</span>
           )}
-          <span
-            className={classNames(
-              'unit',
-              props.ui.manualInput && 'manual-input-unit'
-            )}
-          >
-            KG
-          </span>
         </div>
       </div>
     </div>

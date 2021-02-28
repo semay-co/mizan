@@ -5,26 +5,26 @@ export const FETCH_RECORDS = gql`
     $query: String
     $limit: Int
     $vehicleId: String
-    $recordNumber: Int
+    $serial: String
     $filters: [String]
   ) {
     records(
       query: $query
       limit: $limit
       vehicleId: $vehicleId
-      recordNumber: $recordNumber
+      serial: $serial
       filters: $filters
     ) {
       id
       createdAt
-      recordNumber
+      serial
       weights {
         weight
         createdAt
       }
       vehicle {
         id
-        size
+        type
         licensePlate {
           code
           region {
@@ -48,7 +48,7 @@ export const FETCH_RECORD = gql`
       }
       vehicle {
         id
-        size
+        type
         licensePlate {
           code
           region {

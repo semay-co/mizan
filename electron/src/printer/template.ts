@@ -1,13 +1,12 @@
 import moment from 'moment'
-
-const base36 = require('base36')
+import { VEHICLE_TYPES } from '../../../src/model/vehicle.model'
 
 const company = 'Furi Truck Scale Service'
 const address = 'Sebeta, Furi - Around Police Club'
 const phone = '+251 118 83 8043'
 
-const getPrice = (size: number) => {
-  switch (size) {
+const getPrice = (type: number) => {
+  switch (type) {
     case 0:
       return 75
     case 1:
@@ -40,9 +39,11 @@ export const watermarkText = Array(600)
 export const leftDetail = `<div id="left-detail">${Array(16)
   .fill(0)
   .map((_, i: number) => {
-    return `<span class="${i % 5 === 0 && 'fifth'} ${
-      i % 10 === 0 && 'tenth'
-    }"></span>`
+    return `<span class="
+			${i % 5 === 0 && 'fifth'} 
+			${i % 10 === 0 && 'tenth'}
+			${(i === 0 || i === 15) && 'edge'}
+		"></span>`
   })}</div>`
 
 export const watermark = `<p id="watermark">
@@ -72,24 +73,32 @@ export const styles = `
 				position: absolute;
 				height: 940px;
 				align-content: space-between;
-				margin-left: 10px;
+				margin-left: 8px;
 				width: 20px;
 				color: #ffffff00;
 				padding-right: 10px;
 				padding-left: 25px;
-				border-right: 2px dotted #0000001b;
+				border-right: 2px dotted #00000022;
 				border-left: 2px dashed #00000044;
 			}
 
 			#left-detail span {
-				width: 12px;
-				height: 12px;
+				width: 13px;
+				height: 13px;
 				border: 1px dotted #aaaaaaaa;
 				border-radius: 20px;
 			}
 
 			#left-detail .fifth {
 				border-radius: 0;
+			}
+
+			#left-detail .tenth {
+				transform: rotate(45deg);
+			}
+
+			#left-detail .edge {
+				background-color: #00000088;
 			}
 
 			#watermark {
@@ -273,6 +282,23 @@ export const styles = `
 				text-transform: uppercase;
 				text-align: end;
 			}
+
+			#footer {
+				position: absolute;
+				width: 100%;
+				bottom: 0;
+				margin-bottom: 10px;
+			}
+
+			#disclaimer {
+				width: 100%;
+				font-family: monospace;
+				color: #00000088;
+				font-size: 11px;
+				text-transform: uppercase;
+				text-align: center;
+				letter-spacing: 2px;
+			}
 `
 
 export const header = (company: string, address: string, phone: string) => {
@@ -302,8 +328,8 @@ export const receipt = (record: any, stamp: string = 'Original') => {
 					<div id="left-content">
 						<div class="row">
 							<h3>
-								Record Number: 
-								<b>${base36.base36encode(record.recordNumber)}</b> 
+								Serial: 
+								<b>${record.serial}</b> 
 							</h3>
 						</div>
 						<div class="row">
@@ -323,9 +349,9 @@ export const receipt = (record: any, stamp: string = 'Original') => {
 							</div>	
 						</div>
 						<div class="row">
-							<h3>Vehicle Size</h3>
+							<h3>Vehicle Type</h3>
 							<div class="row-field">
-								${record.vehicle.sizeName}
+								${VEHICLE_TYPES[record.vehicle.type] || 'UNKNOWN'}
 							</div>
 						</div>
 					</div>
@@ -368,7 +394,7 @@ export const receipt = (record: any, stamp: string = 'Original') => {
 								<h3>Price</h3>
 
 								<div class="weight-measure">
-									${getPrice(record.vehicle.size)} ETB
+									${getPrice(record.vehicle.type)} ETB
 								</div>
 							</div>`
             }
@@ -376,13 +402,17 @@ export const receipt = (record: any, stamp: string = 'Original') => {
 					</div>
 				</div>
 
-				<div id="footer">
-					<div id="operator">
-						<div id="operator-signature">
-							Operator Signature:
-						</div>
+				<div id="operator">
+					<div id="operator-signature">
+						Operator Signature:
 					</div>
-				<div>
+				</div>
+
+				<div id="footer">
+					<div id="disclaimer">
+						Disclaimer: We can only guarantee the weight and not the material
+					</div>
+				</div>
 			</div>`
 }
 

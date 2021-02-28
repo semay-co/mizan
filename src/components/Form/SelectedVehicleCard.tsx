@@ -51,10 +51,10 @@ const SelectedVehicleCard = (props: any) => {
 
             <div>
               <IonLabel>
-                <h4>Vehicle Size:</h4>
+                <h4>Vehicle Type:</h4>
               </IonLabel>
-              <IonChip color="secondary">
-                {props.getVehicleSize(selectedVehicle.data.vehicle.size)}
+              <IonChip color="primary">
+                {props.getVehicleType(selectedVehicle.data.vehicle.type)}
               </IonChip>
             </div>
           </IonCardContent>

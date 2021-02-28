@@ -19,7 +19,7 @@ export const createVehicle = async (parent: any, args: any) => {
       .put({
         _id: uuid(),
         createdAt: new Date().getTime(),
-        size: args.size,
+        type: args.type,
         licensePlateNumber: args.plateNumber,
         licensePlateCode: args.plateCode,
         licensePlateRegion: args.plateRegion,
@@ -44,6 +44,19 @@ export const vehicles = async (parent: any, args: any) => {
     include_docs: true,
   })
 
+  if (process.env.MIGRATE_VEHICLE_TYPE || true) {
+    ;(await vehicles).rows.map((row) => {
+      console.log(row)
+      DB.vehicles
+        .put({
+          ...row.doc,
+          type: (row.doc as any).size,
+          size: undefined,
+        })
+        .catch(console.error)
+    })
+  }
+
   return (await vehicles).rows
     .map((row) => {
       return {
@@ -62,7 +75,7 @@ export const vehicles = async (parent: any, args: any) => {
     .map((vehicle) => {
       return {
         id: vehicle.id.toString(),
-        size: vehicle.size,
+        type: vehicle.type,
         licensePlate: {
           code: vehicle.licensePlateCode,
           region: {
@@ -81,7 +94,7 @@ export const vehicle = async (parent: any, args: any) => {
   return {
     ...vehicle,
     id: vehicle._id,
-    size: vehicle.size,
+    type: vehicle.type,
     licensePlate: {
       code: vehicle.licensePlateCode,
       plate: vehicle.licensePlateNumber,

@@ -8,7 +8,7 @@ import {
   updateRecordResult,
 } from '../../state/actions/record.action'
 import { addOutline, closeOutline, speedometerOutline } from 'ionicons/icons'
-import { VEHICLE_SIZES } from '../../model/vehicle.model'
+import { VEHICLE_TYPES } from '../../model/vehicle.model'
 import { useMutation, useQuery } from '@apollo/client'
 import { FETCH_RECORD, FETCH_RECORDS } from '../../gql/queries/record.queries'
 import $ from 'jquery'
@@ -94,8 +94,8 @@ const Form = (props: any) => {
     }
   }
 
-  const getVehicleSize = (size: number) => {
-    return VEHICLE_SIZES[size] || 'UNKNOWN'
+  const getVehicleType = (type: number) => {
+    return VEHICLE_TYPES[type] || 'UNKNOWN'
   }
 
   return (
@@ -124,7 +124,7 @@ const Form = (props: any) => {
             {props.draft.vehicleId && (
               <>
                 <SelectedVehicleCard
-                  getVehicleSize={getVehicleSize}
+                  getVehicleType={getVehicleType}
                   onClear={clearSelectedVehicle}
                 />
 

@@ -27,10 +27,10 @@ export const PLATE_REGIONS = [
   { code: 'TG', name: 'TIGRAY' },
 ]
 
-export const VEHICLE_SIZES = [
+export const VEHICLE_TYPES = [
   'PICK UP',
   'ISUZU',
-   'FSR',
+  'FSR',
   'SINO TRUCK',
   'TRAILER TRUCK',
 ]

@@ -2,7 +2,8 @@ import DB from '../../db'
 import * as _ from 'ramda'
 import { v4 as uuid } from 'uuid'
 import { print } from '../../printer/printer'
-import { VEHICLE_SIZES } from '../../../../src/model/vehicle.model'
+
+const base36 = require('base36')
 
 export const records = async (parent: any, args: any) => {
   const filters = args.filters
@@ -20,7 +21,7 @@ export const records = async (parent: any, args: any) => {
         .then((vehicle) => vehicle as any)
         .then((vehicle) => ({
           id: vehicle._id,
-          size: vehicle.size,
+          type: vehicle.type,
           licensePlate: {
             plate: vehicle.licensePlateNumber,
             code: vehicle.licensePlateCode,
@@ -69,29 +70,27 @@ export const createRecord = async (parent: any, args: any) => {
     docs.rows
   )
 
-  /** MIGRATION */
-  if (process.env.RECORD_NUMBER_MIGRATION) {
+  if (process.env.SERIAL_MIGRATION) {
     records.map((record: any, i: number) =>
       DB.records.put({
         ...record.doc,
-        recordNumber: i + 100000,
+        recordNumber: undefined,
+        serial: base36.base36encode(i + 100000),
       })
     )
   } else {
-    const recordNumbers = _.map((row: any) => +row.doc.recordNumber || 0)(
-      records
-    )
-    const highest = _.reduce(_.max, 0)(recordNumbers)
+    const serials = _.map(
+      (row: any) => base36.base36decode(row.doc.serial) || 0
+    )(records)
 
-    console.log(recordNumbers)
-    console.log(highest)
+    const highest = _.reduce(_.max)(0, serials) || 100000
 
     const saveRecord = (vehicleId: string) => {
       const creation = DB.records.put({
         _id: uuid(),
         docType: 'record',
         createdAt: new Date().getTime(),
-        recordNumber: (highest as number) + 1,
+        serial: base36.base36encode((highest as number) + 1),
         weights: [
           {
             createdAt: args.createdAt || new Date().getTime(),
@@ -141,7 +140,7 @@ export const record = async (parent: any, args: any) => {
     .then((vehicle) => vehicle as any)
     .then((vehicle) => ({
       id: vehicle._id,
-      size: vehicle.size,
+      type: vehicle.type,
       licensePlate: {
         plate: vehicle.licensePlateNumber,
         code: vehicle.licensePlateCode,
@@ -175,8 +174,7 @@ export const printRecord = async (parent: any, args: any) => {
     .then((vehicle) => vehicle as any)
     .then((vehicle) => ({
       id: vehicle._id,
-      size: vehicle.size,
-      sizeName: VEHICLE_SIZES[vehicle.size],
+      type: vehicle.type,
       licensePlate: {
         plate: vehicle.licensePlateNumber,
         code: vehicle.licensePlateCode,

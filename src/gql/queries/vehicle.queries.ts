@@ -19,7 +19,7 @@ export const FETCH_VEHICLE = gql`
   query FetchVehicle($id: String) {
     vehicle(id: $id) {
       id
-      size
+      type
       licensePlate {
         plate
         code

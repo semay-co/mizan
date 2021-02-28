@@ -24,13 +24,11 @@ import {
   deleteRecordDraft,
   updateRecordDraft,
 } from '../../state/actions/record.action'
-import { useMutation, useQuery } from '@apollo/client'
+import { useMutation } from '@apollo/client'
 import { ADD_SECOND_WEIGHT } from '../../gql/mutations/record.mutations'
-import { VEHICLE_SIZES } from '../../model/vehicle.model'
+import { VEHICLE_TYPES } from '../../model/vehicle.model'
 import { PRINT_RECORD } from '../../gql/mutations/record.mutations'
 import classNames from 'classnames'
-
-const base36 = require('base36')
 
 const RecordItem = (props: any) => {
   const record = props.record
@@ -89,8 +87,6 @@ const RecordItem = (props: any) => {
 
   const isLoaded = () => props.draft?.reading?.weight > 1000
 
-  const toBase36 = (number: number) => base36.base36encode(number + 1)
-
   return (
     <>
       <IonCard className="record-card">
@@ -98,7 +94,7 @@ const RecordItem = (props: any) => {
           <IonList>
             <IonItem>
               <IonLabel>
-                <h2>Record Number: {toBase36(record.recordNumber)}</h2>
+                <h2>Serial: {record.serial}</h2>
               </IonLabel>
             </IonItem>
             <IonItem>
@@ -110,9 +106,9 @@ const RecordItem = (props: any) => {
             </IonItem>
             <IonItem>
               <IonLabel>
-                <h2>Vehicle Size</h2>
+                <h2>Vehicle Type</h2>
                 <IonChip outline color="primary">
-                  {VEHICLE_SIZES[record.vehicle?.size]}
+                  {VEHICLE_TYPES[record.vehicle?.type]}
                 </IonChip>
               </IonLabel>
             </IonItem>

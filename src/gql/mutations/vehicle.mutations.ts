@@ -2,13 +2,13 @@ import { gql } from '@apollo/client'
 
 export const CREATE_VEHICLE = gql`
   mutation CreateVehicle(
-    $size: Int!
+    $type: Int!
     $plateNumber: String!
     $plateCode: Int!
     $plateRegion: String!
   ) {
     createVehicle(
-      size: $size
+      type: $type
       plateNumber: $plateNumber
       plateCode: $plateCode
       plateRegion: $plateRegion

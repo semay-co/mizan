@@ -14,7 +14,7 @@ import {
   updateRecordDraft,
   deleteRecordDraft,
 } from '../../state/actions/record.action'
-import { VEHICLE_SIZES } from '../../model/vehicle.model'
+import { VEHICLE_TYPES } from '../../model/vehicle.model'
 import { addOutline } from 'ionicons/icons'
 import { useMutation } from '@apollo/client'
 import { CREATE_VEHICLE } from '../../gql/mutations/vehicle.mutations'
@@ -23,11 +23,11 @@ import LicensePlate from '../LicensePlate/LicensePlate'
 const NewVehicleForm = (props: any) => {
   const [runCreateVehicle] = useMutation(CREATE_VEHICLE)
 
-  const selectVehicleType = (size: number) => {
+  const selectVehicleType = (type: number) => {
     props.updateRecordDraft({
       ...props.draft,
       vehicle: {
-        size,
+        type,
       },
     })
   }
@@ -37,14 +37,14 @@ const NewVehicleForm = (props: any) => {
 
     if (
       draft &&
-      !isNaN(draft.vehicle?.size) &&
+      !isNaN(draft.vehicle?.type) &&
       draft.licensePlate?.plate &&
       draft.licensePlate?.code &&
       draft.licensePlate?.region
     ) {
       runCreateVehicle({
         variables: {
-          size: draft.vehicle.size,
+          type: draft.vehicle.type,
           plateNumber: draft.licensePlate.plate,
           plateCode: draft.licensePlate.code,
           plateRegion: draft.licensePlate.region,
@@ -56,7 +56,7 @@ const NewVehicleForm = (props: any) => {
             ...props.draft,
             vehicleId,
             vehicle: {
-              size: draft.vehicle.size,
+              type: draft.vehicle.type,
             },
           })
         })
@@ -85,19 +85,19 @@ const NewVehicleForm = (props: any) => {
                   }}
                 />
               </div>
-              <div className="vehicle-size">
-                <IonLabel>Select Vehicle Size:</IonLabel>
+              <div className="vehicle-type">
+                <IonLabel>Select Vehicle Type:</IonLabel>
                 <div>
-                  {VEHICLE_SIZES.map((size: string, i: number) => (
+                  {VEHICLE_TYPES.map((type: string, i: number) => (
                     <IonButton
                       onClick={() => selectVehicleType(i)}
                       shape="round"
                       fill={
-                        props.draft.vehicle?.size === i ? 'solid' : 'outline'
+                        props.draft.vehicle?.type === i ? 'solid' : 'outline'
                       }
                       color="secondary"
                     >
-                      {size}
+                      {type}
                     </IonButton>
                   ))}
                 </div>
@@ -112,7 +112,7 @@ const NewVehicleForm = (props: any) => {
         onClick={createVehicle}
         disabled={
           props.draft?.licensePlate?.plate?.length < 5 ||
-          isNaN(props.draft?.vehicle?.size)
+          isNaN(props.draft?.vehicle?.type)
         }
       >
         <IonIcon icon={addOutline} />
