@@ -102,9 +102,6 @@ const RecordItem = (props: any) => {
               </IonLabel>
             </IonItem>
             <IonItem>
-              <IonLabel>
-                <h2>License Plate</h2>
-              </IonLabel>
               <LicensePlate
                 code={record.vehicle?.licensePlate?.code}
                 region={record.vehicle?.licensePlate?.region}
