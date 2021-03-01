@@ -404,13 +404,13 @@ export const receipt = (record: any, stamp: string = 'Original') => {
 
 				<div id="operator">
 					<div id="operator-signature">
-						Operator Signature:
+						Operator Signature
 					</div>
 				</div>
 
 				<div id="footer">
 					<div id="disclaimer">
-						Disclaimer: We can only guarantee the weight and not the material
+						Disclaimer: We can only guarantee the weight, not the material.
 					</div>
 				</div>
 			</div>`
