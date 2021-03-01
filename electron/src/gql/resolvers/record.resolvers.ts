@@ -5,8 +5,6 @@ import { print } from '../../printer/printer'
 
 const base36 = require('base36')
 
-const base36 = require('base36')
-
 export const records = async (parent: any, args: any) => {
   const filters = args.filters
 
@@ -54,13 +52,10 @@ export const records = async (parent: any, args: any) => {
 
   const result = _.filter((record: any) => {
 
-
     const queryLower = args.query?.toLowerCase()
 
-    console.log(typeof(base36.base36encode(record.recordNumber)))
-
-    const isInRecordNumber = base36.base36encode(record.recordNumber).
-    toLowerCase().includes(queryLower)(filteredByVehicle)
+    // const isInRecordNumber = base36.base36encode(record.recordNumber).
+    // toLowerCase().includes(queryLower)(filteredByVehicle)
     
     const isInLicensePlate = record.vehicle?.licensePlate?.plate
         ?.toLowerCase()
@@ -68,7 +63,7 @@ export const records = async (parent: any, args: any) => {
 
 
     return !args.query ||
-      isInRecordNumber || isInLicensePlate
+      isInLicensePlate
       
     })(filteredByVehicle)
 
