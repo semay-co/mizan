@@ -70,8 +70,6 @@ const Form = (props: any) => {
   const createRecord = () => {
     const draft = props.draft
     selectedVehicleRecords.refetch()
-    console.log(selectedVehicleRecords.data)
-    console.log(selectedVehicleRecords.variables)
 
     if (draft && draft.reading?.weight && draft.licensePlate?.plate) {
       console.log(draft)
