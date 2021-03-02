@@ -11,6 +11,15 @@ export const records = async (parent: any, args: any) => {
   const docs = await DB.records.allDocs({
     include_docs: true,
   })
+  
+    // docs.rows.map((record: any, i: number) =>
+    //   DB.records.put({
+    //     ...record.doc,
+    //     recordNumber: undefined,
+    //     serial: base36.base36encode(i + 100000),
+    //   })
+    // )
+
 
   const rows = _.filter((row: any) => row.doc.docType === 'record')(docs.rows)
 
@@ -39,8 +48,6 @@ export const records = async (parent: any, args: any) => {
     })(rows)
   )
 
-  console.log(args)
-
   const filtered =
     filters && filters.includes('pending')
       ? _.filter((record: any) => record.weights.length <= 1)(records)
@@ -50,24 +57,14 @@ export const records = async (parent: any, args: any) => {
     (record: any) => !args.vehicleId || record.vehicleId === args.vehicleId
   )(filtered)
 
-  const result = _.filter((record: any) => {
-
-    const queryLower = args.query?.toLowerCase()
-
-    // const isInRecordNumber = base36.base36encode(record.recordNumber).
-    // toLowerCase().includes(queryLower)(filteredByVehicle)
-    
-    const isInLicensePlate = record.vehicle?.licensePlate?.plate
-        ?.toLowerCase()
-        .includes(args.query.toLowerCase())
-
-
-    return !args.query ||
-      isInLicensePlate
-      
-    })(filteredByVehicle)
-
-  return result
+  return _.filter((record: any) => {
+    return args.query
+      ? record.serial.toLowerCase().includes(args.query.toLowerCase()) ||
+          record.vehicle?.licensePlate?.plate
+            ?.toLowerCase()
+            .includes(args.query.toLowerCase())
+      : true
+  })(filteredByVehicle)
 }
 
 export const createRecord = async (parent: any, args: any) => {
@@ -80,13 +77,6 @@ export const createRecord = async (parent: any, args: any) => {
   )
 
   if (process.env.SERIAL_MIGRATION) {
-    records.map((record: any, i: number) =>
-      DB.records.put({
-        ...record.doc,
-        recordNumber: undefined,
-        serial: base36.base36encode(i + 100000),
-      })
-    )
   } else {
     const serials = _.map(
       (row: any) => base36.base36decode(row.doc.serial) || 0

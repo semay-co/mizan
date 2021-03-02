@@ -145,7 +145,7 @@ export const styles = `
 
 			#header {
 				padding-bottom: 20px;
-				border-bottom: 2px solid #888;
+				border-bottom: 5px solid #88888866;
 				margin-bottom: 50px;
 			}
 
@@ -239,6 +239,12 @@ export const styles = `
 				text-align: end;
 			}
 
+			.row.serial-row h3 b {
+				// background-color: #000000!important;
+				// padding: 2px 4px;
+				// color: #ffffff!important;
+			}
+
 			#right-content .row {
 				border-bottom: 1px dashed #555;
 				padding: 0 10px 20px;
@@ -298,6 +304,7 @@ export const styles = `
 				text-transform: uppercase;
 				text-align: center;
 				letter-spacing: 2px;
+				background: #ffffff;
 			}
 `
 
@@ -326,10 +333,10 @@ export const receipt = (record: any, stamp: string = 'Original') => {
 				</div>
 				<div id="grid">
 					<div id="left-content">
-						<div class="row">
+						<div class="row serial-row">
 							<h3>
 								Serial: 
-								<b>${record.serial}</b> 
+								<b style="background: black;">${record.serial}</b> 
 							</h3>
 						</div>
 						<div class="row">
@@ -404,13 +411,13 @@ export const receipt = (record: any, stamp: string = 'Original') => {
 
 				<div id="operator">
 					<div id="operator-signature">
-						Operator Signature:
+						Operator Signature
 					</div>
 				</div>
 
 				<div id="footer">
 					<div id="disclaimer">
-						Disclaimer: We can only guarantee the weight and not the material
+						Disclaimer: We can only guarantee the weight, not the material.
 					</div>
 				</div>
 			</div>`
