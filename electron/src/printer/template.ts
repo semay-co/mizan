@@ -1,5 +1,6 @@
 import moment from 'moment'
 import { VEHICLE_TYPES } from '../../../src/model/vehicle.model'
+import { PAGE_TYPES } from '../../../src/model/print.model'
 
 const company = 'Furi Truck Scale Service'
 const address = 'Sebeta, Furi - Around Police Club'
@@ -36,7 +37,7 @@ export const watermarkText = Array(600)
   })
   .join(' . ')
 
-export const leftDetail = `<div id="left-detail">${Array(16)
+export const leftDetail = `<div class="left-detail">${Array(16)
   .fill(0)
   .map((_, i: number) => {
     return `<span class="
@@ -46,19 +47,19 @@ export const leftDetail = `<div id="left-detail">${Array(16)
 		"></span>`
   })}</div>`
 
-export const watermark = `<p id="watermark">
+export const watermark = `<p class="watermark">
 	${watermarkText}
 	</p>`
 
 export const putStamp = (stamp: string = 'Original') =>
-  `<div id="stamp"><span>${stamp}</span></div>`
+  `<div class="stamp"><span>${stamp}</span></div>`
 
 export const styles = `
 			body {
 				transform: rotate(-90deg) scale(.80) translate(380px, 15px);
 			}
 
-			#container {
+			.container {
 				margin: 80px;
 				font-family: sans-serif;
 				overflow: hidden;
@@ -68,7 +69,7 @@ export const styles = `
 				padding-left: 10px;
 			}
 
-			#left-detail {
+			.left-detail {
 				display: grid;
 				position: absolute;
 				height: 940px;
@@ -82,26 +83,26 @@ export const styles = `
 				border-left: 2px dashed #00000044;
 			}
 
-			#left-detail span {
+			.left-detail span {
 				width: 13px;
 				height: 13px;
 				border: 1px dotted #aaaaaaaa;
 				border-radius: 20px;
 			}
 
-			#left-detail .fifth {
+			.left-detail .fifth {
 				border-radius: 0;
 			}
 
-			#left-detail .tenth {
+			.left-detail .tenth {
 				transform: rotate(45deg);
 			}
 
-			#left-detail .edge {
+			.left-detail .edge {
 				background-color: #00000088;
 			}
 
-			#watermark {
+			.watermark {
 				position: absolute;
 				width: 200vw; 
 				line-height: 25px; 
@@ -113,12 +114,12 @@ export const styles = `
 				text-shadow: 1px 1px white, -1px 1px white, 1px -1px white, -1px -1px white;
 			}
 
-			#watermark .odd {
+			.watermark .odd {
 				position: relative;
 				z-index: 100;
 			}
 
-			#watermark .even {
+			.watermark .even {
 				position: relative;
 				z-inxex: 0;
 				text-shadow: none;
@@ -126,7 +127,7 @@ export const styles = `
 				opacity: .8;
 			}
 
-			#stamp {
+			.stamp {
 				position: absolute;
 				bottom: 450px;
 				font-size: 90px;
@@ -143,48 +144,48 @@ export const styles = `
 				justify-content: center;
 			}
 
-			#header {
+			.header {
 				padding-bottom: 20px;
 				border-bottom: 5px solid #88888866;
 				margin-bottom: 10px;
 			}
 
-			#logo {
+			.logo {
 				font-size: 100px;
 				margin-bottom: 20px;
 			}
 
-			#address {
+			.address {
 				color: #555;
 			}
 
-			#date {
+			.date {
 				font-family: monospace;
 				text-transform: uppercase;
 			}
 
-			#logo h1 {
+			.logo h1 {
 				font-size: 20px;
 				text-transform: uppercase;
 			}
 
-			#grid {
+			.grid {
 				display: grid;
 				grid-template-columns: auto 1fr;
 				font-family: monospace;
 				margin-top: 50px;
 			}
 
-			#left-content,
-			#right-content {
+			.left-content,
+			.right-content {
 				padding: 20px;
 			}
 
-			#left-content {
+			.left-content {
 				border-right: 12px dashed #cccccc44;
 			}
 
-			#license-plate {
+			.license-plate {
 				border: 1px solid #555;
 				padding: 5px 10px;
 				border-radius: 5px;
@@ -195,7 +196,7 @@ export const styles = `
 				gap: 10px;
 			}
 
-			#license-plate-code {
+			.license-plate-code {
 				width: 20px;
 				height: 20px;
 				border-radius: 20px;
@@ -209,12 +210,12 @@ export const styles = `
 				box-sizing: border-box;
 			}
 
-			#license-plate-number {
+			.license-plate-number {
 				font-size: 20px;
 				padding-top: 4px;
 			}
 
-			#license-plate-region {
+			.license-plate-region {
 				writing-mode: vertical-rl;
 				text-orientation: upright;
 				margin: 5px 10px;
@@ -245,13 +246,13 @@ export const styles = `
 				// color: #ffffff!important;
 			}
 
-			#right-content .row {
+			.right-content .row {
 				border-bottom: 1px dashed #555;
 				padding: 0 10px 20px;
 				margin-bottom: 20px;
 			}
 
-			#right-content h3 {
+			.right-content h3 {
 				margin-bottom: 5px;
 				text-spacing: 3px;
 			}
@@ -271,15 +272,15 @@ export const styles = `
 				font-size: 25px;
 			}
 
-			#operator {
+			.operator {
 				display: grid;
 				justify-content: end;
 				margin-top: 60px;
 				font-family: monospace;
 			}
 
-			#operator-name,
-			#operator-signature {
+			.operator-name,
+			.operator-signature {
 				max-width: 300px;
 				width: 300px;
 				border-bottom: 1px dashed #555;
@@ -289,14 +290,14 @@ export const styles = `
 				text-align: end;
 			}
 
-			#footer {
+			.footer {
 				position: absolute;
 				width: 100%;
 				bottom: 0;
 				margin-bottom: 10px;
 			}
 
-			#disclaimer {
+			.disclaimer {
 				width: 100%;
 				font-family: monospace;
 				color: #00000088;
@@ -309,30 +310,19 @@ export const styles = `
 `
 
 export const header = (company: string, address: string, phone: string) => {
-  return `<div id="header">
-    <div id="logo">
+  return `<div class="header">
+    <div class="logo">
       <h1>${company}</h1>
     </div>
-    <div id="address">
+    <div class="address">
       <div>Address: ${address}</div>
       <div>Phone: ${phone}</div>
     </div>
   </div>`
 }
 
-export const receipt = (record: any, stamp: string = 'Original') => {
-  return `
-		${leftDetail}
-			<div id="container">
-				${watermark}
-				${putStamp(stamp)}
-				<div id="watermark"></div>
-				${header(company, address, phone)}
-				<div id="date">
-					Printed: ${moment().format('LLLL')}
-				</div>
-				<div id="grid">
-					<div id="left-content">
+const grid = (record: any) => `<div class="grid">
+					<div class="left-content">
 						<div class="row serial-row">
 							<h3>
 								Serial: 
@@ -341,15 +331,15 @@ export const receipt = (record: any, stamp: string = 'Original') => {
 						</div>
 						<div class="row">
 							<h3>License Plate No.</h3>
-							<div id="license-plate">
-								<div id="license-plate-code">
+							<div class="license-plate">
+								<div class="license-plate-code">
 									${record.vehicle.licensePlate.code}
 								</div>	
 
-								<div id="license-plate-number">
+								<div class="license-plate-number">
 									${record.vehicle.licensePlate.plate}
 								</div>
-								<div id="license-plate-region">
+								<div class="license-plate-region">
 									${record.vehicle.licensePlate.region}
 								</div>	
 							
@@ -362,7 +352,7 @@ export const receipt = (record: any, stamp: string = 'Original') => {
 							</div>
 						</div>
 					</div>
-					<div id="right-content">
+					<div class="right-content">
 						<div class="row">
 							<h3>First Weight</h3>
 							<div class="weight-date">
@@ -386,7 +376,6 @@ export const receipt = (record: any, stamp: string = 'Original') => {
 									${record.weights[1].weight.toLocaleString()} KG
 								</div>
 							</div>
-				
 							<div class="row">
 								<h3>Net Weight</h3>
 								<div class="weight-date">
@@ -407,16 +396,33 @@ export const receipt = (record: any, stamp: string = 'Original') => {
             }
 
 					</div>
-				</div>
+				</div>`
 
-				<div id="operator">
-					<div id="operator-signature">
+export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
+  return `
+		${leftDetail}
+			<div class="container">
+				${watermark}
+				${putStamp(stamp)}
+				<div class="watermark"></div>
+				${header(company, address, phone)}
+				<div class="date">
+					Printed: ${moment().format('LLLL')}
+				</div>
+				
+				${grid(record)}
+
+				${stamp === PAGE_TYPES.PENDING ?
+					`${header} ${grid(record)}` :
+				`<div class="operator">
+					<div class="operator-signature">
 						Operator Signature
 					</div>
-				</div>
+				</div>`
+				}
 
-				<div id="footer">
-					<div id="disclaimer">
+				<div class="footer">
+					<div class="disclaimer">
 						Disclaimer: We can only guarantee the weight, not the material.
 					</div>
 				</div>

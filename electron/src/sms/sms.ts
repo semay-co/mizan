@@ -2,7 +2,7 @@ import puppeteer from "puppeteer";
 
 const startBrowser = async () => {
   const browser = await puppeteer.launch({
-    headless: false,
+    headless: true,
   });
   const page = await browser.newPage();
 
@@ -48,9 +48,9 @@ const sendSms = async () => {
     Promise.all([
       await goToSmsPage(),
       await page.click("#chosen-search-field-input"),
-      await page.type("#chosen-search-field-input", "+251955366856;"),
-      await page.type("#chat-input", "hello from the other side!"),
-      // await page.click('#btn-send'),
+      await page.type("#chosen-search-field-input", "+251944108619;"),
+      await page.type("#chat-input", "Server started"),
+      await page.click('#btn-send'),
     ]);
 
   await page
