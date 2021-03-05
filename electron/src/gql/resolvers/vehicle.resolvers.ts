@@ -47,11 +47,22 @@ export const vehicles = async (parent: any, args: any) => {
   if (process.env.MIGRATE_VEHICLE_TYPE || true) {
     ;(await vehicles).rows.map((row) => {
       console.log(row)
+
+      const c2 = ["428d9e70-f91f-4150-ad8f-15ea061aa0ea",
+       "428d9e70-f91f-4150-ad8f-15ea061aa0ea",
+       "9b4c7cc5-f280-41b2-ba69-b63540789eab",
+          "7a3b3778-d423-4e53-a570-a497060701e4",
+          "428d9e70-f91f-4150-ad8f-15ea061aa0ea",
+          "eb9cf6c5-c0e5-41c6-8162-943ba7d0281d",
+          "523a2cc8-4b1a-47f7-bf91-e45fea17aebe",
+          "95f46a84-98c0-463a-9229-9ee34643f15a",
+          "f507e99c-1778-4377-9fd3-6d2cbfe05b29",
+          "c8744986-4dee-4191-a578-7a771bc7c4be",]
+
       DB.vehicles
         .put({
           ...row.doc,
-          type: (row.doc as any).size,
-          size: undefined,
+          type: c2.includes(row.id) ? 2 : (row.doc as any).type,
         })
         .catch(console.error)
     })
