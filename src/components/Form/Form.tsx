@@ -36,7 +36,7 @@ const Form = (props: any) => {
 
   const clearForm = () => {
     props.deleteRecordDraft()
-    props.updateRecordResult(undefined)
+    // props.updateRecordResult(undefined)
   }
 
   const clearSelectedVehicle = () => {
@@ -158,7 +158,7 @@ const Form = (props: any) => {
                     onClick={recordReading}
                   >
                     <IonIcon slot="start" icon={speedometerOutline}></IonIcon>
-                    Record Current Weight
+                    Start Meauring
                   </IonButton>
                 </IonItem>
               </IonList>

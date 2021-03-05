@@ -94,5 +94,5 @@ type Record {
 }
 
 type Subscription {
-  reading: Int!
+  reading: Float!
 }

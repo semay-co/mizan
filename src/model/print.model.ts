@@ -1,0 +1,5 @@
+export const PAGE_TYPES = {
+  ORIGINAL: 'ORIGINAL',
+  COPY: 'COPY',
+  PENDING: 'PENDING'
+}

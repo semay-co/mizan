@@ -7,25 +7,30 @@ import React, { useEffect } from 'react'
 import { useSubscription } from '@apollo/client'
 import classNames from 'classnames'
 import { SUBSCRIBE_READING } from '../../gql/subscriptions'
-import { IonButton, IonFabButton, IonIcon, IonInput } from '@ionic/react'
+import { IonFabButton, IonIcon, IonInput } from '@ionic/react'
 import { createOutline, speedometerOutline } from 'ionicons/icons'
+import $ from 'jquery'
 
 const Scoreboard = (props: any) => {
-  const { error, loading, data } = useSubscription(SUBSCRIBE_READING)
+  const sub = useSubscription(SUBSCRIBE_READING);
 
   useEffect(() => {
-    if (data && !props.ui.manualInput)
+    if (sub.data && !props.ui.manualInput)
+      +sub.data.reading?.weight !== +props.reading?.weight &&
+        props.updateReading({
+          receivedAt: new Date().getTime(),
+          weight: +sub.data.reading,
+        });
+    if (sub.error)
       props.updateReading({
         receivedAt: new Date().getTime(),
-        weight: data.reading,
+        weight: sub.error.message,
       })
-    // if (error)
-    //   props.updateReading({
-    //     receivedAt: new Date().getTime(),
-    //     error,
-    //   })
-    if (loading) props.deleteRecordDraft()
-  }, [data, error, loading, props])
+    if (sub.loading) props.updateReading({
+      receivedAt: new Date().getTime(),
+      weight: 'connecting...'
+    })
+  }, [sub.data, sub.error, sub.loading, props])
 
   const manualInput = (ev: any) => {
     props.updateReading({
@@ -38,13 +43,15 @@ const Scoreboard = (props: any) => {
     !props.ui.manualInput &&
       props.updateReading({
         receivedAt: new Date().getTime(),
-        weight: 0,
+        weight: props.reading?.weight || 0,
       })
 
     props.updateUIState({
       manualInput: !props.ui.manualInput,
     })
-  }
+
+    $('#manual-input').trigger('focus').trigger('select')
+  };
 
   return (
     <div
@@ -66,6 +73,7 @@ const Scoreboard = (props: any) => {
             icon={props.ui.manualInput ? speedometerOutline : createOutline}
           />
         </IonFabButton>
+
         <div className="scoreboard-text">
           {!isNaN(+props.reading?.weight) ? (
             <>
@@ -83,16 +91,17 @@ const Scoreboard = (props: any) => {
                 </span>
               )}
               <span
+                id="manual-input"
                 className={classNames(
-                  'unit',
-                  props.ui.manualInput && 'manual-input-unit'
+                  "unit",
+                  props.ui.manualInput && "manual-input-unit"
                 )}
               >
                 KG
               </span>
             </>
           ) : (
-            <span className="reading">no signal</span>
+            <span className="reading">{props.reading?.weight || 'no signal'}</span>
           )}
         </div>
       </div>

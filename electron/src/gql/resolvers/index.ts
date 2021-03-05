@@ -45,8 +45,11 @@ SerialPort.list().then((ports) => {
         } else {
           const reading = snap
             ? snap.split('=').join('').split('').reverse().join('')
-            : ''
-          const signed = +(sign + +reading)
+            : ''.slice(0, 6)
+
+          const validReading = +reading < 100000 ? +reading : 0
+
+          const signed = parseInt((sign + +reading))
 
           publish(signed)
         }

@@ -8,7 +8,7 @@ const phone = '+251 118 83 8043'
 const getPrice = (type: number) => {
   switch (type) {
     case 0:
-      return 75
+      return 80
     case 1:
       return 100
     case 2:
@@ -146,7 +146,7 @@ export const styles = `
 			#header {
 				padding-bottom: 20px;
 				border-bottom: 5px solid #88888866;
-				margin-bottom: 50px;
+				margin-bottom: 10px;
 			}
 
 			#logo {
