@@ -26,7 +26,7 @@ const Scoreboard = (props: any) => {
         receivedAt: new Date().getTime(),
         weight: sub.error.message,
       })
-    if (sub.loading) props.updateReading({
+    if (sub.loading && !props.ui.manualInput) props.updateReading({
       receivedAt: new Date().getTime(),
       weight: 'connecting...'
     })
@@ -75,7 +75,17 @@ const Scoreboard = (props: any) => {
         </IonFabButton>
 
         <div className="scoreboard-text">
-          {!isNaN(+props.reading?.weight) ? (
+          {props.ui.manualInput ? 
+            <IonInput
+              clearInput={true}
+              onIonChange={manualInput}
+              className="reading"
+              placeholder="0"
+              type="number"
+            ></IonInput>
+
+            : 
+          !isNaN(+props.reading?.weight) ? (
             <>
               {props.ui.manualInput ? (
                 <IonInput
@@ -91,7 +101,6 @@ const Scoreboard = (props: any) => {
                 </span>
               )}
               <span
-                id="manual-input"
                 className={classNames(
                   "unit",
                   props.ui.manualInput && "manual-input-unit"
