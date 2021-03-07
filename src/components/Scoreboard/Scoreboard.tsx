@@ -12,7 +12,7 @@ import { createOutline, speedometerOutline } from 'ionicons/icons'
 import $ from 'jquery'
 
 const Scoreboard = (props: any) => {
-  const sub = useSubscription(SUBSCRIBE_READING);
+  const sub = useSubscription(SUBSCRIBE_READING)
 
   useEffect(() => {
     if (sub.data && !props.ui.manualInput)
@@ -20,16 +20,22 @@ const Scoreboard = (props: any) => {
         props.updateReading({
           receivedAt: new Date().getTime(),
           weight: +sub.data.reading,
-        });
+        })
     if (sub.error)
       props.updateReading({
         receivedAt: new Date().getTime(),
         weight: sub.error.message,
       })
-    if (sub.loading && !props.ui.manualInput) props.updateReading({
-      receivedAt: new Date().getTime(),
-      weight: 'connecting...'
-    })
+    if (sub.loading && !props.ui.manualInput)
+      props.updateReading({
+        receivedAt: new Date().getTime(),
+        weight: 'connecting...',
+      })
+
+    isNaN(+props.reading?.weight) &&
+      props.updateUIState({
+        manualInput: true,
+      })
   }, [sub.data, sub.error, sub.loading, props])
 
   const manualInput = (ev: any) => {
@@ -49,9 +55,8 @@ const Scoreboard = (props: any) => {
     props.updateUIState({
       manualInput: !props.ui.manualInput,
     })
-
     $('#manual-input').trigger('focus').trigger('select')
-  };
+  }
 
   return (
     <div
@@ -60,57 +65,57 @@ const Scoreboard = (props: any) => {
         error: isNaN(+props.reading?.weight),
       })}
     >
-      <div className="scoreboard-wrap">
+      <div className='scoreboard-wrap'>
         <IonFabButton
           onClick={() => toggleManualInput()}
           color={props.ui.manualInput ? 'success' : 'light'}
           // fill="clear"
           // size="large"
           // shape="round"
-          className="manual-input-button"
+          className='manual-input-button'
         >
           <IonIcon
             icon={props.ui.manualInput ? speedometerOutline : createOutline}
           />
         </IonFabButton>
 
-        <div className="scoreboard-text">
-          {props.ui.manualInput ? 
+        <div className='scoreboard-text'>
+          {props.ui.manualInput || isNaN(+props.reading?.weight) ? (
             <IonInput
               clearInput={true}
               onIonChange={manualInput}
-              className="reading"
-              placeholder="0"
-              type="number"
+              className='reading'
+              placeholder='0'
+              type='number'
             ></IonInput>
-
-            : 
-          !isNaN(+props.reading?.weight) ? (
+          ) : !isNaN(+props.reading?.weight) ? (
             <>
               {props.ui.manualInput ? (
                 <IonInput
                   clearInput={true}
                   onIonChange={manualInput}
-                  className="reading"
-                  placeholder="0"
-                  type="number"
+                  className='reading'
+                  placeholder='0'
+                  type='number'
                 ></IonInput>
               ) : (
-                <span className="reading">
+                <span className='reading'>
                   {props.reading?.weight.toLocaleString()}
                 </span>
               )}
               <span
                 className={classNames(
-                  "unit",
-                  props.ui.manualInput && "manual-input-unit"
+                  'unit',
+                  props.ui.manualInput && 'manual-input-unit'
                 )}
               >
                 KG
               </span>
             </>
           ) : (
-            <span className="reading">{props.reading?.weight || 'no signal'}</span>
+            <span className='reading'>
+              {props.reading?.weight || 'no signal'}
+            </span>
           )}
         </div>
       </div>
