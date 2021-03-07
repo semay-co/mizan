@@ -31,12 +31,12 @@ const Scoreboard = (props: any) => {
         receivedAt: new Date().getTime(),
         weight: 'connecting...',
       })
-
-    isNaN(+props.reading?.weight) &&
-      props.updateUIState({
-        manualInput: true,
-      })
   }, [sub.data, sub.error, sub.loading, props])
+
+  // isNaN(+props.reading?.weight) &&
+  //   props.updateUIState({
+  //     manualInput: true,
+  //   })
 
   const manualInput = (ev: any) => {
     props.updateReading({

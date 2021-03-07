@@ -73,7 +73,7 @@ const LicensePlateForm = (props: any) => {
   }
 
   return (
-    <IonList lines='none'>
+    <>
       <IonCard className='license-plate-form entity-card'>
         <IonItem>
           <IonInput
@@ -136,7 +136,7 @@ const LicensePlateForm = (props: any) => {
           }).length === 0 && <NewVehicleForm />}
         </>
       )}
-    </IonList>
+    </>
   )
 }
 

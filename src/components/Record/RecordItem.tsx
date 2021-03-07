@@ -89,8 +89,8 @@ const RecordItem = (props: any) => {
 
   return (
     <>
-      <IonCard className="record-card">
-        <div className="card-left-content">
+      <IonCard className='record-card'>
+        <div className='card-left-content'>
           <IonList>
             <IonItem>
               <IonLabel>
@@ -107,7 +107,7 @@ const RecordItem = (props: any) => {
             <IonItem>
               <IonLabel>
                 <h2>Vehicle Type</h2>
-                <IonChip outline color="primary">
+                <IonChip outline color='primary'>
                   {VEHICLE_TYPES[record.vehicle?.type]}
                 </IonChip>
               </IonLabel>
@@ -115,25 +115,25 @@ const RecordItem = (props: any) => {
           </IonList>
         </div>
 
-        <div className="card-right-content">
-          <div className="weight-entry first-weight">
+        <div className='card-right-content'>
+          <div className='weight-entry first-weight'>
             <h3>First Weight</h3>
-            <span className="record-date">
+            <span className='record-date'>
               {formatDate(+record.weights[0]?.createdAt)}
             </span>
 
-            <div className="weight-measure">
+            <div className='weight-measure'>
               {record.weights[0]?.weight.toLocaleString()} KG
             </div>
           </div>
-          <div className="weight-entry second-weight">
+          <div className='weight-entry second-weight'>
             <h3>Second Weight</h3>
             {record.weights[1] ? (
               <>
-                <span className="record-date">
+                <span className='record-date'>
                   {formatDate(+record.weights[1]?.createdAt)}
                 </span>
-                <div className="weight-measure">
+                <div className='weight-measure'>
                   {record.weights[1].weight.toLocaleString()} KG
                 </div>
               </>
@@ -141,7 +141,7 @@ const RecordItem = (props: any) => {
               <>
                 {secondWeightDraft ? (
                   <>
-                    <span className="record-date">
+                    <span className='record-date'>
                       {formatDate(+secondWeightDraft.receivedAt)}
                     </span>
                     <div
@@ -153,12 +153,12 @@ const RecordItem = (props: any) => {
                       {secondWeightDraft.weight.toLocaleString()} KG
                       {!isUpdated() && (
                         <IonButton
-                          className="update-button"
+                          className='update-button'
                           onClick={recordReading}
-                          color="dark"
-                          shape="round"
-                          size="small"
-                          fill="clear"
+                          color='dark'
+                          shape='round'
+                          size='small'
+                          fill='clear'
                         >
                           <IonIcon icon={refreshOutline} />
                         </IonButton>
@@ -167,8 +167,8 @@ const RecordItem = (props: any) => {
                   </>
                 ) : (
                   <>
-                    <span className="record-pending">Pending</span>
-                    <IonButton className="record-pending-button">
+                    <span className='record-pending'>Pending</span>
+                    <IonButton className='record-pending-button'>
                       <IonIcon icon={speedometerOutline}></IonIcon>
                       {props.draft?.reading ? 'Use Current Weight' : 'Record'}
                     </IonButton>
@@ -177,20 +177,20 @@ const RecordItem = (props: any) => {
               </>
             )}
           </div>
-          <div className="weight-entry net-weight">
+          <div className='weight-entry net-weight'>
             <h3>Net Weight</h3>
-            <span className="record-date">
+            <span className='record-date'>
               {record.weights[0] &&
                 record.weights[1] &&
                 moment(+record.weights[1].createdAt).from(
                   +record.weights[0].createdAt
                 )}
             </span>
-            <div className="weight-measure">{getNetWeight()}</div>
+            <div className='weight-measure'>{getNetWeight()}</div>
           </div>
 
           {!secondWeightDraft && (
-            <div className="bottom-button">
+            <div className='right-button'>
               <IonButton onClick={onPrint}>
                 <IonIcon icon={printOutline} />
                 Print
@@ -198,15 +198,15 @@ const RecordItem = (props: any) => {
             </div>
           )}
         </div>
+        {secondWeightDraft && (
+          <div className='bottom-button'>
+            <IonButton onClick={onSaveSecondWeight} size='large' expand='block'>
+              <IonIcon icon={checkmark} />
+              Use This Record
+            </IonButton>
+          </div>
+        )}
       </IonCard>
-      {secondWeightDraft && (
-        <div className="bottom-button">
-          <IonButton onClick={onSaveSecondWeight} size="large" expand="block">
-            <IonIcon icon={checkmark} />
-            Use This Record
-          </IonButton>
-        </div>
-      )}
     </>
   )
 }

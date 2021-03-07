@@ -22,7 +22,7 @@ const RecordedWeight = (props: any) => {
 
   const isUpdated = () => props.reading.weight === props.draft?.reading?.weight
 
-  const isLoaded = () => props.draft?.reading?.weight > 1000
+  const isLoaded = () => props.draft?.reading?.weight >= 1000
 
   return (
     <IonCard
@@ -37,25 +37,25 @@ const RecordedWeight = (props: any) => {
 
         <IonButton
           onClick={onClear}
-          shape="round"
-          fill="clear"
+          shape='round'
+          fill='clear'
           color={isLoaded() && isUpdated() ? 'light' : 'dark'}
         >
-          <IonIcon slot="start" icon={closeCircleOutline}></IonIcon>
+          <IonIcon slot='start' icon={closeCircleOutline}></IonIcon>
           Clear
         </IonButton>
       </IonCardHeader>
       <IonCardContent>
-        <div className="current-weight-measure">
+        <div className='current-weight-measure'>
           {props.draft?.reading?.weight.toLocaleString()} KG
           {!isUpdated() && (
             <IonButton
               onClick={props.onRecord}
-              shape="round"
-              fill="solid"
-              color="dark"
+              shape='round'
+              fill='solid'
+              color='dark'
             >
-              <IonIcon slot="start" icon={refreshOutline}></IonIcon>
+              <IonIcon slot='start' icon={refreshOutline}></IonIcon>
               Update
             </IonButton>
           )}

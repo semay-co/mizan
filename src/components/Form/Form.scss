@@ -13,12 +13,22 @@ ion-card {
 }
 
 .big-record-button {
-  width: 100%;
-  margin: 4rem 2rem;
+  cursor: pointer;
+  padding: 4rem 2rem;
+  font-size: 2rem;
+  text-align: center;
+  display: grid;
+  grid-auto-flow: column;
+  align-content: center;
+
+  ion-icon {
+    margin-top: 1rem;
+    margin-right: 1rem;
+  }
 }
 
 .form-wrap {
-  padding: 1rem;
+  // padding: 1rem;
 
   .entity-card {
     background: $light-card-bg;
@@ -68,7 +78,7 @@ ion-card {
 
 .license-plate-form {
   ion-item {
-    --background: $light-card-bg;
+    // --background: $light-card-bg;
 
     ion-input {
       --padding-top: 3rem;
@@ -159,6 +169,12 @@ ion-card {
   margin-top: 2rem;
   display: grid;
   justify-content: stretch;
+
+  ion-text {
+    text-align: center;
+    text-transform: uppercase;
+    padding: 1rem;
+  }
 }
 
 .existing-record {

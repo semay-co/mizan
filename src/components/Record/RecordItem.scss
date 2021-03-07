@@ -3,14 +3,17 @@
 .record-card {
   color: #ffffff;
   display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'left right'
+    'bottom bottom';
   gap: 1rem;
-  border-bottom: 5px solid #ffffff33;
+  grid-template-rows: auto auto;
+  grid-template-columns: auto 1fr;
 
   .card-left-content {
     background-color: #00000033;
     padding: 1rem;
+    grid-area: left;
 
     h2 {
       color: #ffffff88;
@@ -31,6 +34,7 @@
 
   .card-right-content {
     margin-bottom: 1rem;
+    grid-area: right;
 
     .weight-entry {
       border-bottom: 1px dashed #ffffff33;
@@ -87,7 +91,7 @@
       }
     }
 
-    .bottom-button {
+    .right-button {
       display: grid;
       justify-content: end;
       margin-top: 2rem;
@@ -95,6 +99,15 @@
       ion-button {
         --border-radius: 0.3rem 0 0 0.3rem;
       }
+    }
+  }
+
+  .bottom-button {
+    display: grid;
+    grid-area: bottom;
+
+    ion-button {
+      --border-radius: 0.3rem 0 0 0.3rem;
     }
   }
 }
