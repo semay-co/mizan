@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonIcon, IonItem, IonList } from '@ionic/react'
+import { IonButton, IonCard, IonIcon, IonText } from '@ionic/react'
 import { connect } from 'react-redux'
 import './Form.scss'
 import { updateReading } from '../../state/actions/scoreboard.action'
@@ -46,6 +46,10 @@ const Form = (props: any) => {
       vehicle: undefined,
     })
   }
+
+  const isUpdated = () => props.reading.weight === props.draft?.reading?.weight
+
+  const isLoaded = () => props.draft?.reading?.weight >= 1000
 
   const recordReading = () => {
     if (props.reading) {
@@ -104,7 +108,7 @@ const Form = (props: any) => {
         selectedVehicleRecords.data.records
           .filter((record: any) => record.weights.length < 2)
           .map((pending: any) => (
-            <div className="existing-record">
+            <div className='existing-record'>
               <RecordItem
                 record={pending}
                 secondWeightDraft={props.draft.reading}
@@ -112,8 +116,30 @@ const Form = (props: any) => {
             </div>
           ))}
 
-      <IonCard className="form-wrap">
-        {props.draft ? (
+      <div className='form-wrap'>
+        {!props.draft ? (
+          <>
+            {recordQuery.data ? (
+              <>
+                <IonButton fill='clear' size='large' onClick={clearForm}>
+                  <IonIcon icon={closeOutline}></IonIcon>
+                  Clear
+                </IonButton>
+                <RecordItem record={recordQuery.data.record} />
+              </>
+            ) : (
+              <IonCard
+                className='big-record-button'
+                color='primary'
+                button={true}
+                onClick={recordReading}
+              >
+                <IonIcon icon={speedometerOutline}></IonIcon>
+                Start Meauring
+              </IonCard>
+            )}
+          </>
+        ) : (
           <>
             <RecordedWeight onRecord={recordReading} />
 
@@ -126,8 +152,15 @@ const Form = (props: any) => {
                   onClear={clearSelectedVehicle}
                 />
 
-                <IonCard className="create-button-card">
-                  <IonButton size="large" onClick={createRecord}>
+                <IonCard
+                  className='create-button-card'
+                  color={!isLoaded() || !isUpdated() ? 'danger' : 'clear'}
+                >
+                  {' '}
+                  {(!isLoaded() || !isUpdated()) && (
+                    <IonText>Weight has changed</IonText>
+                  )}
+                  <IonButton size='large' onClick={createRecord}>
                     <IonIcon icon={addOutline} />
                     Create New Record
                   </IonButton>
@@ -135,37 +168,8 @@ const Form = (props: any) => {
               </>
             )}
           </>
-        ) : (
-          <>
-            {recordQuery.data ? (
-              <>
-                <IonButton fill="clear" size="large" onClick={clearForm}>
-                  <IonIcon icon={closeOutline}></IonIcon>
-                  Clear
-                </IonButton>
-                <RecordItem record={recordQuery.data.record} />
-              </>
-            ) : (
-              <IonList lines="full">
-                <IonItem>
-                  <IonButton
-                    className="big-record-button"
-                    color="primary"
-                    size="large"
-                    // shape="round"
-                    fill="solid"
-                    expand="block"
-                    onClick={recordReading}
-                  >
-                    <IonIcon slot="start" icon={speedometerOutline}></IonIcon>
-                    Start Meauring
-                  </IonButton>
-                </IonItem>
-              </IonList>
-            )}
-          </>
         )}
-      </IonCard>
+      </div>
     </div>
   )
 }
