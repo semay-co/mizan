@@ -73,20 +73,21 @@ const LicensePlateForm = (props: any) => {
   }
 
   return (
-    <IonList lines="none">
-      <IonCard className="license-plate-form entity-card">
+    <IonList lines='none'>
+      <IonCard className='license-plate-form entity-card'>
         <IonItem>
           <IonInput
-            id="license-plate-input"
+            id='license-plate-input'
             onIonChange={onPlateNumberChange}
+            debounce={500}
             maxlength={6}
             size={6}
             required
             autofocus
-            pattern="/[a-zA-Z0-9]/"
-            placeholder="Enter License Plate"
+            pattern='/[a-zA-Z0-9]/'
+            placeholder='Enter License Plate'
             clearInput
-            className="uppercase align-right"
+            className='uppercase align-right'
           />
 
           <IonSelect
@@ -96,7 +97,7 @@ const LicensePlateForm = (props: any) => {
                 ? props.draft.licensePlate.code
                 : 3
             }
-            interface="popover"
+            interface='popover'
           >
             {PLATE_CODES.map((code, index) => (
               <IonSelectOption value={index}>
@@ -106,10 +107,10 @@ const LicensePlateForm = (props: any) => {
           </IonSelect>
 
           <IonSelect
-            id="plate-region-select"
+            id='plate-region-select'
             onIonChange={onPlateRegionChange}
             value={props.draft?.licensePlate?.region || 'AA'}
-            interface="action-sheet"
+            interface='action-sheet'
           >
             {PLATE_REGIONS.map((region) => (
               <IonSelectOption value={region.code}>
