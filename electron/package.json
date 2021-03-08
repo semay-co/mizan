@@ -27,6 +27,7 @@
     "ramda": "^0.27.1",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
+    "rxjs": "^6.6.6",
     "serialport": "^9.0.6",
     "uuid": "^8.1.0"
   },

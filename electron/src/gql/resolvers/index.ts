@@ -1,7 +1,7 @@
 import { PubSub } from 'apollo-server'
 import SerialPort from 'serialport'
 import env from 'dotenv-flow'
-
+import rxjs from 'rxjs'
 import { createVehicle, vehicles, vehicle } from './vehicle.resolvers'
 import {
   record,
@@ -38,6 +38,7 @@ SerialPort.list().then((ports) => {
     })
 
     var sign = '+'
+    var publishedAt = new Date().getTime()
 
     port
       .on('data', (data) => {
@@ -50,10 +51,14 @@ SerialPort.list().then((ports) => {
             ? snap.split('=').join('').split('').reverse().join('')
             : ''.slice(0, 6)
 
-          const signed = parseInt(sign + +reading)
-          const validReading = signed <= 100000
+          const fixed = +reading < 100000 ? +reading : 0
 
-          !isNaN(signed) && validReading && publish(signed)
+          const signed = parseInt(sign + fixed)
+
+          if (publishedAt + 1000 < new Date().getTime() && !isNaN(signed)) {
+            publish(signed)
+            publishedAt = new Date().getTime()
+          }
         }
       })
       .on('error', (error) => console.error)
