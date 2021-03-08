@@ -2,6 +2,7 @@ import DB from '../../db'
 import * as _ from 'ramda'
 import { v4 as uuid } from 'uuid'
 import { print } from '../../printer/printer'
+import { PAGE_TYPES } from '../../../../src/model/print.model'
 
 const base36 = require('base36')
 
@@ -190,6 +191,6 @@ export const printRecord = async (parent: any, args: any) => {
   }
 
   return record.weights?.length > 1
-    ? print(record) && print(record, 'copy')
-    : print(record, 'attachment') && print(record, 'file')
+    ? print(record, PAGE_TYPES.ORIGINAL) && print(record, PAGE_TYPES.COPY)
+    : print(record, PAGE_TYPES.PENDING)
 }
