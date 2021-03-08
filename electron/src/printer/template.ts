@@ -1,10 +1,10 @@
-import moment from 'moment'
-import { VEHICLE_TYPES } from '../../../src/model/vehicle.model'
-import { PAGE_TYPES } from '../../../src/model/print.model'
+import moment from "moment"
+import { VEHICLE_TYPES } from "../../../src/model/vehicle.model"
+import { PAGE_TYPES } from "../../../src/model/print.model"
 
-const company = 'Furi Truck Scale Service'
-const address = 'Sebeta, Furi - Around Police Club'
-const phone = '+251 118 83 8043'
+const company = "Furi Truck Scale Service"
+const address = "Sebeta, Furi - Around Police Club"
+const phone = "+251 118 83 8043"
 
 const getPrice = (type: number) => {
   switch (type) {
@@ -26,7 +26,7 @@ const getPrice = (type: number) => {
 export const watermarkText = Array(600)
   .fill(0)
   .map((_, i: number) => {
-    const tag = i % 2 === 0 ? 'even' : 'odd'
+    const tag = i % 2 === 0 ? "even" : "odd"
     return `
 			<span class="tag-wrap">
 				<span class="${tag}">
@@ -35,15 +35,15 @@ export const watermarkText = Array(600)
 			<span class="tag-wrap">
 			`
   })
-  .join(' . ')
+  .join(" . ")
 
 export const leftDetail = `<div class="left-detail">${Array(16)
   .fill(0)
   .map((_, i: number) => {
     return `<span class="
-			${i % 5 === 0 && 'fifth'} 
-			${i % 10 === 0 && 'tenth'}
-			${(i === 0 || i === 15) && 'edge'}
+			${i % 5 === 0 && "fifth"} 
+			${i % 10 === 0 && "tenth"}
+			${(i === 0 || i === 15) && "edge"}
 		"></span>`
   })}</div>`
 
@@ -51,8 +51,10 @@ export const watermark = `<p class="watermark">
 	${watermarkText}
 	</p>`
 
-export const putStamp = (stamp: string = 'Original') =>
-  `<div class="stamp"><span>${stamp}</span></div>`
+export const putStamp = (
+  stamp: string = "Original",
+  position: "top" | "bottom" | "center" = "center"
+) => `<div class="stamp ${position}"><span>${stamp}</span></div>`
 
 export const styles = `
 			body {
@@ -144,6 +146,14 @@ export const styles = `
 				justify-content: center;
 			}
 
+			.stamp.top {
+				bottom: 675px;
+			}
+
+			.stamp.bottom {
+				bottom: 200px;
+			}
+
 			.header {
 				padding-bottom: 20px;
 				border-bottom: 5px solid #88888866;
@@ -174,6 +184,10 @@ export const styles = `
 				grid-template-columns: auto 1fr;
 				font-family: monospace;
 				margin-top: 50px;
+			}
+
+			.grid.compact {
+				margin-top: 10px;
 			}
 
 			.left-content,
@@ -297,6 +311,24 @@ export const styles = `
 				margin-bottom: 10px;
 			}
 
+			.cut-line {
+				padding: .5rem;
+				background: #ffffff;
+				border-top: 1px dashed #00000099;
+				border-bottom: 1px dashed #00000099;
+				z-index: 1000;
+				position: relative;
+			}
+
+			.return-notice {
+				text-align: center;
+				font-size: 1.2rem;
+				padding; 1rem;
+				position: relative;
+				text-shadow: 1px 1px white, -1px 1px white, 1px -1px white, -1px -1px white;
+				z-index: 10;
+			}
+
 			.disclaimer {
 				width: 100%;
 				font-family: monospace;
@@ -321,112 +353,132 @@ export const header = (company: string, address: string, phone: string) => {
   </div>`
 }
 
-const grid = (record: any) => `<div class="grid">
-					<div class="left-content">
-						<div class="row serial-row">
-							<h3>
-								Serial: 
-								<b style="background: black;">${record.serial}</b> 
-							</h3>
-						</div>
-						<div class="row">
-							<h3>License Plate No.</h3>
-							<div class="license-plate">
-								<div class="license-plate-code">
-									${record.vehicle.licensePlate.code}
-								</div>	
+const grid = (record: any, compact: boolean = false) => `<div class="grid ${
+  compact && "compact"
+}">
+		<div class="left-content">
+			<div class="row serial-row">
+				<h3>
+					Serial: 
+					<b style="background: black;">${record.serial}</b> 
+				</h3>
+			</div>
+			<div class="row">
+				<h3>License Plate No.</h3>
+				<div class="license-plate">
+					<div class="license-plate-code">
+						${record.vehicle.licensePlate.code}
+					</div>	
 
-								<div class="license-plate-number">
-									${record.vehicle.licensePlate.plate}
-								</div>
-								<div class="license-plate-region">
-									${record.vehicle.licensePlate.region}
-								</div>	
-							
-							</div>	
-						</div>
-						<div class="row">
-							<h3>Vehicle Type</h3>
-							<div class="row-field">
-								${VEHICLE_TYPES[record.vehicle.type] || 'UNKNOWN'}
-							</div>
-						</div>
+					<div class="license-plate-number">
+						${record.vehicle.licensePlate.plate}
 					</div>
-					<div class="right-content">
-						<div class="row">
-							<h3>First Weight</h3>
-							<div class="weight-date">
-								${moment(record.weights[0].createdAt).format('LLLL')}
-							</div>
+					<div class="license-plate-region"> 
+						${record.vehicle.licensePlate.region} 
+					</div>	
+				
+				</div>	
+			</div>
+			<div class="row">
+				<h3>Vehicle Type</h3>
+				<div class="row-field">
+					${VEHICLE_TYPES[record.vehicle.type] || "UNKNOWN"}
+				</div>
+			</div>
+		</div>
+		<div class="right-content">
+			<div class="row">
+				<h3>First Weight</h3>
+				<div class="weight-date">
+					${moment(record.weights[0].createdAt).format("LLLL")}
+				</div>
 
-							<div class="weight-measure">
-								${record.weights[0].weight.toLocaleString()} KG
-							</div>
-						</div>
-						
-						${
-              record.weights[1]
-                ? `<div class="row">
-								<h3>Second Weight</h3>
-								<div class="weight-date">
-									${moment(record.weights[1].createdAt).format('LLLL')}
-								</div>
+				<div class="weight-measure">
+					${record.weights[0].weight.toLocaleString()} KG
+				</div>
+			</div>
+			
+			${
+        record.weights[1]
+          ? `<div class="row">
+					<h3>Second Weight</h3>
+					<div class="weight-date">
+						${moment(record.weights[1].createdAt).format("LLLL")}
+					</div>
 
-								<div class="weight-measure">
-									${record.weights[1].weight.toLocaleString()} KG
-								</div>
-							</div>
-							<div class="row">
-								<h3>Net Weight</h3>
-								<div class="weight-date">
-									${moment(+record.weights[1].createdAt).from(+record.weights[0].createdAt)}
-								</div>
+					<div class="weight-measure">
+						${record.weights[1].weight.toLocaleString()} KG
+					</div>
+				</div>
+				<div class="row">
+					<h3>Net Weight</h3>
+					<div class="weight-date">
+						${moment(+record.weights[1].createdAt).from(+record.weights[0].createdAt)}
+					</div>
 
-								<div class="net-weight weight-measure">
-									${record.netWeight.toLocaleString()} KG
-								</div>
-							</div>`
-                : `<div class="row">
-								<h3>Price</h3>
-
-								<div class="weight-measure">
-									${getPrice(record.vehicle.type)} ETB
-								</div>
-							</div>`
-            }
-
+					<div class="net-weight weight-measure">
+						${record.netWeight.toLocaleString()} KG
 					</div>
 				</div>`
+          : `<div class="row">
+					<h3>Price</h3>
+
+					<div class="weight-measure">
+						${getPrice(record.vehicle.type)} ETB
+					</div>
+				</div>`
+      }
+
+		</div>
+	</div>`
+
+const printTime = `
+		<div class="date">
+			Printed: ${moment().format("LLLL")}
+		</div>
+	`
 
 export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
   return `
 		${leftDetail}
-			<div class="container">
-				${watermark}
-				${putStamp(stamp)}
-				<div class="watermark"></div>
-				${header(company, address, phone)}
-				<div class="date">
-					Printed: ${moment().format('LLLL')}
-				</div>
-				
-				${grid(record)}
+		<div class="container">
+			${watermark}
+			${putStamp(
+        stamp === PAGE_TYPES.PENDING ? "FILE" : stamp,
+        stamp === PAGE_TYPES.PENDING ? "top" : "center"
+      )}
+			${stamp === PAGE_TYPES.PENDING ? putStamp("RECEIPT", "bottom") : ""}
+			<div class="watermark"></div>
+			${header(company, address, phone)}
 
-				${stamp === PAGE_TYPES.PENDING ?
-					`${header} ${grid(record)}` :
-				`<div class="operator">
-					<div class="operator-signature">
-						Operator Signature
-					</div>
-				</div>`
-				}
+			${printTime}
+			
+			${grid(record, true)}
+			${stamp === PAGE_TYPES.PENDING ? '<div class="cut-line"></div>' : ""}
 
-				<div class="footer">
-					<div class="disclaimer">
-						Disclaimer: We can only guarantee the weight, not the material.
-					</div>
+			${
+        stamp === PAGE_TYPES.PENDING
+          ? `${header(company, address, phone)} ${printTime} ${grid(
+              record,
+              true
+            )}`
+          : `<div class="operator">
+				<div class="operator-signature">
+					Operator Signature
 				</div>
 			</div>`
+      }
+
+			<div class="footer">
+				${
+          stamp === PAGE_TYPES.PENDING
+            ? '<div class="return-notice">ሲመለሱ ይህን ወረቀት ይዘው ይምጡ።</div>'
+            : `<div class="disclaimer">
+						Disclaimer: We can only guarantee the weight, not the material.
+					</div>`
+        }
+			</div>
+		</div>`
 }
 
 export const template = (record: any, stamp: string) =>
