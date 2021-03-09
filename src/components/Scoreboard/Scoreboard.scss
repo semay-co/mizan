@@ -3,6 +3,7 @@
 $indicator-green: #00ff80;
 $indicator-background: #030610;
 $indicator-error: #ff3869;
+$indicator-warn: #ffd534;
 
 .scoreboard-wrap {
   display: grid;
@@ -33,8 +34,17 @@ $indicator-error: #ff3869;
     text-shadow: 2px 3px 10px transparentize($indicator-error, $amount: 0.7);
   }
 
+  &.warn {
+    color: $indicator-warn;
+    text-shadow: 2px 3px 10px transparentize($indicator-warn, $amount: 0.7);
+  }
+
   .reading {
     margin-right: 0.5rem;
+
+    &.reading-status {
+      text-transform: lowercase;
+    }
   }
 
   .unit {

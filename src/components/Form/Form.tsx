@@ -75,9 +75,7 @@ const Form = (props: any) => {
     const draft = props.draft
     selectedVehicleRecords.refetch()
 
-    if (draft && draft.reading?.weight && draft.licensePlate?.plate) {
-      console.log(draft)
-
+    if (draft && !isNaN(draft.reading?.weight) && draft.licensePlate?.plate) {
       runCreateRecord({
         variables: {
           weight: draft.reading.weight,

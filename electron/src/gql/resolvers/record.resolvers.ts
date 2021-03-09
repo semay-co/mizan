@@ -11,15 +11,14 @@ export const records = async (parent: any, args: any) => {
   const docs = await DB.records.allDocs({
     include_docs: true,
   })
-  
-    // docs.rows.map((record: any, i: number) =>
-    //   DB.records.put({
-    //     ...record.doc,
-    //     recordNumber: undefined,
-    //     serial: base36.base36encode(i + 100000),
-    //   })
-    // )
 
+  // docs.rows.map((record: any, i: number) =>
+  //   DB.records.put({
+  //     ...record.doc,
+  //     recordNumber: undefined,
+  //     serial: base36.base36encode(i + 100000),
+  //   })
+  // )
 
   const rows = _.filter((row: any) => row.doc.docType === 'record')(docs.rows)
 
