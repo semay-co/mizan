@@ -53,8 +53,9 @@ export const watermark = `<p class="watermark">
 
 export const putStamp = (
   stamp: string = 'Original',
-  position: 'top' | 'bottom' | 'center' = 'center'
-) => `<div class="stamp ${position}"><span>${stamp}</span></div>`
+  position: 'top' | 'bottom' | 'center' = 'center',
+  style: 'compact' | 'large' = 'large'
+) => `<div class="stamp ${position} ${style}"><span>${stamp}</span></div>`
 
 export const styles = `
 			body {
@@ -147,11 +148,11 @@ export const styles = `
 			}
 
 			.stamp.top {
-				bottom: 675px;
+				bottom: 650px;
 			}
 
 			.stamp.bottom {
-				bottom: 200px;
+				bottom: 120px;
 			}
 
 			.header {
@@ -447,7 +448,7 @@ export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
         stamp === PAGE_TYPES.PENDING ? 'FILE' : stamp,
         stamp === PAGE_TYPES.PENDING ? 'top' : 'center'
       )}
-			${stamp === PAGE_TYPES.PENDING ? putStamp('RECEIPT', 'bottom') : ''}
+			${stamp === PAGE_TYPES.PENDING ? putStamp('ATTACH<br />MENT', 'bottom') : ''}
 			<div class="watermark"></div>
 			${header(company, address, phone)}
 
