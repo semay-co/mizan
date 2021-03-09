@@ -6,6 +6,8 @@ import { PAGE_TYPES } from '../../../../src/model/print.model'
 
 const base36 = require('base36')
 
+const serialStart = process.env.SERIAL_START || 100000
+
 export const records = async (parent: any, args: any) => {
   const filters = args.filters
 
@@ -82,7 +84,7 @@ export const createRecord = async (parent: any, args: any) => {
       (row: any) => base36.base36decode(row.doc.serial) || 0
     )(records)
 
-    const highest = _.reduce(_.max)(0, serials) || 100000
+    const highest = _.reduce(_.max)(0, serials) || serialStart
 
     const saveRecord = (vehicleId: string) => {
       const creation = DB.records.put({
@@ -118,7 +120,7 @@ export const addSecondWeight = async (parent: any, args: any) => {
   DB.records.put({
     ...record,
     weights: _.append({
-      createdAt: new Date().getTime(),
+      createdAt: args.createdAt || new Date().getTime(),
       weight: args.weight,
     })(record.weights),
   })
