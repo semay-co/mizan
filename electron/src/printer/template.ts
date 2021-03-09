@@ -152,7 +152,12 @@ export const styles = `
 			}
 
 			.stamp.bottom {
-				bottom: 120px;
+				bottom: 200px;
+			}
+
+			.stamp.compact {
+				font-size: 3.5rem;
+				letter-spacing: auto;
 			}
 
 			.header {
@@ -444,11 +449,16 @@ export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
 		${leftDetail}
 		<div class="container">
 			${watermark}
-			${putStamp(
-        stamp === PAGE_TYPES.PENDING ? 'FILE' : stamp,
-        stamp === PAGE_TYPES.PENDING ? 'top' : 'center'
-      )}
-			${stamp === PAGE_TYPES.PENDING ? putStamp('ATTACH<br />MENT', 'bottom') : ''}
+			${
+        stamp === PAGE_TYPES.PENDING
+          ? putStamp('FILE', 'top', 'compact')
+          : putStamp(stamp)
+      }
+			${
+        stamp === PAGE_TYPES.PENDING
+          ? putStamp('ATTACHMENT', 'bottom', 'compact')
+          : ''
+      }
 			<div class="watermark"></div>
 			${header(company, address, phone)}
 
