@@ -63,70 +63,84 @@ const Scoreboard = (props: any) => {
     })
   }
 
+  const isManualInput =
+    props.ui?.manualInput || props.reading?.status !== STATUS_CODES.ok
+
   return (
-    <div
-      className={classNames({
-        scoreboard: true,
-        error: props.reading?.status === STATUS_CODES.error,
-        warn: props.reading?.status === STATUS_CODES.loading,
-      })}
-    >
-      <div className='scoreboard-wrap'>
-        <IonFabButton
-          onClick={() => toggleManualInput()}
-          color={props.ui.manualInput ? 'success' : 'light'}
-          // fill="clear"
-          // size="large"
-          // shape="round"
-          className='manual-input-button'
-        >
-          <IonIcon
-            icon={props.ui.manualInput ? speedometerOutline : createOutline}
-          />
-        </IonFabButton>
+    <>
+      <div
+        className={classNames({
+          scoreboard: true,
+          error: props.reading?.status === STATUS_CODES.error,
+          warn: props.reading?.status === STATUS_CODES.loading,
+        })}
+      >
+        <div className='scoreboard-wrap'>
+          <IonFabButton
+            onClick={() => toggleManualInput()}
+            color={isManualInput ? 'success' : 'light'}
+            // fill="clear"
+            // size="large"
+            // shape="round"
+            className='manual-input-button'
+          >
+            <IonIcon
+              icon={isManualInput ? speedometerOutline : createOutline}
+            />
+          </IonFabButton>
 
-        <div className='scoreboard-text'>
-          {props.ui.manualInput ? (
-            <>
-              <IonInput
-                clearInput={true}
-                onIonChange={manualInput}
-                className='reading'
-                placeholder='0'
-                type='number'
-              ></IonInput>
+          <div className='scoreboard-text'>
+            {isManualInput ? (
+              <>
+                <IonInput
+                  clearInput={true}
+                  onIonChange={manualInput}
+                  className='reading'
+                  placeholder='0'
+                  type='number'
+                ></IonInput>
 
-              <span
-                className={classNames(
-                  'unit',
-                  props.ui.manualInput && 'manual-input-unit'
-                )}
-              >
-                KG
+                <span
+                  className={classNames(
+                    'unit',
+                    isManualInput && 'manual-input-unit'
+                  )}
+                >
+                  KG
+                </span>
+              </>
+            ) : props.reading?.status === STATUS_CODES.ok ? (
+              <>
+                <span className='reading'>
+                  {props.reading?.weight.toLocaleString()}
+                </span>
+                <span
+                  className={classNames(
+                    'unit',
+                    props.ui.manualInput && 'manual-input-unit'
+                  )}
+                >
+                  KG
+                </span>
+              </>
+            ) : (
+              <span className='reading reading-status'>
+                {props.reading?.status}
               </span>
-            </>
-          ) : props.reading?.status === STATUS_CODES.ok ? (
-            <>
-              <span className='reading'>
-                {props.reading?.weight.toLocaleString()}
-              </span>
-              <span
-                className={classNames(
-                  'unit',
-                  props.ui.manualInput && 'manual-input-unit'
-                )}
-              >
-                KG
-              </span>
-            </>
-          ) : (
-            <span className='reading reading-status'>
-              {props.reading?.status}
-            </span>
-          )}
+            )}
+          </div>
         </div>
       </div>
-    </div>
+      {props.reading?.status !== STATUS_CODES.ok && (
+        <div
+          className={classNames({
+            'status-bar': true,
+            error: props.reading?.status === STATUS_CODES.error,
+            warn: props.reading?.status === STATUS_CODES.loading,
+          })}
+        ></div>
+      )}
+    </>
   )
 }
 
