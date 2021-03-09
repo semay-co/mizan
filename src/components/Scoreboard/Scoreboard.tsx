@@ -10,6 +10,7 @@ import { SUBSCRIBE_READING } from '../../gql/subscriptions'
 import { IonFabButton, IonIcon, IonInput } from '@ionic/react'
 import { createOutline, speedometerOutline } from 'ionicons/icons'
 import $ from 'jquery'
+import { STATUS_CODES } from '../../model/scoreboard.model'
 
 const Scoreboard = (props: any) => {
   const sub = useSubscription(SUBSCRIBE_READING)
@@ -20,16 +21,19 @@ const Scoreboard = (props: any) => {
         props.updateReading({
           receivedAt: new Date().getTime(),
           weight: +sub.data.reading,
+          status: STATUS_CODES.ok,
         })
     if (sub.error)
       props.updateReading({
         receivedAt: new Date().getTime(),
         weight: sub.error.message,
+        status: STATUS_CODES.error,
       })
     if (sub.loading && !props.ui.manualInput)
       props.updateReading({
         receivedAt: new Date().getTime(),
-        weight: 'connecting...',
+        weight: 0,
+        status: STATUS_CODES.loading,
       })
   }, [sub.data, sub.error, sub.loading, props])
 
@@ -42,6 +46,7 @@ const Scoreboard = (props: any) => {
     props.updateReading({
       receivedAt: new Date().getTime(),
       weight: +ev.detail.value,
+      manual: true,
     })
   }
 
@@ -50,19 +55,20 @@ const Scoreboard = (props: any) => {
       props.updateReading({
         receivedAt: new Date().getTime(),
         weight: props.reading?.weight || 0,
+        manual: true,
       })
 
     props.updateUIState({
       manualInput: !props.ui.manualInput,
     })
-    $('#manual-input').trigger('focus').trigger('select')
   }
 
   return (
     <div
       className={classNames({
         scoreboard: true,
-        error: isNaN(+props.reading?.weight),
+        error: props.reading?.status === STATUS_CODES.error,
+        warn: props.reading?.status === STATUS_CODES.loading,
       })}
     >
       <div className='scoreboard-wrap'>
@@ -80,29 +86,30 @@ const Scoreboard = (props: any) => {
         </IonFabButton>
 
         <div className='scoreboard-text'>
-          {props.ui.manualInput || isNaN(+props.reading?.weight) ? (
-            <IonInput
-              clearInput={true}
-              onIonChange={manualInput}
-              className='reading'
-              placeholder='0'
-              type='number'
-            ></IonInput>
-          ) : !isNaN(+props.reading?.weight) ? (
+          {props.ui.manualInput ? (
             <>
-              {props.ui.manualInput ? (
-                <IonInput
-                  clearInput={true}
-                  onIonChange={manualInput}
-                  className='reading'
-                  placeholder='0'
-                  type='number'
-                ></IonInput>
-              ) : (
-                <span className='reading'>
-                  {props.reading?.weight.toLocaleString()}
-                </span>
-              )}
+              <IonInput
+                clearInput={true}
+                onIonChange={manualInput}
+                className='reading'
+                placeholder='0'
+                type='number'
+              ></IonInput>
+
+              <span
+                className={classNames(
+                  'unit',
+                  props.ui.manualInput && 'manual-input-unit'
+                )}
+              >
+                KG
+              </span>
+            </>
+          ) : props.reading?.status === STATUS_CODES.ok ? (
+            <>
+              <span className='reading'>
+                {props.reading?.weight.toLocaleString()}
+              </span>
               <span
                 className={classNames(
                   'unit',
@@ -113,8 +120,8 @@ const Scoreboard = (props: any) => {
               </span>
             </>
           ) : (
-            <span className='reading'>
-              {props.reading?.weight || 'no signal'}
+            <span className='reading reading-status'>
+              {props.reading?.status}
             </span>
           )}
         </div>
