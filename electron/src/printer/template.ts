@@ -380,7 +380,7 @@ const grid = (record: any, compact: boolean = false) => `<div class="grid ${
 						${record.vehicle.licensePlate.plate}
 					</div>
 					<div class="license-plate-region"> 
-						${record.vehicle.licensePlate.region} 
+						${record.vehicle.licensePlate.region.code} 
 					</div>	
 				
 				</div>	

@@ -8,6 +8,18 @@ const base36 = require('base36')
 
 const serialStart = process.env.SERIAL_START || 100000
 
+const formatVehicle = (vehicle: any) => ({
+  id: vehicle._id,
+  type: vehicle.type,
+  licensePlate: {
+    plate: vehicle.licensePlateNumber,
+    code: vehicle.licensePlateCode,
+    region: {
+      code: vehicle.licensePlateRegion,
+    },
+  },
+})
+
 export const records = async (parent: any, args: any) => {
   const filters = args.filters
 
@@ -106,7 +118,7 @@ export const createRecord = async (parent: any, args: any) => {
       return creation.then((doc) => doc)
     }
 
-    const vehicle = await DB.vehicles.get(args.vehicleId)
+    const vehicle = (await DB.vehicles.get(args.vehicleId)) as any
 
     if (vehicle) {
       const save = await saveRecord(vehicle._id)
@@ -114,24 +126,42 @@ export const createRecord = async (parent: any, args: any) => {
       const record = (await DB.records.get(save.id)) as any
 
       console.log(record)
+      console.log(vehicle)
 
       if (record)
         return {
           ...record,
-          id: save.id,
+          id: record._id,
           vehicle: {
             ...vehicle,
             id: vehicle._id,
+            licensePlate: {
+              code: vehicle.licensePlateCode,
+              plate: vehicle.licensePlateNumber,
+              region: {
+                code: vehicle.licensePlateRegion,
+              },
+            },
           },
         }
     }
   }
 }
 
+export const update = async (parent: any, args: any) => {
+  const id = args.id
+  const record = (await DB.records.get(args.id)) as any
+
+  const update = {
+    ...record,
+    updatedAt: new Date().getTime(),
+  }
+}
+
 export const addSecondWeight = async (parent: any, args: any) => {
   const record = (await DB.records.get(args.recordId)) as any
 
-  const update = {
+  const doc = {
     ...record,
     updatedAt: new Date().getTime(),
     weights: _.append({
@@ -140,17 +170,29 @@ export const addSecondWeight = async (parent: any, args: any) => {
     })(record.weights),
   }
 
-  console.log(update)
+  await DB.records.put(doc)
 
-  return await DB.records
-    .put(update)
-    .then((doc) => ({ ...update, id: args.recordId }))
-    .catch(() => ({ ...record, id: args.recordId }))
+  const vehicle = await DB.vehicles
+    .get(doc.vehicleId)
+    .then((vehicle) => vehicle as any)
+    .then(formatVehicle)
+
+  console.log({
+    ...doc,
+    id: doc._id,
+    vehicle,
+  })
+
+  return {
+    ...doc,
+    id: doc._id,
+    vehicle,
+  }
 }
 
 export const record = async (parent: any, args: any) => {
   console.log(args.id)
-  const recordOnly = await DB.records
+  const doc = await DB.records
     .get(args.id)
     .then((record) => record as any)
     .then((record) => ({
@@ -159,22 +201,12 @@ export const record = async (parent: any, args: any) => {
     }))
 
   const vehicle = await DB.vehicles
-    .get(recordOnly.vehicleId)
+    .get(doc.vehicleId)
     .then((vehicle) => vehicle as any)
-    .then((vehicle) => ({
-      id: vehicle._id,
-      type: vehicle.type,
-      licensePlate: {
-        plate: vehicle.licensePlateNumber,
-        code: vehicle.licensePlateCode,
-        region: {
-          code: vehicle.licensePlateRegion,
-        },
-      },
-    }))
+    .then(formatVehicle)
 
   const record = {
-    ...recordOnly,
+    ...doc,
     vehicle,
   }
 
@@ -182,7 +214,7 @@ export const record = async (parent: any, args: any) => {
 }
 
 export const printRecord = async (parent: any, args: any) => {
-  const recordOnly = await DB.records
+  const doc = await DB.records
     .get(args.id)
     .then((record) => record as any)
     .then((record) => ({
@@ -190,26 +222,16 @@ export const printRecord = async (parent: any, args: any) => {
       ...record,
     }))
 
-  console.log(recordOnly)
+  console.log(doc)
 
   const vehicle = await DB.vehicles
-    .get(recordOnly.vehicleId)
+    .get(doc.vehicleId)
     .then((vehicle) => vehicle as any)
-    .then((vehicle) => ({
-      id: vehicle._id,
-      type: vehicle.type,
-      licensePlate: {
-        plate: vehicle.licensePlateNumber,
-        code: vehicle.licensePlateCode,
-        region: vehicle.licensePlateRegion,
-      },
-    }))
+    .then(formatVehicle)
 
   const record = {
-    ...recordOnly,
-    netWeight: Math.abs(
-      recordOnly.weights[0]?.weight - recordOnly.weights[1]?.weight
-    ),
+    ...doc,
+    netWeight: Math.abs(doc.weights[0]?.weight - doc.weights[1]?.weight),
     vehicle,
   }
 

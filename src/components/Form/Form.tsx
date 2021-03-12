@@ -18,7 +18,6 @@ import { CREATE_RECORD } from '../../gql/mutations/record.mutations'
 import RecordedWeight from './RecordedWeight'
 import LicensePlateForm from './LicensePlateForm'
 import SelectedVehicleCard from './SelectedVehicleCard'
-import { record } from '../../state/actors/record.actor'
 
 const Form = (props: any) => {
   const [runCreateRecord] = useMutation(CREATE_RECORD)
@@ -83,7 +82,8 @@ const Form = (props: any) => {
         },
       }).then((record) => {
         console.log('record', record)
-        props.updateRecordResult(record.data.createRecord)
+        props.updateRecordResult(record.data.createRecord.id)
+
         if (props.result) {
           recordQuery.refetch()
           selectedVehicleRecords.refetch()

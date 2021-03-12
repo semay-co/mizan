@@ -29,6 +29,7 @@ import { ADD_SECOND_WEIGHT } from '../../gql/mutations/record.mutations'
 import { VEHICLE_TYPES } from '../../model/vehicle.model'
 import { PRINT_RECORD } from '../../gql/mutations/record.mutations'
 import classNames from 'classnames'
+import { FETCH_RECORDS } from '../../gql/queries/record.queries'
 
 const RecordItem = (props: any) => {
   const record = props.record
@@ -89,6 +90,15 @@ const RecordItem = (props: any) => {
         recordId: record.id,
         weight: 0,
         createdAt: new Date().getTime().toString(),
+      },
+      update: (store: any, { data }) => {
+        store.readQuery({
+          query: FETCH_RECORDS,
+          variables: {
+            query: '',
+            limit: 10,
+          },
+        })
       },
     })
   }
