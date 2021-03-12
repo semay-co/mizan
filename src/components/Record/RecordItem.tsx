@@ -83,6 +83,16 @@ const RecordItem = (props: any) => {
     }
   }
 
+  const setAsComplete = () => {
+    addSecondWeight({
+      variables: {
+        recordId: record.id,
+        weight: 0,
+        createdAt: new Date().getTime().toString(),
+      },
+    })
+  }
+
   const isUpdated = () => props.reading.weight === props.draft?.reading?.weight
 
   const isLoaded = () => props.draft?.reading?.weight > 1000
@@ -92,11 +102,13 @@ const RecordItem = (props: any) => {
       <IonCard className='record-card'>
         <div className='card-left-content'>
           <IonList>
-            <IonItem>
-              <IonLabel>
-                <h2>Serial: {record.serial}</h2>
-              </IonLabel>
-            </IonItem>
+            {record.serial && (
+              <IonItem>
+                <IonLabel>
+                  <h2>Serial: {record.serial}</h2>
+                </IonLabel>
+              </IonItem>
+            )}
             <IonItem>
               <LicensePlate
                 code={record.vehicle?.licensePlate?.code}
@@ -107,8 +119,8 @@ const RecordItem = (props: any) => {
             <IonItem>
               <IonLabel>
                 <h2>Vehicle Type</h2>
-                <IonChip outline color='primary'>
-                  {VEHICLE_TYPES[record.vehicle?.type]}
+                <IonChip color='secondary'>
+                  {VEHICLE_TYPES[record.vehicle?.type] || 'Unknown'}
                 </IonChip>
               </IonLabel>
             </IonItem>
@@ -168,9 +180,24 @@ const RecordItem = (props: any) => {
                 ) : (
                   <>
                     <span className='record-pending'>Pending</span>
-                    <IonButton className='record-pending-button'>
+                    <IonButton
+                      className='record-pending-button'
+                      color='success'
+                      fill='outline'
+                    >
                       <IonIcon icon={speedometerOutline}></IonIcon>
-                      {props.draft?.reading ? 'Use Current Weight' : 'Record'}
+                      {props.draft?.reading
+                        ? 'Use Recorded Weight'
+                        : 'Record New'}
+                    </IonButton>
+                    <IonButton
+                      onClick={setAsComplete}
+                      className='record-pending-button'
+                      color='success'
+                      fill='outline'
+                    >
+                      <IonIcon icon={checkmark}></IonIcon>
+                      Set Completed
                     </IonButton>
                   </>
                 )}
@@ -181,10 +208,9 @@ const RecordItem = (props: any) => {
             <h3>Net Weight</h3>
             <span className='record-date'>
               {record.weights[0] &&
-                record.weights[1] &&
-                moment(+record.weights[1].createdAt).from(
-                  +record.weights[0].createdAt
-                )}
+                moment(
+                  +record.weights[1]?.createdAt || new Date().getTime()
+                ).from(+record.weights[0].createdAt)}
             </span>
             <div className='weight-measure'>{getNetWeight()}</div>
           </div>

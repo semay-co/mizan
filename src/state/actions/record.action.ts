@@ -19,6 +19,12 @@ export const updateRecordQuery = (payload: string) => (dispatch: any) =>
     payload,
   })
 
+export const updateRecordList = (payload: string) => (dispatch: any) =>
+  dispatch({
+    type: Actions.UPDATE_RECORD_LIST,
+    payload,
+  })
+
 export const deleteRecordDraft = () => (dispatch: any) =>
   dispatch({
     type: Actions.DELETE_RECORD_DRAFT,

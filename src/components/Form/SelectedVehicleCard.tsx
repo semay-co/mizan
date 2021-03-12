@@ -5,7 +5,6 @@ import {
   IonCardHeader,
   IonChip,
   IonIcon,
-  IonLabel,
 } from '@ionic/react'
 import { connect } from 'react-redux'
 import React from 'react'
@@ -27,20 +26,20 @@ const SelectedVehicleCard = (props: any) => {
   return (
     <>
       {selectedVehicle.data?.vehicle?.licensePlate && (
-        <IonCard className="selected-vehicle-wrap entity-card">
+        <IonCard className='selected-vehicle-wrap entity-card'>
           <IonCardHeader>
             <div>Selected Vehicle</div>
             <IonButton
               onClick={props.onClear}
-              fill="clear"
-              shape="round"
-              color="danger"
+              fill='clear'
+              shape='round'
+              color='danger'
             >
               <IonIcon icon={closeCircleOutline} />
               Clear
             </IonButton>
           </IonCardHeader>
-          <IonCardContent className="content-row">
+          <IonCardContent className='content-row'>
             <div>
               <LicensePlate
                 number={selectedVehicle.data.vehicle.licensePlate.plate}
@@ -50,10 +49,7 @@ const SelectedVehicleCard = (props: any) => {
             </div>
 
             <div>
-              <IonLabel>
-                <h4>Vehicle Type:</h4>
-              </IonLabel>
-              <IonChip color="primary">
+              <IonChip color='secondary'>
                 {props.getVehicleType(selectedVehicle.data.vehicle.type)}
               </IonChip>
             </div>

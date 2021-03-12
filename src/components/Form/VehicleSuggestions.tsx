@@ -1,5 +1,6 @@
 import {
   IonCard,
+  IonChip,
   IonItem,
   IonItemDivider,
   IonItemGroup,
@@ -16,6 +17,7 @@ import LicensePlate from '../LicensePlate/LicensePlate'
 import { useQuery } from '@apollo/client'
 import { FETCH_VEHICLES } from '../../gql/queries/vehicle.queries'
 import { FETCH_RECORDS } from '../../gql/queries/record.queries'
+import { VEHICLE_TYPES } from '../../model/vehicle.model'
 
 const VehicleSuggestions = (props: any) => {
   const vehicles = useQuery(FETCH_VEHICLES, {
@@ -40,21 +42,31 @@ const VehicleSuggestions = (props: any) => {
     })
   }
 
+  // const getVehicleType = (type: number) => VEHICLE_TYPES[type] || 'UNKNOWN'
+
   return (
     <IonCard>
-      <IonList lines="full" className="vehicle-suggestions">
+      <IonList lines='full' className='vehicle-suggestions'>
         <IonItemGroup>
           <IonItemDivider>
             <IonLabel>Select Existing Vehicle</IonLabel>
           </IonItemDivider>
 
           {vehicles.data?.vehicles.map((vehicle: any) => (
-            <IonItem button onClick={() => onSelectPlate(vehicle.id)}>
+            <IonItem
+              key={vehicle.id}
+              button
+              onClick={() => onSelectPlate(vehicle.id)}
+            >
               <LicensePlate
                 number={vehicle.licensePlate.plate}
                 region={vehicle.licensePlate.region}
                 code={vehicle.licensePlate.code}
               />
+
+              <IonChip color='secondary'>
+                {/* {VEHICLE_TYPES[vehicle.type] || 'unknown'} */}
+              </IonChip>
             </IonItem>
           ))}
         </IonItemGroup>

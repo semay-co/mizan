@@ -1,7 +1,10 @@
 import { useQuery } from '@apollo/client'
 import { connect } from 'react-redux'
 import { updateReading } from '../../state/actions/scoreboard.action'
-import { updateRecordQuery } from '../../state/actions/record.action'
+import {
+  updateRecordQuery,
+  updateRecordList,
+} from '../../state/actions/record.action'
 import { updateUIState } from '../../state/actions/ui.action'
 import './RecordList.scss'
 import RecordItem from './RecordItem'
@@ -12,7 +15,6 @@ import {
   IonIcon,
   IonSearchbar,
 } from '@ionic/react'
-import React from 'react'
 import { hourglassOutline } from 'ionicons/icons'
 import { FETCH_RECORDS } from '../../gql/queries/record.queries'
 import * as _ from 'ramda'
@@ -23,11 +25,16 @@ const RecordList = (props: any) => {
     variables: {
       query: props.recordQuery,
       filters: props.ui.recordFilters,
+      limit: 10,
     },
   })
 
   const onQueryChange = (ev: any) => {
     props.updateRecordQuery(ev.detail?.value)
+    // recordsQuery.refetch({
+    //   query: props.recordQuery,
+    //   filters: props.ui.recordFilters,
+    // })
   }
 
   const toggleFilter = (filter: string) => {
@@ -44,18 +51,18 @@ const RecordList = (props: any) => {
 
   return (
     <div>
-      <IonCard className="search-card">
+      <IonCard className='search-card'>
         <IonSearchbar
           debounce={500}
-          placeholder="Find Record"
+          placeholder='Find Record'
           onIonChange={onQueryChange}
         />
         <IonCardContent>
           <IonButton
             onClick={() => toggleFilter('pending')}
-            size="small"
-            color="primary"
-            shape="round"
+            size='small'
+            color='primary'
+            shape='round'
             fill={
               props.ui.recordFilters?.includes('pending') ? 'solid' : 'outline'
             }
@@ -65,9 +72,9 @@ const RecordList = (props: any) => {
           </IonButton>
         </IonCardContent>
       </IonCard>
-      <div className="records-wrap">
+      <div className='records-wrap'>
         {recordsQuery.data?.records?.map((record: any) => (
-          <RecordItem record={record} />
+          <RecordItem key={record.id} record={record} />
         ))}
       </div>
     </div>
@@ -84,5 +91,6 @@ const mapStateToProps = (state: any) => {
 export default connect(mapStateToProps, {
   updateReading,
   updateRecordQuery,
+  updateRecordList,
   updateUIState,
 })(RecordList)

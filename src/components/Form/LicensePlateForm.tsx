@@ -7,7 +7,7 @@ import {
   IonSelectOption,
 } from '@ionic/react'
 import { connect } from 'react-redux'
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   updateRecordDraft,
   deleteRecordDraft,
@@ -25,6 +25,10 @@ const LicensePlateForm = (props: any) => {
       limit: 5,
     },
   })
+
+  useEffect(() => {
+    return () => vehicles.data
+  }, [vehicles.data])
 
   const onPlateNumberChange = (ev: any) => {
     const plate = ev.detail?.value
@@ -100,7 +104,7 @@ const LicensePlateForm = (props: any) => {
             interface='popover'
           >
             {PLATE_CODES.map((code, index) => (
-              <IonSelectOption value={index}>
+              <IonSelectOption key={code} value={index}>
                 {typeof code === 'number' ? `CODE 0${code}` : code}
               </IonSelectOption>
             ))}
@@ -113,7 +117,7 @@ const LicensePlateForm = (props: any) => {
             interface='action-sheet'
           >
             {PLATE_REGIONS.map((region) => (
-              <IonSelectOption value={region.code}>
+              <IonSelectOption key={region.code} value={region.code}>
                 {region.code !== 'OTHER' ? `[${region.code}] ` : ''}
                 {region.name}
               </IonSelectOption>

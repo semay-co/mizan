@@ -13,7 +13,7 @@ type Query {
 }
 
 type Mutation {
-  createRecord(weight: Int!, vehicleId: String!): String
+  createRecord(weight: Int!, vehicleId: String!): Record
   createVehicle(
     type: Int!
     plateNumber: String!

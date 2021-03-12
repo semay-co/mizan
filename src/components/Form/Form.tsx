@@ -18,6 +18,7 @@ import { CREATE_RECORD } from '../../gql/mutations/record.mutations'
 import RecordedWeight from './RecordedWeight'
 import LicensePlateForm from './LicensePlateForm'
 import SelectedVehicleCard from './SelectedVehicleCard'
+import { record } from '../../state/actors/record.actor'
 
 const Form = (props: any) => {
   const [runCreateRecord] = useMutation(CREATE_RECORD)
@@ -65,7 +66,7 @@ const Form = (props: any) => {
 
       setTimeout(() => {
         const input = $('#license-plate-input').find('input').first()
-        input.focus()
+        input.trigger('focus')
         input.val = props.draft?.licensePlate?.plate
       }, 200)
     }
@@ -73,7 +74,6 @@ const Form = (props: any) => {
 
   const createRecord = () => {
     const draft = props.draft
-    selectedVehicleRecords.refetch()
 
     if (draft && !isNaN(draft.reading?.weight) && draft.licensePlate?.plate) {
       runCreateRecord({
@@ -106,7 +106,7 @@ const Form = (props: any) => {
         selectedVehicleRecords.data.records
           .filter((record: any) => record.weights.length < 2)
           .map((pending: any) => (
-            <div className='existing-record'>
+            <div key={pending.id} className='existing-record'>
               <RecordItem
                 record={pending}
                 secondWeightDraft={props.draft.reading}
