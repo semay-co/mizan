@@ -59,6 +59,8 @@ export const records = async (parent: any, args: any) => {
     (record: any) => !args.vehicleId || record.vehicleId === args.vehicleId
   )(filtered)
 
+  const limited = filteredByVehicle.slice(0, args.limit || 10)
+
   return _.filter((record: any) => {
     return args.query
       ? record.serial.toLowerCase().includes(args.query.toLowerCase()) ||
@@ -66,7 +68,7 @@ export const records = async (parent: any, args: any) => {
             ?.toLowerCase()
             .includes(args.query.toLowerCase())
       : true
-  })(filteredByVehicle)
+  })(limited)
 }
 
 export const createRecord = async (parent: any, args: any) => {
@@ -107,9 +109,21 @@ export const createRecord = async (parent: any, args: any) => {
     const vehicle = await DB.vehicles.get(args.vehicleId)
 
     if (vehicle) {
-      const newRecord = await saveRecord(vehicle._id)
+      const save = await saveRecord(vehicle._id)
 
-      return newRecord.id
+      const record = (await DB.records.get(save.id)) as any
+
+      console.log(record)
+
+      if (record)
+        return {
+          ...record,
+          id: save.id,
+          vehicle: {
+            ...vehicle,
+            id: vehicle._id,
+          },
+        }
     }
   }
 }
@@ -117,13 +131,21 @@ export const createRecord = async (parent: any, args: any) => {
 export const addSecondWeight = async (parent: any, args: any) => {
   const record = (await DB.records.get(args.recordId)) as any
 
-  DB.records.put({
+  const update = {
     ...record,
+    updatedAt: new Date().getTime(),
     weights: _.append({
       createdAt: args.createdAt || new Date().getTime(),
       weight: args.weight,
     })(record.weights),
-  })
+  }
+
+  console.log(update)
+
+  return await DB.records
+    .put(update)
+    .then((doc) => ({ ...update, id: args.recordId }))
+    .catch(() => ({ ...record, id: args.recordId }))
 }
 
 export const record = async (parent: any, args: any) => {

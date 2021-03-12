@@ -53,7 +53,11 @@ const VehicleSuggestions = (props: any) => {
           </IonItemDivider>
 
           {vehicles.data?.vehicles.map((vehicle: any) => (
-            <IonItem button onClick={() => onSelectPlate(vehicle.id)}>
+            <IonItem
+              key={vehicle.id}
+              button
+              onClick={() => onSelectPlate(vehicle.id)}
+            >
               <LicensePlate
                 number={vehicle.licensePlate.plate}
                 region={vehicle.licensePlate.region}

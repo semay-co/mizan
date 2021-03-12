@@ -63,7 +63,7 @@ SerialPort.list().then((ports) => {
   } else {
     setInterval(() => {
       publish(Math.floor(Math.random() * 1000) * 10)
-    }, 1000)
+    }, 100)
   }
 })
 

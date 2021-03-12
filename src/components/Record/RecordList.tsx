@@ -15,7 +15,6 @@ import {
   IonIcon,
   IonSearchbar,
 } from '@ionic/react'
-import React, { useEffect } from 'react'
 import { hourglassOutline } from 'ionicons/icons'
 import { FETCH_RECORDS } from '../../gql/queries/record.queries'
 import * as _ from 'ramda'
@@ -26,19 +25,16 @@ const RecordList = (props: any) => {
     variables: {
       query: props.recordQuery,
       filters: props.ui.recordFilters,
+      limit: 10,
     },
   })
 
-  useEffect(() => {
-    if (recordsQuery.data) props.updateRecordList(recordsQuery.data.records)
-  }, [recordsQuery.data, recordsQuery.error, recordsQuery.loading, props])
-
   const onQueryChange = (ev: any) => {
     props.updateRecordQuery(ev.detail?.value)
-    recordsQuery.refetch({
-      query: props.recordQuery,
-      filters: props.ui.recordFilters,
-    })
+    // recordsQuery.refetch({
+    //   query: props.recordQuery,
+    //   filters: props.ui.recordFilters,
+    // })
   }
 
   const toggleFilter = (filter: string) => {
@@ -78,7 +74,7 @@ const RecordList = (props: any) => {
       </IonCard>
       <div className='records-wrap'>
         {recordsQuery.data?.records?.map((record: any) => (
-          <RecordItem record={record} />
+          <RecordItem key={record.id} record={record} />
         ))}
       </div>
     </div>
