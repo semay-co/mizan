@@ -103,7 +103,7 @@ const RecordItem = (props: any) => {
     })
   }
 
-  const isUpdated = () => props.reading.weight === props.draft?.reading?.weight
+  const isSynced = () => props.reading.weight === props.draft?.reading?.weight
 
   const isLoaded = () => props.draft?.reading?.weight > 1000
 
@@ -169,11 +169,11 @@ const RecordItem = (props: any) => {
                     <div
                       className={classNames(
                         'weight-measure',
-                        isLoaded() && isUpdated() ? 'green-draft' : 'red-draft'
+                        isLoaded() && isSynced() ? 'green-draft' : 'red-draft'
                       )}
                     >
                       {secondWeightDraft.weight.toLocaleString()} KG
-                      {!isUpdated() && (
+                      {!isSynced() && (
                         <IonButton
                           className='update-button'
                           onClick={recordReading}
@@ -235,7 +235,12 @@ const RecordItem = (props: any) => {
           )}
         </div>
         {secondWeightDraft && (
-          <div className='bottom-button'>
+          <div
+            className={classNames({
+              'bottom-button': true,
+              'danger-button': !isLoaded() || !isSynced(),
+            })}
+          >
             <IonButton onClick={onSaveSecondWeight} size='large' expand='block'>
               <IonIcon icon={checkmark} />
               Use This Record

@@ -396,7 +396,7 @@ const grid = (record: any, compact: boolean = false) => `<div class="grid ${
 			<div class="row">
 				<h3>First Weight</h3>
 				<div class="weight-date">
-					${moment(record.weights[0].createdAt).format('LLLL')}
+					${moment(+record.weights[0].createdAt).format('LLLL')}
 				</div>
 
 				<div class="weight-measure">
@@ -409,7 +409,7 @@ const grid = (record: any, compact: boolean = false) => `<div class="grid ${
           ? `<div class="row">
 					<h3>Second Weight</h3>
 					<div class="weight-date">
-						${moment(record.weights[1].createdAt).format('LLLL')}
+						${moment(+record.weights[1].createdAt).format('LLLL')}
 					</div>
 
 					<div class="weight-measure">

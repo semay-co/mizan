@@ -18,6 +18,7 @@ import { CREATE_RECORD } from '../../gql/mutations/record.mutations'
 import RecordedWeight from './RecordedWeight'
 import LicensePlateForm from './LicensePlateForm'
 import SelectedVehicleCard from './SelectedVehicleCard'
+import classNames from 'classnames'
 
 const Form = (props: any) => {
   const [runCreateRecord] = useMutation(CREATE_RECORD)
@@ -80,6 +81,9 @@ const Form = (props: any) => {
           weight: draft.reading.weight,
           vehicleId: draft.vehicleId,
         },
+        // update: (cache, {data}) => {
+        //   cache.readQuery(FETCH_RECORDS)
+        // }
       }).then((record) => {
         console.log('record', record)
         props.updateRecordResult(record.data.createRecord.id)
@@ -151,8 +155,10 @@ const Form = (props: any) => {
                 />
 
                 <IonCard
-                  className='create-button-card'
-                  color={!isLoaded() || !isUpdated() ? 'danger' : 'clear'}
+                  className={classNames({
+                    'create-button-card': true,
+                    'danger-button': !isLoaded() || !isUpdated(),
+                  })}
                 >
                   {' '}
                   {(!isLoaded() || !isUpdated()) && (

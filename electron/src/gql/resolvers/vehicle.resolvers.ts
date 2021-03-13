@@ -1,5 +1,6 @@
 import DB from '../../db'
 import { v4 as uuid } from 'uuid'
+import { asVehicle } from '../../lib/vehicle.lib'
 
 export const createVehicle = async (parent: any, args: any) => {
   const vehicles = await DB.vehicles.find({
@@ -27,8 +28,10 @@ export const createVehicle = async (parent: any, args: any) => {
       })
       .catch(console.error)
 
+    console.log(query)
+
     if (query) {
-      return query.id
+      return await DB.vehicles.get(query.id).then(asVehicle)
     }
   }
 }
@@ -45,21 +48,21 @@ export const vehicles = async (parent: any, args: any) => {
   })
 
   return (await vehicles).rows
-    .map((row) => {
+    .map((row: any) => {
       return {
         ...row.doc,
         id: row.id,
       } as any
     })
-    .filter((row) => row.docType === 'vehicle')
+    .filter((row: any) => row.docType === 'vehicle')
     .filter(
-      (vehicle) =>
+      (vehicle: any) =>
         !args.query ||
         vehicle.licensePlateNumber
           .toLowerCase()
           .includes(args.query.toLowerCase())
     )
-    .map((vehicle) => {
+    .map((vehicle: any) => {
       return {
         id: vehicle.id.toString(),
         type: vehicle.type,

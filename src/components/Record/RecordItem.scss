@@ -107,7 +107,20 @@
     grid-area: bottom;
 
     ion-button {
-      --border-radius: 0.3rem 0 0 0.3rem;
+      --border-radius: 0 0 0.3rem 0.3rem;
+    }
+
+    &.danger-button {
+      background: #ff496188;
+
+      ion-text {
+        color: #ffffff;
+      }
+
+      ion-button {
+        --background: #ff4961aa;
+        --color: #00000088;
+      }
     }
   }
 }

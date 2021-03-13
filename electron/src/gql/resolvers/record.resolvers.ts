@@ -3,22 +3,11 @@ import * as _ from 'ramda'
 import { v4 as uuid } from 'uuid'
 import { print } from '../../printer/printer'
 import { PAGE_TYPES } from '../../../../src/model/print.model'
+import { asVehicle } from '../../lib/vehicle.lib'
 
 const base36 = require('base36')
 
 const serialStart = process.env.SERIAL_START || 100000
-
-const formatVehicle = (vehicle: any) => ({
-  id: vehicle._id,
-  type: vehicle.type,
-  licensePlate: {
-    plate: vehicle.licensePlateNumber,
-    code: vehicle.licensePlateCode,
-    region: {
-      code: vehicle.licensePlateRegion,
-    },
-  },
-})
 
 export const records = async (parent: any, args: any) => {
   const filters = args.filters
@@ -41,25 +30,15 @@ export const records = async (parent: any, args: any) => {
     _.map(async (row: any) => {
       const vehicle = (await DB.vehicles
         .get((row.doc as any).vehicleId)
-        .then((vehicle) => vehicle as any)
-        .then((vehicle) => ({
-          id: vehicle._id,
-          type: vehicle.type,
-          licensePlate: {
-            plate: vehicle.licensePlateNumber,
-            code: vehicle.licensePlateCode,
-            region: {
-              code: vehicle.licensePlateRegion,
-            },
-          },
-        }))) as any
+        .then((vehicle: any) => vehicle as any)
+        .then(asVehicle)) as any
 
       return {
         ...row.doc,
         id: row.id,
         vehicle,
       }
-    })(rows)
+    })(rows as any)
   )
 
   const filtered =
@@ -96,7 +75,7 @@ export const createRecord = async (parent: any, args: any) => {
   } else {
     const serials = _.map(
       (row: any) => base36.base36decode(row.doc.serial) || 0
-    )(records)
+    )(records as any)
 
     const highest = _.reduce(_.max)(0, serials) || serialStart
 
@@ -115,7 +94,7 @@ export const createRecord = async (parent: any, args: any) => {
         vehicleId,
       })
 
-      return creation.then((doc) => doc)
+      return creation.then((doc: any) => doc)
     }
 
     const vehicle = (await DB.vehicles.get(args.vehicleId)) as any
@@ -174,8 +153,8 @@ export const addSecondWeight = async (parent: any, args: any) => {
 
   const vehicle = await DB.vehicles
     .get(doc.vehicleId)
-    .then((vehicle) => vehicle as any)
-    .then(formatVehicle)
+    .then((vehicle: any) => vehicle as any)
+    .then(asVehicle)
 
   console.log({
     ...doc,
@@ -194,16 +173,16 @@ export const record = async (parent: any, args: any) => {
   console.log(args.id)
   const doc = await DB.records
     .get(args.id)
-    .then((record) => record as any)
-    .then((record) => ({
+    .then((record: any) => record as any)
+    .then((record: any) => ({
       id: record._id,
       ...record,
     }))
 
   const vehicle = await DB.vehicles
     .get(doc.vehicleId)
-    .then((vehicle) => vehicle as any)
-    .then(formatVehicle)
+    .then((vehicle: any) => vehicle as any)
+    .then(asVehicle)
 
   const record = {
     ...doc,
@@ -216,8 +195,8 @@ export const record = async (parent: any, args: any) => {
 export const printRecord = async (parent: any, args: any) => {
   const doc = await DB.records
     .get(args.id)
-    .then((record) => record as any)
-    .then((record) => ({
+    .then((record: any) => record as any)
+    .then((record: any) => ({
       id: record._id,
       ...record,
     }))
@@ -226,8 +205,8 @@ export const printRecord = async (parent: any, args: any) => {
 
   const vehicle = await DB.vehicles
     .get(doc.vehicleId)
-    .then((vehicle) => vehicle as any)
-    .then(formatVehicle)
+    .then((vehicle: any) => vehicle as any)
+    .then(asVehicle)
 
   const record = {
     ...doc,

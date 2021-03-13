@@ -171,6 +171,19 @@ ion-card {
   display: grid;
   justify-content: stretch;
 
+  &.danger-button {
+    background: #ff496188;
+
+    ion-text {
+      color: #ffffff;
+    }
+
+    ion-button {
+      --background: #ff4961aa;
+      --color: #00000088;
+    }
+  }
+
   ion-text {
     text-align: center;
     text-transform: uppercase;

@@ -2,7 +2,6 @@ import {
   IonCard,
   IonInput,
   IonItem,
-  IonList,
   IonSelect,
   IonSelectOption,
 } from '@ionic/react'

@@ -101,7 +101,7 @@ const Scoreboard = (props: any) => {
                   clearInput={true}
                   onIonChange={manualInput}
                   className='reading'
-                  placeholder='0'
+                  placeholder={props.reading?.weight || 0}
                   type='number'
                 ></IonInput>
 
