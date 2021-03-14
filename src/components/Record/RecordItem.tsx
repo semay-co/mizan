@@ -84,23 +84,8 @@ const RecordItem = (props: any) => {
     }
   }
 
-  const setAsComplete = () => {
-    addSecondWeight({
-      variables: {
-        recordId: record.id,
-        weight: 0,
-        createdAt: new Date().getTime().toString(),
-      },
-      update: (store: any, { data }) => {
-        store.readQuery({
-          query: FETCH_RECORDS,
-          variables: {
-            query: '',
-            limit: 10,
-          },
-        })
-      },
-    })
+  const selectRecord = () => {
+    props.updateRecordResult(record.id)
   }
 
   const isSynced = () => props.reading.weight === props.draft?.reading?.weight
@@ -191,23 +176,19 @@ const RecordItem = (props: any) => {
                   <>
                     <span className='record-pending'>Pending</span>
                     <IonButton
+                      onClick={selectRecord}
                       className='record-pending-button'
                       color='success'
                       fill='outline'
                     >
                       <IonIcon icon={speedometerOutline}></IonIcon>
-                      {props.draft?.reading
-                        ? 'Use Recorded Weight'
-                        : 'Record New'}
-                    </IonButton>
-                    <IonButton
-                      onClick={setAsComplete}
-                      className='record-pending-button'
-                      color='success'
-                      fill='outline'
-                    >
-                      <IonIcon icon={checkmark}></IonIcon>
-                      Set Completed
+                      {/* {false &&
+                      // Use{' '}
+                      // {props.draft?.reading
+                      //   ? props.draft.reading?.weight
+                      //   : 0}{' '}
+                      // KG
+                      } */}
                     </IonButton>
                   </>
                 )}
