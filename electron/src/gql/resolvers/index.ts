@@ -27,43 +27,45 @@ SerialPort.list().then((ports) => {
     .map((port) => port.path.toLowerCase())
     .filter((path) => path === comPort.toLowerCase())
 
-  if (search.length > 0 && !process.env.FAKE_SERIAL_PORT) {
-    const port = new SerialPort(comPort, {
-      baudRate: 9600,
-      dataBits: 8,
-      stopBits: 1,
-      parity: 'none',
-    })
-
-    var sign = '+'
-    var publishedAt = new Date().getTime()
-
-    port
-      .on('data', (data) => {
-        const snap = data.toString()
-
-        if (snap === '0' || snap === '-') {
-          sign = snap === '0' ? '+' : '-'
-        } else {
-          const reading = snap
-            ? snap.split('=').join('').split('').reverse().join('')
-            : ''.slice(0, 6)
-
-          const fixed = +reading < 100000 ? +reading : 0
-
-          const signed = parseInt(sign + fixed)
-
-          if (publishedAt + 1000 < new Date().getTime() && !isNaN(signed)) {
-            publish(signed)
-            publishedAt = new Date().getTime()
-          }
-        }
-      })
-      .on('error', (error) => console.error)
-  } else {
+  if (process.env.FAKE_SERIAL_PORT) {
     setInterval(() => {
       publish(Math.floor(Math.random() * 1000) * 10)
     }, 100)
+  } else {
+    if (search.length > 0) {
+      const port = new SerialPort(comPort, {
+        baudRate: 9600,
+        dataBits: 8,
+        stopBits: 1,
+        parity: 'none',
+      })
+
+      var sign = '+'
+      var publishedAt = new Date().getTime()
+
+      port
+        .on('data', (data) => {
+          const snap = data.toString()
+
+          if (snap === '0' || snap === '-') {
+            sign = snap === '0' ? '+' : '-'
+          } else {
+            const reading = snap
+              ? snap.split('=').join('').split('').reverse().join('')
+              : ''.slice(0, 6)
+
+            const fixed = +reading < 100000 ? +reading : 0
+
+            const signed = parseInt(sign + fixed)
+
+            if (publishedAt + 1000 < new Date().getTime() && !isNaN(signed)) {
+              publish(signed)
+              publishedAt = new Date().getTime()
+            }
+          }
+        })
+        .on('error', (error) => console.error)
+    }
   }
 })
 
