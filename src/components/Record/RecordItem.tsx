@@ -29,6 +29,7 @@ import { ADD_SECOND_WEIGHT } from '../../gql/mutations/record.mutations'
 import { VEHICLE_TYPES } from '../../model/vehicle.model'
 import { PRINT_RECORD } from '../../gql/mutations/record.mutations'
 import classNames from 'classnames'
+import { FETCH_RECORDS } from '../../gql/queries/record.queries'
 
 const RecordItem = (props: any) => {
   const record = props.record
@@ -83,7 +84,11 @@ const RecordItem = (props: any) => {
     }
   }
 
-  const isUpdated = () => props.reading.weight === props.draft?.reading?.weight
+  const selectRecord = () => {
+    props.updateRecordResult(record.id)
+  }
+
+  const isSynced = () => props.reading.weight === props.draft?.reading?.weight
 
   const isLoaded = () => props.draft?.reading?.weight > 1000
 
@@ -92,11 +97,13 @@ const RecordItem = (props: any) => {
       <IonCard className='record-card'>
         <div className='card-left-content'>
           <IonList>
-            <IonItem>
-              <IonLabel>
-                <h2>Serial: {record.serial}</h2>
-              </IonLabel>
-            </IonItem>
+            {record.serial && (
+              <IonItem>
+                <IonLabel>
+                  <h2>Serial: {record.serial}</h2>
+                </IonLabel>
+              </IonItem>
+            )}
             <IonItem>
               <LicensePlate
                 code={record.vehicle?.licensePlate?.code}
@@ -107,8 +114,8 @@ const RecordItem = (props: any) => {
             <IonItem>
               <IonLabel>
                 <h2>Vehicle Type</h2>
-                <IonChip outline color='primary'>
-                  {VEHICLE_TYPES[record.vehicle?.type]}
+                <IonChip color='secondary'>
+                  {VEHICLE_TYPES[record.vehicle?.type] || 'Unknown'}
                 </IonChip>
               </IonLabel>
             </IonItem>
@@ -147,11 +154,11 @@ const RecordItem = (props: any) => {
                     <div
                       className={classNames(
                         'weight-measure',
-                        isLoaded() && isUpdated() ? 'green-draft' : 'red-draft'
+                        isLoaded() && isSynced() ? 'green-draft' : 'red-draft'
                       )}
                     >
                       {secondWeightDraft.weight.toLocaleString()} KG
-                      {!isUpdated() && (
+                      {!isSynced() && (
                         <IonButton
                           className='update-button'
                           onClick={recordReading}
@@ -168,9 +175,20 @@ const RecordItem = (props: any) => {
                 ) : (
                   <>
                     <span className='record-pending'>Pending</span>
-                    <IonButton className='record-pending-button'>
+                    <IonButton
+                      onClick={selectRecord}
+                      className='record-pending-button'
+                      color='success'
+                      fill='outline'
+                    >
                       <IonIcon icon={speedometerOutline}></IonIcon>
-                      {props.draft?.reading ? 'Use Current Weight' : 'Record'}
+                      {/* {false &&
+                      // Use{' '}
+                      // {props.draft?.reading
+                      //   ? props.draft.reading?.weight
+                      //   : 0}{' '}
+                      // KG
+                      } */}
                     </IonButton>
                   </>
                 )}
@@ -181,10 +199,9 @@ const RecordItem = (props: any) => {
             <h3>Net Weight</h3>
             <span className='record-date'>
               {record.weights[0] &&
-                record.weights[1] &&
-                moment(+record.weights[1].createdAt).from(
-                  +record.weights[0].createdAt
-                )}
+                moment(
+                  +record.weights[1]?.createdAt || new Date().getTime()
+                ).from(+record.weights[0].createdAt)}
             </span>
             <div className='weight-measure'>{getNetWeight()}</div>
           </div>
@@ -199,7 +216,12 @@ const RecordItem = (props: any) => {
           )}
         </div>
         {secondWeightDraft && (
-          <div className='bottom-button'>
+          <div
+            className={classNames({
+              'bottom-button': true,
+              'danger-button': !isLoaded() || !isSynced(),
+            })}
+          >
             <IonButton onClick={onSaveSecondWeight} size='large' expand='block'>
               <IonIcon icon={checkmark} />
               Use This Record

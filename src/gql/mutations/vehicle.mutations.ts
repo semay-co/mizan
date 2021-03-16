@@ -12,6 +12,16 @@ export const CREATE_VEHICLE = gql`
       plateNumber: $plateNumber
       plateCode: $plateCode
       plateRegion: $plateRegion
-    )
+    ) {
+      id
+      type
+      licensePlate {
+        code
+        plate
+        region {
+          code
+        }
+      }
+    }
   }
 `

@@ -51,7 +51,7 @@ const NewVehicleForm = (props: any) => {
         },
       })
         .then((plate) => {
-          const vehicleId = plate.data.createVehicle
+          const vehicleId = plate.data.createVehicle.id
           props.updateRecordDraft({
             ...props.draft,
             vehicleId,
@@ -67,15 +67,15 @@ const NewVehicleForm = (props: any) => {
   }
 
   return (
-    <IonCard className="entity-card">
-      <IonList lines="full" className="vehicle-suggestions">
+    <IonCard className='entity-card'>
+      <IonList lines='full' className='vehicle-suggestions'>
         <IonItemGroup>
           <IonItemDivider>
             <IonLabel>Create New Vehicle</IonLabel>
           </IonItemDivider>
 
-          <IonCardContent className="vehicle-form">
-            <div className="vehicle-form-content">
+          <IonCardContent className='vehicle-form'>
+            <div className='vehicle-form-content'>
               <div>
                 <LicensePlate
                   number={props.draft.licensePlate.plate}
@@ -85,17 +85,18 @@ const NewVehicleForm = (props: any) => {
                   }}
                 />
               </div>
-              <div className="vehicle-type">
+              <div className='vehicle-type'>
                 <IonLabel>Select Vehicle Type:</IonLabel>
                 <div>
                   {VEHICLE_TYPES.map((type: string, i: number) => (
                     <IonButton
                       onClick={() => selectVehicleType(i)}
-                      shape="round"
+                      shape='round'
+                      key={i}
                       fill={
                         props.draft.vehicle?.type === i ? 'solid' : 'outline'
                       }
-                      color="secondary"
+                      color='secondary'
                     >
                       {type}
                     </IonButton>
@@ -108,7 +109,7 @@ const NewVehicleForm = (props: any) => {
       </IonList>
 
       <IonButton
-        expand="full"
+        expand='full'
         onClick={createVehicle}
         disabled={
           props.draft?.licensePlate?.plate?.length < 5 ||

@@ -31,7 +31,7 @@ ion-card {
   // padding: 1rem;
 
   .entity-card {
-    background: $light-card-bg;
+    // background: $light-card-bg;
     padding: 0;
 
     ion-card-header {
@@ -88,12 +88,13 @@ ion-card {
 }
 
 .vehicle-suggestions {
-  background: $light-card-bg;
+  // background: $light-card-bg;
 
   ion-item-divider {
-    margin-top: 1rem;
+    // margin-top: 1rem;
     margin-bottom: 1rem;
     // background: #00000022;
+    background: none;
     font-size: 1.4rem;
     text-align: center;
     color: #ffffff;
@@ -104,10 +105,10 @@ ion-card {
     }
   }
 
-  ion-item {
-    --background: $light-card-bg;
-    --border-color: #00000033;
-  }
+  // ion-item {
+  //   --background: $light-card-bg;
+  //   --border-color: #00000033;
+  // }
 
   .vehicle-form {
     display: grid;
@@ -132,7 +133,7 @@ ion-card {
 }
 
 .selected-vehicle-wrap {
-  background: $light-card-bg;
+  // background: $light-card-bg;
   display: grid;
   justify-content: stretch;
 
@@ -169,6 +170,19 @@ ion-card {
   margin-top: 2rem;
   display: grid;
   justify-content: stretch;
+
+  &.danger-button {
+    background: #ff496188;
+
+    ion-text {
+      color: #ffffff;
+    }
+
+    ion-button {
+      --background: #ff4961aa;
+      --color: #00000088;
+    }
+  }
 
   ion-text {
     text-align: center;

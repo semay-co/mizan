@@ -64,7 +64,19 @@ const link = split(
 )
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Record: {
+        fields: {
+          serial: {
+            read(serial = '000') {
+              return serial
+            },
+          },
+        },
+      },
+    },
+  }),
   link,
 })
 
@@ -73,11 +85,11 @@ const App = () => (
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          <Route exact path="/home">
+          <Route exact path='/home'>
             <Home />
           </Route>
-          <Route exact path="/">
-            <Redirect to="/home" />
+          <Route exact path='/'>
+            <Redirect to='/home' />
           </Route>
         </IonRouterOutlet>
       </IonReactRouter>

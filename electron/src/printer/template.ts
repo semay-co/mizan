@@ -380,7 +380,7 @@ const grid = (record: any, compact: boolean = false) => `<div class="grid ${
 						${record.vehicle.licensePlate.plate}
 					</div>
 					<div class="license-plate-region"> 
-						${record.vehicle.licensePlate.region} 
+						${record.vehicle.licensePlate.region.code} 
 					</div>	
 				
 				</div>	
@@ -396,7 +396,7 @@ const grid = (record: any, compact: boolean = false) => `<div class="grid ${
 			<div class="row">
 				<h3>First Weight</h3>
 				<div class="weight-date">
-					${moment(record.weights[0].createdAt).format('LLLL')}
+					${moment(+record.weights[0].createdAt).format('LLLL')}
 				</div>
 
 				<div class="weight-measure">
@@ -409,7 +409,7 @@ const grid = (record: any, compact: boolean = false) => `<div class="grid ${
           ? `<div class="row">
 					<h3>Second Weight</h3>
 					<div class="weight-date">
-						${moment(record.weights[1].createdAt).format('LLLL')}
+						${moment(+record.weights[1].createdAt).format('LLLL')}
 					</div>
 
 					<div class="weight-measure">
@@ -438,9 +438,9 @@ const grid = (record: any, compact: boolean = false) => `<div class="grid ${
 		</div>
 	</div>`
 
-const printTime = `
+const printTime = (time: any) => `
 		<div class="date">
-			Printed: ${moment().format('LLLL')}
+			Printed: ${moment(time).format('LLLL')}
 		</div>
 	`
 
@@ -462,17 +462,16 @@ export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
 			<div class="watermark"></div>
 			${header(company, address, phone)}
 
-			${printTime}
+			${printTime(new Date().getTime())}
 			
 			${grid(record, true)}
 			${stamp === PAGE_TYPES.PENDING ? '<div class="cut-line"></div>' : ''}
 
 			${
         stamp === PAGE_TYPES.PENDING
-          ? `${header(company, address, phone)} ${printTime} ${grid(
-              record,
-              true
-            )}`
+          ? `${header(company, address, phone)} ${printTime(
+              new Date().getTime()
+            )} ${grid(record, true)}`
           : `<div class="operator">
 				<div class="operator-signature">
 					Operator Signature

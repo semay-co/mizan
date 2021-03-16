@@ -18,6 +18,10 @@ export const record = (state = [], action: any) => {
       return {
         recordQuery: action.payload,
       }
+    case Actions.UPDATE_RECORD_LIST:
+      return {
+        recordList: action.payload,
+      }
     default:
       return state
   }

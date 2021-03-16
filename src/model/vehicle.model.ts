@@ -1,5 +1,6 @@
 export interface Vehicle {
   id: string
+  type: number
   createdAt: number
   licensePlate: LicensePlate
 }

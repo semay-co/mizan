@@ -3,8 +3,11 @@ import * as _ from 'ramda'
 import { v4 as uuid } from 'uuid'
 import { print } from '../../printer/printer'
 import { PAGE_TYPES } from '../../../../src/model/print.model'
+import { asVehicle } from '../../lib/vehicle.lib'
 
 const base36 = require('base36')
+
+const serialStart = process.env.SERIAL_START || 100000
 
 export const records = async (parent: any, args: any) => {
   const filters = args.filters
@@ -27,25 +30,15 @@ export const records = async (parent: any, args: any) => {
     _.map(async (row: any) => {
       const vehicle = (await DB.vehicles
         .get((row.doc as any).vehicleId)
-        .then((vehicle) => vehicle as any)
-        .then((vehicle) => ({
-          id: vehicle._id,
-          type: vehicle.type,
-          licensePlate: {
-            plate: vehicle.licensePlateNumber,
-            code: vehicle.licensePlateCode,
-            region: {
-              code: vehicle.licensePlateRegion,
-            },
-          },
-        }))) as any
+        .then((vehicle: any) => vehicle as any)
+        .then(asVehicle)) as any
 
       return {
         ...row.doc,
         id: row.id,
         vehicle,
       }
-    })(rows)
+    })(rows as any)
   )
 
   const filtered =
@@ -57,6 +50,8 @@ export const records = async (parent: any, args: any) => {
     (record: any) => !args.vehicleId || record.vehicleId === args.vehicleId
   )(filtered)
 
+  const limited = filteredByVehicle.slice(0, args.limit || 10)
+
   return _.filter((record: any) => {
     return args.query
       ? record.serial.toLowerCase().includes(args.query.toLowerCase()) ||
@@ -64,7 +59,7 @@ export const records = async (parent: any, args: any) => {
             ?.toLowerCase()
             .includes(args.query.toLowerCase())
       : true
-  })(filteredByVehicle)
+  })(limited)
 }
 
 export const createRecord = async (parent: any, args: any) => {
@@ -80,9 +75,9 @@ export const createRecord = async (parent: any, args: any) => {
   } else {
     const serials = _.map(
       (row: any) => base36.base36decode(row.doc.serial) || 0
-    )(records)
+    )(records as any)
 
-    const highest = _.reduce(_.max)(0, serials) || 100000
+    const highest = _.reduce(_.max)(0, serials) || serialStart
 
     const saveRecord = (vehicleId: string) => {
       const creation = DB.records.put({
@@ -99,58 +94,98 @@ export const createRecord = async (parent: any, args: any) => {
         vehicleId,
       })
 
-      return creation.then((doc) => doc)
+      return creation.then((doc: any) => doc)
     }
 
-    const vehicle = await DB.vehicles.get(args.vehicleId)
+    const vehicle = (await DB.vehicles.get(args.vehicleId)) as any
 
     if (vehicle) {
-      const newRecord = await saveRecord(vehicle._id)
+      const save = await saveRecord(vehicle._id)
 
-      return newRecord.id
+      const record = (await DB.records.get(save.id)) as any
+
+      console.log(record)
+      console.log(vehicle)
+
+      if (record)
+        return {
+          ...record,
+          id: record._id,
+          vehicle: {
+            ...vehicle,
+            id: vehicle._id,
+            licensePlate: {
+              code: vehicle.licensePlateCode,
+              plate: vehicle.licensePlateNumber,
+              region: {
+                code: vehicle.licensePlateRegion,
+              },
+            },
+          },
+        }
     }
+  }
+}
+
+export const update = async (parent: any, args: any) => {
+  const id = args.id
+  const record = (await DB.records.get(args.id)) as any
+
+  const update = {
+    ...record,
+    updatedAt: new Date().getTime(),
   }
 }
 
 export const addSecondWeight = async (parent: any, args: any) => {
   const record = (await DB.records.get(args.recordId)) as any
 
-  DB.records.put({
+  const doc = {
     ...record,
+    updatedAt: new Date().getTime(),
     weights: _.append({
-      createdAt: new Date().getTime(),
+      createdAt: args.createdAt || new Date().getTime(),
       weight: args.weight,
     })(record.weights),
+  }
+
+  await DB.records.put(doc)
+
+  const vehicle = await DB.vehicles
+    .get(doc.vehicleId)
+    .then((vehicle: any) => vehicle as any)
+    .then(asVehicle)
+
+  console.log({
+    ...doc,
+    id: doc._id,
+    vehicle,
   })
+
+  return {
+    ...doc,
+    id: doc._id,
+    vehicle,
+  }
 }
 
 export const record = async (parent: any, args: any) => {
   console.log(args.id)
-  const recordOnly = await DB.records
+  const doc = await DB.records
     .get(args.id)
-    .then((record) => record as any)
-    .then((record) => ({
+    .then((record: any) => record as any)
+    .then((record: any) => ({
       id: record._id,
       ...record,
     }))
 
   const vehicle = await DB.vehicles
-    .get(recordOnly.vehicleId)
-    .then((vehicle) => vehicle as any)
-    .then((vehicle) => ({
-      id: vehicle._id,
-      type: vehicle.type,
-      licensePlate: {
-        plate: vehicle.licensePlateNumber,
-        code: vehicle.licensePlateCode,
-        region: {
-          code: vehicle.licensePlateRegion,
-        },
-      },
-    }))
+    .get(doc.vehicleId)
+    .then((vehicle: any) => vehicle as any)
+    .then(asVehicle)
 
   const record = {
-    ...recordOnly,
+    ...doc,
     vehicle,
   }
 
@@ -158,34 +193,24 @@ export const record = async (parent: any, args: any) => {
 }
 
 export const printRecord = async (parent: any, args: any) => {
-  const recordOnly = await DB.records
+  const doc = await DB.records
     .get(args.id)
-    .then((record) => record as any)
-    .then((record) => ({
+    .then((record: any) => record as any)
+    .then((record: any) => ({
       id: record._id,
       ...record,
     }))
 
-  console.log(recordOnly)
+  console.log(doc)
 
   const vehicle = await DB.vehicles
-    .get(recordOnly.vehicleId)
-    .then((vehicle) => vehicle as any)
-    .then((vehicle) => ({
-      id: vehicle._id,
-      type: vehicle.type,
-      licensePlate: {
-        plate: vehicle.licensePlateNumber,
-        code: vehicle.licensePlateCode,
-        region: vehicle.licensePlateRegion,
-      },
-    }))
+    .get(doc.vehicleId)
+    .then((vehicle: any) => vehicle as any)
+    .then(asVehicle)
 
   const record = {
-    ...recordOnly,
-    netWeight: Math.abs(
-      recordOnly.weights[0]?.weight - recordOnly.weights[1]?.weight
-    ),
+    ...doc,
+    netWeight: Math.abs(doc.weights[0]?.weight - doc.weights[1]?.weight),
     vehicle,
   }
 

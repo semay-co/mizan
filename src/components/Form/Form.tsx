@@ -18,6 +18,7 @@ import { CREATE_RECORD } from '../../gql/mutations/record.mutations'
 import RecordedWeight from './RecordedWeight'
 import LicensePlateForm from './LicensePlateForm'
 import SelectedVehicleCard from './SelectedVehicleCard'
+import classNames from 'classnames'
 
 const Form = (props: any) => {
   const [runCreateRecord] = useMutation(CREATE_RECORD)
@@ -47,7 +48,7 @@ const Form = (props: any) => {
     })
   }
 
-  const isUpdated = () => props.reading.weight === props.draft?.reading?.weight
+  const isSynced = () => props.reading.weight === props.draft?.reading?.weight
 
   const isLoaded = () => props.draft?.reading?.weight >= 1000
 
@@ -65,7 +66,7 @@ const Form = (props: any) => {
 
       setTimeout(() => {
         const input = $('#license-plate-input').find('input').first()
-        input.focus()
+        input.trigger('focus')
         input.val = props.draft?.licensePlate?.plate
       }, 200)
     }
@@ -73,7 +74,6 @@ const Form = (props: any) => {
 
   const createRecord = () => {
     const draft = props.draft
-    selectedVehicleRecords.refetch()
 
     if (draft && !isNaN(draft.reading?.weight) && draft.licensePlate?.plate) {
       runCreateRecord({
@@ -81,9 +81,21 @@ const Form = (props: any) => {
           weight: draft.reading.weight,
           vehicleId: draft.vehicleId,
         },
+        update: (cache, { data }) => {
+          const result = data?.createRecord.record
+          const current = cache.readQuery({
+            query: FETCH_RECORDS,
+          }) as any
+
+          cache.writeQuery({
+            query: FETCH_RECORDS,
+            data: [...current.records, result],
+          })
+        },
       }).then((record) => {
         console.log('record', record)
-        props.updateRecordResult(record.data.createRecord)
+        props.updateRecordResult(record.data.createRecord.id)
+
         if (props.result) {
           recordQuery.refetch()
           selectedVehicleRecords.refetch()
@@ -106,7 +118,7 @@ const Form = (props: any) => {
         selectedVehicleRecords.data.records
           .filter((record: any) => record.weights.length < 2)
           .map((pending: any) => (
-            <div className='existing-record'>
+            <div key={pending.id} className='existing-record'>
               <RecordItem
                 record={pending}
                 secondWeightDraft={props.draft.reading}
@@ -151,11 +163,13 @@ const Form = (props: any) => {
                 />
 
                 <IonCard
-                  className='create-button-card'
-                  color={!isLoaded() || !isUpdated() ? 'danger' : 'clear'}
+                  className={classNames({
+                    'create-button-card': true,
+                    'danger-button': !isLoaded() || !isSynced(),
+                  })}
                 >
                   {' '}
-                  {(!isLoaded() || !isUpdated()) && (
+                  {(!isLoaded() || !isSynced()) && (
                     <IonText>Weight has changed</IonText>
                   )}
                   <IonButton size='large' onClick={createRecord}>
