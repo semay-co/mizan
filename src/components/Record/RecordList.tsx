@@ -53,7 +53,7 @@ const RecordList = (props: any) => {
     <div>
       <IonCard className='search-card'>
         <IonSearchbar
-          debounce={500}
+          debounce={1000}
           placeholder='Find Record'
           onIonChange={onQueryChange}
         />
@@ -72,6 +72,19 @@ const RecordList = (props: any) => {
           </IonButton>
         </IonCardContent>
       </IonCard>
+
+      {recordsQuery.loading && (
+        <IonCard className='info-card'>
+          <h3>LOADING...</h3>
+        </IonCard>
+      )}
+
+      {recordsQuery.data?.length === 0 && (
+        <IonCard className='info-card'>
+          <h3>NO RECORDS FOUND</h3>
+        </IonCard>
+      )}
+
       <div className='records-wrap'>
         {recordsQuery.data?.records?.map((record: any) => (
           <RecordItem key={record.id} record={record} />
