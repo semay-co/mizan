@@ -31,37 +31,49 @@ export const records = async (parent: any, args: any) => {
     _.map(async (row: any) => {
       const doc = row.doc as any
 
-      const vehicle = doc.vehicleId
-        ? {
-            vehicle: (await DB.vehicles
-              .get(doc.vehicleId)
-              .then((vehicle: any) => vehicle as any)
-              .then(asVehicle)) as any,
-          }
-        : {}
+      // const vehicle = doc.vehicleId
+      //   ? {
+      //       vehicle: (await DB.vehicles
+      //         .get(doc.vehicleId)
+      //         .then((vehicle: any) => vehicle as any)
+      //         .then(asVehicle)) as any,
+      //     }
+      //   : {}
 
-      const seller = doc.sellerId
-        ? {
-            seller: (await DB.customers
-              .get(doc.sellerId)
-              .then(asCustomer)) as any,
-          }
-        : {}
+      // const seller = doc.sellerId
+      //   ? {
+      //       seller: (await DB.customers
+      //         .get(doc.sellerId)
+      //         .then(asCustomer)) as any,
+      //     }
+      //   : {}
 
-      const buyer = doc.buyerId
-        ? {
-            buyer: (await DB.customers
-              .get(doc.buyerId)
-              .then(asCustomer)) as any,
-          }
-        : {}
+      // const buyer = doc.buyerId
+      //   ? {
+      //       buyer: (await DB.customers
+      //         .get(doc.buyerId)
+      //         .then(asCustomer)) as any,
+      //     }
+      //   : {}
+
+      // const snap = {
+      //   ...buyer,
+      //   ...seller,
+      //   ...vehicle,
+      //   updatedAt: new Date().getTime(),
+      // }
+
+      // DB.records.put({
+      //   ...row.doc,
+      //   snap,
+      // })
+
+      // console.log(row.doc.snap)
 
       return {
         ...row.doc,
+        ...row.doc.snap,
         id: row.id,
-        ...vehicle,
-        ...seller,
-        ...buyer,
       }
     })(rows as any)
   )
@@ -75,16 +87,18 @@ export const records = async (parent: any, args: any) => {
     (record: any) => !args.vehicleId || record.vehicleId === args.vehicleId
   )(filtered)
 
-  const limited = filteredByVehicle.slice(0, args.limit || 10)
+  const filteredByQuery = _.filter((record: any) => {
+    const query = args.query?.toLowerCase()
 
-  return _.filter((record: any) => {
     return args.query
-      ? record.serial.toLowerCase().includes(args.query.toLowerCase()) ||
-          record.vehicle?.licensePlate?.plate
-            ?.toLowerCase()
-            .includes(args.query.toLowerCase())
+      ? record.serial.toLowerCase().includes(query) ||
+          record.vehicle?.licensePlate?.plate?.toLowerCase().includes(query)
       : true
-  })(limited)
+  })(filteredByVehicle)
+
+  const limited = filteredByQuery.slice(0, args.limit || 10)
+
+  return limited
 }
 
 export const createRecord = async (parent: any, args: any) => {
@@ -113,6 +127,16 @@ export const createRecord = async (parent: any, args: any) => {
       console.log(sellerId)
       console.log(buyerId)
 
+      const snap = {
+        buyer: buyerDoc,
+        seller: sellerDoc,
+        vehicle: vehicleDoc,
+        updatedAt: new Date().getTime(),
+      }
+
+      console.log('snap')
+      console.log(snap)
+
       const creation = DB.records.put({
         _id: uuid(),
         docType: 'record',
@@ -127,6 +151,7 @@ export const createRecord = async (parent: any, args: any) => {
         vehicleId,
         sellerId,
         buyerId,
+        snap,
       })
 
       return creation.then((doc: any) => doc)

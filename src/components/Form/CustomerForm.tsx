@@ -19,7 +19,7 @@ import { useQuery } from '@apollo/client'
 import { FETCH_CUSTOMERS } from '../../gql/queries/customer.queries'
 import NewCustomerForm from './NewCustomerForm'
 import './CustomerForm.scss'
-import { chevronForward, closeCircle, closeCircleOutline } from 'ionicons/icons'
+import { chevronForward } from 'ionicons/icons'
 
 const CustomerForm = (props: any) => {
   const customers = useQuery(FETCH_CUSTOMERS, {
@@ -27,6 +27,7 @@ const CustomerForm = (props: any) => {
       query: props.draft?.buyer?.phoneNumber,
       limit: 5,
     },
+    fetchPolicy: 'network-only',
   })
 
   useEffect(() => {

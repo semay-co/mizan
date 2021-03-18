@@ -554,7 +554,6 @@ export const receipt = async (
 							<div class="qr-code">
 								<img src="${qr}"/ >
 							</div>
-							<div class="qr-link">Result available at: ${link}</div>
 						</div>
 						<div class="disclaimer">
 						Disclaimer: We can only guarantee the weight, not the material.

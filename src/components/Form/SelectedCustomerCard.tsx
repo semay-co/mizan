@@ -22,6 +22,7 @@ const SelectedCustomerCard = (props: any) => {
       id:
         props.party === 'seller' ? props.draft?.sellerId : props.draft.buyerId,
     },
+    fetchPolicy: 'network-only',
   })
 
   const customer = selectedCustomer.data?.customer

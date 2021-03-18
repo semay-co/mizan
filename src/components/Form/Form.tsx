@@ -29,12 +29,14 @@ const Form = (props: any) => {
       id: props.result,
     },
     skip: !props.result,
+    fetchPolicy: 'network-only',
   })
 
   const selectedVehicleRecords = useQuery(FETCH_RECORDS, {
     variables: {
       vehicleId: props.draft?.vehicleId,
     },
+    fetchPolicy: 'network-only',
   })
 
   const clearForm = () => {

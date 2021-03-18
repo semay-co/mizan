@@ -10,6 +10,7 @@ const DB = {
   records: new PouchDB('.db/records'),
   vehicles: new PouchDB('.db/vehicles'),
   customers: new PouchDB('.db/customers'),
+  meta: new PouchDB('.db/meta'),
 }
 
 DB.records.createIndex({
