@@ -1,8 +1,8 @@
 import { PubSub } from 'apollo-server'
 import SerialPort from 'serialport'
 import env from 'dotenv-flow'
-import rxjs from 'rxjs'
 import { createVehicle, vehicles, vehicle } from './vehicle.resolvers'
+import { createCustomer, customers, customer } from './customer.resolvers'
 import {
   record,
   records,
@@ -76,9 +76,11 @@ export enum events {
 const resolvers = {
   Query: {
     records,
-    vehicles,
     record,
+    vehicles,
     vehicle,
+    customers,
+    customer,
   },
   Subscription: {
     reading: {
@@ -88,6 +90,7 @@ const resolvers = {
   Mutation: {
     createRecord,
     createVehicle,
+    createCustomer,
     addSecondWeight,
     printRecord,
   },

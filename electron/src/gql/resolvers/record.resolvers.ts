@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid'
 import { print } from '../../printer/printer'
 import { PAGE_TYPES } from '../../../../src/model/print.model'
 import { asVehicle } from '../../lib/vehicle.lib'
+import { asCustomer } from '../../lib/customer.lib'
 
 const base36 = require('base36')
 
@@ -28,15 +29,39 @@ export const records = async (parent: any, args: any) => {
 
   const records = await Promise.all(
     _.map(async (row: any) => {
-      const vehicle = (await DB.vehicles
-        .get((row.doc as any).vehicleId)
-        .then((vehicle: any) => vehicle as any)
-        .then(asVehicle)) as any
+      const doc = row.doc as any
+
+      const vehicle = doc.vehicleId
+        ? {
+            vehicle: (await DB.vehicles
+              .get(doc.vehicleId)
+              .then((vehicle: any) => vehicle as any)
+              .then(asVehicle)) as any,
+          }
+        : {}
+
+      const seller = doc.sellerId
+        ? {
+            seller: (await DB.customers
+              .get(doc.sellerId)
+              .then(asCustomer)) as any,
+          }
+        : {}
+
+      const buyer = doc.buyerId
+        ? {
+            buyer: (await DB.customers
+              .get(doc.buyerId)
+              .then(asCustomer)) as any,
+          }
+        : {}
 
       return {
         ...row.doc,
         id: row.id,
-        vehicle,
+        ...vehicle,
+        ...seller,
+        ...buyer,
       }
     })(rows as any)
   )
@@ -79,7 +104,15 @@ export const createRecord = async (parent: any, args: any) => {
 
     const highest = _.reduce(_.max)(0, serials) || serialStart
 
-    const saveRecord = (vehicleId: string) => {
+    const saveRecord = (
+      vehicleId: string,
+      sellerId: string,
+      buyerId: string
+    ) => {
+      console.log('save record')
+      console.log(sellerId)
+      console.log(buyerId)
+
       const creation = DB.records.put({
         _id: uuid(),
         docType: 'record',
@@ -92,38 +125,53 @@ export const createRecord = async (parent: any, args: any) => {
           },
         ],
         vehicleId,
+        sellerId,
+        buyerId,
       })
 
       return creation.then((doc: any) => doc)
     }
 
-    const vehicle = (await DB.vehicles.get(args.vehicleId)) as any
-
-    if (vehicle) {
-      const save = await saveRecord(vehicle._id)
-
-      const record = (await DB.records.get(save.id)) as any
-
-      console.log(record)
-      console.log(vehicle)
-
-      if (record)
-        return {
-          ...record,
-          id: record._id,
-          vehicle: {
-            ...vehicle,
-            id: vehicle._id,
-            licensePlate: {
-              code: vehicle.licensePlateCode,
-              plate: vehicle.licensePlateNumber,
-              region: {
-                code: vehicle.licensePlateRegion,
-              },
-            },
-          },
-        }
+    const vehicleDoc = await DB.vehicles.get(args.vehicleId).then(asVehicle)
+    const vehicle = args.vehicleId && {
+      vehicle: vehicleDoc,
     }
+
+    const sellerDoc =
+      args.sellerId && (await DB.customers.get(args.sellerId).then(asCustomer))
+
+    const seller =
+      args.sellerId && sellerDoc
+        ? {
+            seller: sellerDoc,
+          }
+        : {}
+
+    const buyerDoc =
+      args.buyerId && (await DB.customers.get(args.buyerId).then(asCustomer))
+
+    const buyer =
+      args.buyerId && buyerDoc
+        ? {
+            buyer: buyerDoc,
+          }
+        : {}
+
+    console.log('seller')
+    console.log(seller)
+
+    const save = await saveRecord(args.vehicleId, args.sellerId, args.buyerId)
+
+    const record = (await DB.records.get(save.id)) as any
+
+    if (record)
+      return {
+        ...record,
+        id: record._id,
+        ...vehicle,
+        ...seller,
+        ...buyer,
+      }
   }
 }
 
@@ -156,16 +204,27 @@ export const addSecondWeight = async (parent: any, args: any) => {
     .then((vehicle: any) => vehicle as any)
     .then(asVehicle)
 
+  const seller =
+    doc.sellerId && (await DB.customers.get(doc.sellerId).then(asCustomer))
+
+  const buyer =
+    doc.buyerId && (await DB.customers.get(doc.buyerId).then(asCustomer))
+
+  console.log('doc')
   console.log({
     ...doc,
     id: doc._id,
     vehicle,
+    seller: seller,
+    buyer,
   })
 
   return {
     ...doc,
     id: doc._id,
     vehicle,
+    seller,
+    buyer,
   }
 }
 
@@ -184,9 +243,20 @@ export const record = async (parent: any, args: any) => {
     .then((vehicle: any) => vehicle as any)
     .then(asVehicle)
 
+  const seller =
+    doc.sellerId && (await DB.customers.get(doc.sellerId).then(asCustomer))
+
+  const buyer =
+    doc.buyerId && (await DB.customers.get(doc.buyerId).then(asCustomer))
+
+  console.log('seller')
+  console.log(seller)
+
   const record = {
     ...doc,
     vehicle,
+    seller,
+    buyer,
   }
 
   return record
@@ -203,15 +273,30 @@ export const printRecord = async (parent: any, args: any) => {
 
   console.log(doc)
 
-  const vehicle = await DB.vehicles
-    .get(doc.vehicleId)
-    .then((vehicle: any) => vehicle as any)
-    .then(asVehicle)
+  const vehicleSpread = doc.vehicleId
+    ? {
+        vehicle: await DB.vehicles.get(doc.vehicleId).then(asVehicle),
+      }
+    : {}
+
+  const sellerSpread = doc.sellerId
+    ? {
+        seller: await DB.customers.get(doc.sellerId).then(asCustomer),
+      }
+    : {}
+
+  const buyerSpread = doc.buyerId
+    ? {
+        buyer: await DB.customers.get(doc.buyerId).then(asCustomer),
+      }
+    : {}
 
   const record = {
     ...doc,
+    ...vehicleSpread,
+    ...sellerSpread,
+    ...buyerSpread,
     netWeight: Math.abs(doc.weights[0]?.weight - doc.weights[1]?.weight),
-    vehicle,
   }
 
   return record.weights?.length > 1

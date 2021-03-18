@@ -391,6 +391,47 @@ const grid = (record: any, compact: boolean = false) => `<div class="grid ${
 					${VEHICLE_TYPES[record.vehicle.type] || 'UNKNOWN'}
 				</div>
 			</div>
+			${
+        !compact && record.seller
+          ? `
+				<div class="row">
+					<h3>Seller</h3>
+					<div class="row-field">
+						<div>
+						Name: 
+						${record.seller.name.display}
+						</div>
+						<div>
+						Phone: 
+						${record.seller.phoneNumber.number}
+						</div>
+					</div>
+				</div>
+			`
+          : ''
+      }
+			${
+        !compact && record.buyer
+          ? `
+
+				<div class="row">
+
+					<h3>Buyer</h3>
+					<div class="row-field">
+						<div>
+						Name: 
+						${record.buyer.name.display}
+						</div>
+						<div>
+						Phone: 
+						${record.buyer.phoneNumber.number}
+						</div>
+					</div>
+				
+				</div>
+			`
+          : ''
+      }
 		</div>
 		<div class="right-content">
 			<div class="row">
@@ -445,6 +486,7 @@ const printTime = (time: any) => `
 	`
 
 export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
+  console.log(record)
   return `
 		${leftDetail}
 		<div class="container">
@@ -464,7 +506,7 @@ export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
 
 			${printTime(new Date().getTime())}
 			
-			${grid(record, true)}
+			${grid(record, stamp === PAGE_TYPES.PENDING)}
 			${stamp === PAGE_TYPES.PENDING ? '<div class="cut-line"></div>' : ''}
 
 			${
@@ -472,11 +514,12 @@ export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
           ? `${header(company, address, phone)} ${printTime(
               new Date().getTime()
             )} ${grid(record, true)}`
-          : `<div class="operator">
-				<div class="operator-signature">
-					Operator Signature
-				</div>
-			</div>`
+          : `
+				<div class="operator">
+					<div class="operator-signature">
+						Operator Signature
+					</div>
+				</div>`
       }
 
 			<div class="footer">

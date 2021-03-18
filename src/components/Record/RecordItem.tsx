@@ -119,6 +119,28 @@ const RecordItem = (props: any) => {
                 </IonChip>
               </IonLabel>
             </IonItem>
+            {record.buyer && (
+              <IonItem className='customer-row'>
+                <IonLabel>
+                  <h2>Buyer</h2>
+                  <div>
+                    <div className='name'>{record.buyer.name?.display}</div>
+                    <IonChip>{record.buyer.phoneNumber?.number}</IonChip>
+                  </div>
+                </IonLabel>
+              </IonItem>
+            )}
+            {record.seller && (
+              <IonItem className='customer-row'>
+                <IonLabel>
+                  <h2>Seller</h2>
+                  <div>
+                    <div className='name'>{record.seller.name?.display}</div>
+                    <IonChip>{record.seller.phoneNumber?.number}</IonChip>
+                  </div>
+                </IonLabel>
+              </IonItem>
+            )}
           </IonList>
         </div>
 

@@ -9,6 +9,7 @@ PouchDB.plugin(PouchDBFind)
 const DB = {
   records: new PouchDB('.db/records'),
   vehicles: new PouchDB('.db/vehicles'),
+  customers: new PouchDB('.db/customers'),
 }
 
 DB.records.createIndex({
@@ -20,6 +21,12 @@ DB.records.createIndex({
 DB.vehicles.createIndex({
   index: {
     fields: ['createdAt', 'plateNumber', 'plateCode', 'plateRegion'],
+  },
+})
+
+DB.customers.createIndex({
+  index: {
+    fields: ['createdAt', 'phoneNumber', 'name'],
   },
 })
 
@@ -50,6 +57,20 @@ DB.vehicles
   .then((rows) =>
     fs.writeFile(
       path.join(backupDir, `vehicles.backup.${new Date().getTime()}`),
+      rows,
+      () => {}
+    )
+  )
+
+DB.customers
+  .allDocs({
+    include_docs: true,
+  })
+  .then((docs) => docs.rows)
+  .then((rows) => JSON.stringify(rows))
+  .then((rows) =>
+    fs.writeFile(
+      path.join(backupDir, `customers.backup.${new Date().getTime()}`),
       rows,
       () => {}
     )

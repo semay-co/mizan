@@ -1,8 +1,18 @@
 import { gql } from '@apollo/client'
 
 export const CREATE_RECORD = gql`
-  mutation CreateRecord($weight: Int!, $vehicleId: String!) {
-    createRecord(weight: $weight, vehicleId: $vehicleId) {
+  mutation CreateRecord(
+    $weight: Int!
+    $vehicleId: String!
+    $sellerId: String
+    $buyerId: String
+  ) {
+    createRecord(
+      weight: $weight
+      vehicleId: $vehicleId
+      sellerId: $sellerId
+      buyerId: $buyerId
+    ) {
       id
       serial
       createdAt
@@ -16,6 +26,24 @@ export const CREATE_RECORD = gql`
           region {
             code
           }
+        }
+      }
+      buyer {
+        id
+        name {
+          display
+        }
+        phoneNumber {
+          number
+        }
+      }
+      seller {
+        id
+        name {
+          display
+        }
+        phoneNumber {
+          number
         }
       }
     }

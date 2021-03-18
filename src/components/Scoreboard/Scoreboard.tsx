@@ -16,7 +16,6 @@ const Scoreboard = (props: any) => {
   const sub = useSubscription(SUBSCRIBE_READING)
 
   useEffect(() => {
-    let isMounted = true
     if (sub.data && !props.ui.manualInput)
       +sub.data.reading?.weight !== +props.reading?.weight &&
         props.updateReading({
@@ -36,10 +35,6 @@ const Scoreboard = (props: any) => {
         weight: 0,
         status: STATUS_CODES.loading,
       })
-
-    return () => {
-      isMounted = false
-    }
   }, [sub.data, sub.error, sub.loading, props])
 
   isNaN(+props.reading?.weight) &&

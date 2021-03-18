@@ -33,6 +33,24 @@ export const FETCH_RECORDS = gql`
           plate
         }
       }
+      buyer {
+        id
+        name {
+          display
+        }
+        phoneNumber {
+          number
+        }
+      }
+      seller {
+        id
+        name {
+          display
+        }
+        phoneNumber {
+          number
+        }
+      }
     }
   }
 `
@@ -55,6 +73,24 @@ export const FETCH_RECORD = gql`
             code
           }
           plate
+        }
+      }
+      buyer {
+        id
+        name {
+          display
+        }
+        phoneNumber {
+          number
+        }
+      }
+      seller {
+        id
+        name {
+          display
+        }
+        phoneNumber {
+          number
         }
       }
     }

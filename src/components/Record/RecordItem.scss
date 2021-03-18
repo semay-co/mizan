@@ -30,6 +30,14 @@
       --background: none;
       --border-color: transparent;
     }
+
+    .customer-row {
+      text-transform: uppercase;
+
+      .name {
+        margin: 1rem;
+      }
+    }
   }
 
   .card-right-content {
@@ -111,15 +119,16 @@
     }
 
     &.danger-button {
-      background: #ff496188;
+      color: #ff496188;
+      background: #ff496122;
 
       ion-text {
-        color: #ffffff;
+        color: #ff496188;
       }
 
       ion-button {
-        --background: #ff4961aa;
-        --color: #00000088;
+        --color: #ff496188;
+        --background: #ff496111;
       }
     }
   }

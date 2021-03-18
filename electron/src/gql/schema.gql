@@ -7,19 +7,27 @@ type Query {
     serial: String
     filters: [String]
   ): [Record]
+  record(id: String!): Record
   vehicles(query: String, limit: Int): [Vehicle]
   vehicle(id: String): Vehicle
-  record(id: String!): Record
+  customers(query: String, limit: Int): [Customer]
+  customer(id: String): Customer
 }
 
 type Mutation {
-  createRecord(weight: Int!, vehicleId: String!): Record
+  createRecord(
+    weight: Int!
+    vehicleId: String!
+    sellerId: String
+    buyerId: String
+  ): Record
   createVehicle(
     type: Int!
     plateNumber: String!
     plateCode: Int!
     plateRegion: String!
   ): Vehicle
+  createCustomer(phoneNumber: String!, name: String!): Customer
   addSecondWeight(recordId: String!, weight: Int!, createdAt: String!): Record
   printRecord(id: String!): String
 }
@@ -85,7 +93,8 @@ type Record {
   id: ID!
   createdAt: String!
   updatedAt: String
-  customer: Customer
+  seller: Customer
+  buyer: Customer
   operator: User
   vehicle: Vehicle
   product: Product
