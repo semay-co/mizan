@@ -64,7 +64,7 @@ const Scoreboard = (props: any) => {
   }
 
   const isManualInput =
-    props.ui?.manualInput || props.reading?.status !== STATUS_CODES.ok
+    props.ui?.manualInput || props.reading?.status === STATUS_CODES.error
 
   return (
     <>
