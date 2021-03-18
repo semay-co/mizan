@@ -5,9 +5,9 @@ const html_to_pdf = require('html-pdf-node')
 
 const options = { format: 'A4' }
 
-export const print = (record: any, stamp: string = 'Original') => {
+export const print = async (record: any, stamp: string = 'Original') => {
   const file = {
-    content: template(record, stamp),
+    content: await template(record, stamp),
   }
 
   return html_to_pdf

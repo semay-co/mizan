@@ -1,6 +1,7 @@
 import moment from 'moment'
 import { VEHICLE_TYPES } from '../../../src/model/vehicle.model'
 import { PAGE_TYPES } from '../../../src/model/print.model'
+import QR from 'qrcode'
 
 const company = 'Furi Truck Scale Service'
 const address = 'Sebeta, Furi - Around Police Club'
@@ -335,6 +336,11 @@ export const styles = `
 				z-index: 10;
 			}
 
+			.qr-wrap {
+				margin-bottom: 1rem;
+				font-family: monospace;
+			}
+
 			.disclaimer {
 				width: 100%;
 				font-family: monospace;
@@ -485,8 +491,26 @@ const printTime = (time: any) => `
 		</div>
 	`
 
-export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
+const getQr = async (link: string) => {
+  return await QR.toDataURL(link, {
+    type: 'image/png',
+    margin: 1,
+  })
+}
+
+export const receipt = async (
+  record: any,
+  stamp: string = PAGE_TYPES.ORIGINAL
+) => {
   console.log(record)
+
+  const address = (
+    record.id.slice(record.id.length - 2) + record.serial
+  ).toUpperCase()
+  const link = `https://furimizan.web.app/${address}`
+
+  const qr = await getQr(link)
+
   return `
 		${leftDetail}
 		<div class="container">
@@ -526,7 +550,13 @@ export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
 				${
           stamp === PAGE_TYPES.PENDING
             ? '<div class="return-notice">ሲመለሱ ይህን ወረቀት ይዘው ይምጡ።</div>'
-            : `<div class="disclaimer">
+            : `<div class="qr-wrap">
+							<div class="qr-code">
+								<img src="${qr}"/ >
+							</div>
+							<div class="qr-link">Result available at: ${link}</div>
+						</div>
+						<div class="disclaimer">
 						Disclaimer: We can only guarantee the weight, not the material.
 					</div>`
         }
@@ -534,7 +564,7 @@ export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
 		</div>`
 }
 
-export const template = (record: any, stamp: string) =>
+export const template = async (record: any, stamp: string) =>
   `<html>
     <head>
       <style>
@@ -542,6 +572,6 @@ export const template = (record: any, stamp: string) =>
       </style>
     </head>
     <body>
-      ${receipt(record, stamp)}
+      ${await receipt(record, stamp)}
     </body>
   </html>`

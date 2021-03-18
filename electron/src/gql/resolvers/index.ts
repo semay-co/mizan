@@ -29,7 +29,9 @@ SerialPort.list().then((ports) => {
 
   if (process.env.FAKE_SERIAL_PORT) {
     setInterval(() => {
-      publish(Math.floor(Math.random() * 1000) * 10)
+      publish(
+        Math.floor(Math.random() * 1000) * 10 * Math.round(Math.random() + 0.4)
+      )
     }, 100)
   } else {
     if (search.length > 0) {

@@ -32,6 +32,7 @@
     "ionicons": "^5.4.0",
     "jquery": "^3.5.1",
     "moment": "^2.29.1",
+    "qrcode": "^1.4.4",
     "ramda": "^0.27.1",
     "react": "^17.0.1",
     "react-apollo": "^3.1.5",
@@ -88,6 +89,7 @@
   "devDependencies": {
     "@capacitor/cli": "2.4.6",
     "@types/dotenv-flow": "^3.1.0",
+    "@types/qrcode": "^1.4.0",
     "@types/react-redux": "^7.1.16",
     "dotenv-flow": "^3.2.0",
     "node-sass": "^4.14.1"

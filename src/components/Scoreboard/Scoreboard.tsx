@@ -37,10 +37,10 @@ const Scoreboard = (props: any) => {
       })
   }, [sub.data, sub.error, sub.loading, props])
 
-  isNaN(+props.reading?.weight) &&
-    props.updateUIState({
-      manualInput: true,
-    })
+  // isNaN(+props.reading?.weight) &&
+  //   props.updateUIState({
+  //     manualInput: true,
+  //   })
 
   const manualInput = (ev: any) => {
     props.updateReading({
