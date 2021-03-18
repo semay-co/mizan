@@ -64,7 +64,19 @@ const link = split(
 )
 
 const client = new ApolloClient({
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    typePolicies: {
+      Record: {
+        fields: {
+          serial: {
+            read(serial = '000') {
+              return serial
+            },
+          },
+        },
+      },
+    },
+  }),
   link,
 })
 

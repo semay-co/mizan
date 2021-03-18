@@ -28,10 +28,7 @@ ion-card {
 }
 
 .form-wrap {
-  // padding: 1rem;
-
   .entity-card {
-    // background: $light-card-bg;
     padding: 0;
 
     ion-card-header {
@@ -42,10 +39,9 @@ ion-card {
       color: #ffffffaa;
       align-items: center;
       font-size: 1.3rem;
-      // background: #eeeeff22;
-      // font-weight: 600;
       padding: 1rem 2rem;
       letter-spacing: 0.2rem;
+      // height: 2rem;
     }
 
     ion-card-content {
@@ -170,6 +166,20 @@ ion-card {
   margin-top: 2rem;
   display: grid;
   justify-content: stretch;
+
+  &.danger-button {
+    color: #ff496188;
+    background: #ff496122;
+
+    ion-text {
+      color: #ff496188;
+    }
+
+    ion-button {
+      --color: #ff496188;
+      --background: #ff496111;
+    }
+  }
 
   ion-text {
     text-align: center;

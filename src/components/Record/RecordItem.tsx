@@ -29,6 +29,7 @@ import { ADD_SECOND_WEIGHT } from '../../gql/mutations/record.mutations'
 import { VEHICLE_TYPES } from '../../model/vehicle.model'
 import { PRINT_RECORD } from '../../gql/mutations/record.mutations'
 import classNames from 'classnames'
+import { FETCH_RECORDS } from '../../gql/queries/record.queries'
 
 const RecordItem = (props: any) => {
   const record = props.record
@@ -83,17 +84,11 @@ const RecordItem = (props: any) => {
     }
   }
 
-  const setAsComplete = () => {
-    addSecondWeight({
-      variables: {
-        recordId: record.id,
-        weight: 0,
-        createdAt: new Date().getTime().toString(),
-      },
-    })
+  const selectRecord = () => {
+    props.updateRecordResult(record.id)
   }
 
-  const isUpdated = () => props.reading.weight === props.draft?.reading?.weight
+  const isSynced = () => props.reading.weight === props.draft?.reading?.weight
 
   const isLoaded = () => props.draft?.reading?.weight > 1000
 
@@ -124,6 +119,28 @@ const RecordItem = (props: any) => {
                 </IonChip>
               </IonLabel>
             </IonItem>
+            {record.buyer && (
+              <IonItem className='customer-row'>
+                <IonLabel>
+                  <h2>Buyer</h2>
+                  <div>
+                    <div className='name'>{record.buyer.name?.display}</div>
+                    <IonChip>{record.buyer.phoneNumber?.number}</IonChip>
+                  </div>
+                </IonLabel>
+              </IonItem>
+            )}
+            {record.seller && (
+              <IonItem className='customer-row'>
+                <IonLabel>
+                  <h2>Seller</h2>
+                  <div>
+                    <div className='name'>{record.seller.name?.display}</div>
+                    <IonChip>{record.seller.phoneNumber?.number}</IonChip>
+                  </div>
+                </IonLabel>
+              </IonItem>
+            )}
           </IonList>
         </div>
 
@@ -159,11 +176,11 @@ const RecordItem = (props: any) => {
                     <div
                       className={classNames(
                         'weight-measure',
-                        isLoaded() && isUpdated() ? 'green-draft' : 'red-draft'
+                        isLoaded() && isSynced() ? 'green-draft' : 'red-draft'
                       )}
                     >
                       {secondWeightDraft.weight.toLocaleString()} KG
-                      {!isUpdated() && (
+                      {!isSynced() && (
                         <IonButton
                           className='update-button'
                           onClick={recordReading}
@@ -181,23 +198,19 @@ const RecordItem = (props: any) => {
                   <>
                     <span className='record-pending'>Pending</span>
                     <IonButton
+                      onClick={selectRecord}
                       className='record-pending-button'
                       color='success'
                       fill='outline'
                     >
                       <IonIcon icon={speedometerOutline}></IonIcon>
-                      {props.draft?.reading
-                        ? 'Use Recorded Weight'
-                        : 'Record New'}
-                    </IonButton>
-                    <IonButton
-                      onClick={setAsComplete}
-                      className='record-pending-button'
-                      color='success'
-                      fill='outline'
-                    >
-                      <IonIcon icon={checkmark}></IonIcon>
-                      Set Completed
+                      {/* {false &&
+                      // Use{' '}
+                      // {props.draft?.reading
+                      //   ? props.draft.reading?.weight
+                      //   : 0}{' '}
+                      // KG
+                      } */}
                     </IonButton>
                   </>
                 )}
@@ -225,7 +238,12 @@ const RecordItem = (props: any) => {
           )}
         </div>
         {secondWeightDraft && (
-          <div className='bottom-button'>
+          <div
+            className={classNames({
+              'bottom-button': true,
+              'danger-button': !isLoaded() || !isSynced(),
+            })}
+          >
             <IonButton onClick={onSaveSecondWeight} size='large' expand='block'>
               <IonIcon icon={checkmark} />
               Use This Record

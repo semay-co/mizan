@@ -1,0 +1,12 @@
+.suggestion {
+  font-size: 1.4rem;
+  display: grid;
+  grid-auto-flow: column;
+  padding: 1rem;
+  align-items: center;
+  text-transform: uppercase;
+
+  .phone-number {
+    margin-right: 1rem;
+  }
+}

@@ -51,7 +51,7 @@ const NewVehicleForm = (props: any) => {
         },
       })
         .then((plate) => {
-          const vehicleId = plate.data.createVehicle
+          const vehicleId = plate.data.createVehicle.id
           props.updateRecordDraft({
             ...props.draft,
             vehicleId,

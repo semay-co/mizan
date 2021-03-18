@@ -65,7 +65,7 @@ const VehicleSuggestions = (props: any) => {
               />
 
               <IonChip color='secondary'>
-                {/* {VEHICLE_TYPES[vehicle.type] || 'unknown'} */}
+                {VEHICLE_TYPES[vehicle.type] || 'UNKNOWN'}
               </IonChip>
             </IonItem>
           ))}

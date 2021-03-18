@@ -18,7 +18,9 @@ import { CREATE_RECORD } from '../../gql/mutations/record.mutations'
 import RecordedWeight from './RecordedWeight'
 import LicensePlateForm from './LicensePlateForm'
 import SelectedVehicleCard from './SelectedVehicleCard'
-import { record } from '../../state/actors/record.actor'
+import classNames from 'classnames'
+import CustomerForm from './CustomerForm'
+import SelectedCustomerCard from './SelectedCustomerCard'
 
 const Form = (props: any) => {
   const [runCreateRecord] = useMutation(CREATE_RECORD)
@@ -48,7 +50,23 @@ const Form = (props: any) => {
     })
   }
 
-  const isUpdated = () => props.reading.weight === props.draft?.reading?.weight
+  const clearSelectedBuyer = () => {
+    props.updateRecordDraft({
+      ...props.draft,
+      buyerId: undefined,
+      buyer: undefined,
+    })
+  }
+
+  const clearSelectedSeller = () => {
+    props.updateRecordDraft({
+      ...props.draft,
+      sellerId: undefined,
+      seller: undefined,
+    })
+  }
+
+  const isSynced = () => props.reading.weight === props.draft?.reading?.weight
 
   const isLoaded = () => props.draft?.reading?.weight >= 1000
 
@@ -80,10 +98,24 @@ const Form = (props: any) => {
         variables: {
           weight: draft.reading.weight,
           vehicleId: draft.vehicleId,
+          sellerId: draft.sellerId || undefined,
+          buyerId: draft.buyerId || undefined,
+        },
+        update: (cache, { data }) => {
+          const result = data?.createRecord.record
+          const current = cache.readQuery({
+            query: FETCH_RECORDS,
+          }) as any
+
+          cache.writeQuery({
+            query: FETCH_RECORDS,
+            data: [...current.records, result],
+          })
         },
       }).then((record) => {
         console.log('record', record)
-        props.updateRecordResult(record.data.createRecord)
+        props.updateRecordResult(record.data.createRecord.id)
+
         if (props.result) {
           recordQuery.refetch()
           selectedVehicleRecords.refetch()
@@ -92,6 +124,22 @@ const Form = (props: any) => {
     } else {
       alert('Record information incomplete')
     }
+  }
+
+  const addParty = (type: string) => {
+    const party =
+      type === 'seller'
+        ? {
+            skipSeller: undefined,
+          }
+        : {
+            skipBuyer: undefined,
+          }
+
+    props.updateRecordDraft({
+      ...props.draft,
+      ...party,
+    })
   }
 
   const getVehicleType = (type: number) => {
@@ -141,30 +189,94 @@ const Form = (props: any) => {
           <>
             <RecordedWeight onRecord={recordReading} />
 
-            {!props.draft.vehicleId && <LicensePlateForm />}
-
-            {props.draft.vehicleId && (
+            {!props.draft.vehicleId ? (
+              <LicensePlateForm />
+            ) : (
               <>
                 <SelectedVehicleCard
                   getVehicleType={getVehicleType}
                   onClear={clearSelectedVehicle}
                 />
 
-                <IonCard
-                  className='create-button-card'
-                  color={!isLoaded() || !isUpdated() ? 'danger' : 'clear'}
-                >
-                  {' '}
-                  {(!isLoaded() || !isUpdated()) && (
-                    <IonText>Weight has changed</IonText>
-                  )}
-                  <IonButton size='large' onClick={createRecord}>
-                    <IonIcon icon={addOutline} />
-                    Create New Record
-                  </IonButton>
-                </IonCard>
+                {!props.draft.buyerId && !props.draft.skipBuyer ? (
+                  <>
+                    {!props.draft.skipBuyer ? (
+                      <CustomerForm party='buyer' />
+                    ) : (
+                      ''
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <SelectedCustomerCard
+                      party='buyer'
+                      onClear={clearSelectedBuyer}
+                    />
+                    {!props.draft.sellerId ? (
+                      <>
+                        {!props.draft.skipSeller ? (
+                          <CustomerForm party='seller' />
+                        ) : (
+                          ''
+                        )}
+                      </>
+                    ) : (
+                      <SelectedCustomerCard
+                        party='seller'
+                        onClear={clearSelectedSeller}
+                      />
+                    )}
+                  </>
+                )}
+
+                {props.draft.skipBuyer && (
+                  <IonCard>
+                    <IonButton
+                      onClick={() => addParty('buyer')}
+                      fill='outline'
+                      expand='block'
+                    >
+                      <IonIcon icon={addOutline} />
+                      Add Buyer
+                    </IonButton>
+                  </IonCard>
+                )}
+                {props.draft.skipSeller && (
+                  <IonCard>
+                    <IonButton
+                      onClick={() => addParty('seller')}
+                      fill='outline'
+                      expand='block'
+                    >
+                      <IonIcon icon={addOutline} />
+                      Add Seller
+                    </IonButton>
+                  </IonCard>
+                )}
               </>
             )}
+
+            {props.draft.vehicleId &&
+              (props.draft.sellerId || props.draft.skipSeller) &&
+              (props.draft.buyerId || props.draft.skipBuyer) && (
+                <>
+                  <IonCard
+                    className={classNames({
+                      'create-button-card': true,
+                      'danger-button': !isLoaded() || !isSynced(),
+                    })}
+                  >
+                    {' '}
+                    {(!isLoaded() || !isSynced()) && (
+                      <IonText>Weight has changed</IonText>
+                    )}
+                    <IonButton size='large' onClick={createRecord}>
+                      <IonIcon icon={addOutline} />
+                      Create New Record
+                    </IonButton>
+                  </IonCard>
+                </>
+              )}
           </>
         )}
       </div>
