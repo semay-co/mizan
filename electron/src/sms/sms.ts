@@ -2,7 +2,8 @@ import puppeteer from 'puppeteer'
 
 const startBrowser = async () => {
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
+    executablePath: '/usr/bin/chromium-browser',
   })
 
   const page = await browser.newPage()
@@ -16,13 +17,13 @@ const closeBrowser = async (browser: any) => {
 
 const sendSms = async () => {
   const { browser, page } = await startBrowser()
-  const baseUrl = 'http://192.168.0.1'
+  const baseUrl = 'http://192.168.8.1'
 
   await page.setViewport({ width: 1265, height: 613 })
 
   const goToLoginPage = async () =>
     Promise.all([
-      await page.goto(`${baseUrl}/index.html#login`),
+      await page.goto(`${baseUrl}/html/index.html`),
       await page.waitForNavigation({ waitUntil: 'load' }),
     ])
 
@@ -30,10 +31,10 @@ const sendSms = async () => {
     Promise.all([
       await goToLoginPage(),
       await page
-        .type('#txtPwd', 'admin')
+        .type('#login_pwd_input', '$implepass')
         .catch((err) => console.log('writing password failed')),
       await page
-        .click('#btnLogin')
+        .click('#login_btn')
         .catch((err) => console.log('clicking failed')),
       await page.waitForNavigation({ waitUntil: 'load' }),
     ])

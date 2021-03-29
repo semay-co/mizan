@@ -3,13 +3,40 @@ import PouchDBFind from 'pouchdb-find'
 import fs from 'fs'
 import os from 'os'
 import path from 'path'
+import { PathLike } from 'node:fs'
+import { resolve } from 'node:path'
 
 PouchDB.plugin(PouchDBFind)
 
+const ensureExists = (path: PathLike, mask: number = 777) => {
+  return new Promise((resolve, reject) => {
+    fs.mkdir(path, mask, (err) => {
+      if (err) {
+        if (err.code === 'EEXIST') resolve(null)
+        else reject(err)
+      } else resolve(null)
+    })
+  })
+}
+
+const mizanDir = path.join(os.homedir(), '.mizan')
+const backupDir = path.join(mizanDir, 'backup')
+const dbDir = path.join(mizanDir, 'db')
+
+const init = async () => {
+  await ensureExists(mizanDir)
+  await ensureExists(backupDir)
+  await ensureExists(dbDir)
+}
+
+init()
+
 const DB = {
-  records: new PouchDB('.db/records'),
-  vehicles: new PouchDB('.db/vehicles'),
-  customers: new PouchDB('.db/customers'),
+  records: new PouchDB(`${dbDir}/records`),
+  vehicles: new PouchDB(`${dbDir}/vehicles`),
+  customers: new PouchDB(`${dbDir}/customers`),
+  materials: new PouchDB(`${dbDir}/materials`),
+  meta: new PouchDB(`${dbDir}/meta`),
 }
 
 DB.records.createIndex({
@@ -29,10 +56,6 @@ DB.customers.createIndex({
     fields: ['createdAt', 'phoneNumber', 'name'],
   },
 })
-
-const backupDir = path.join(os.homedir(), '.mizan')
-
-fs.mkdir(backupDir, (dir) => dir)
 
 DB.records
   .allDocs({

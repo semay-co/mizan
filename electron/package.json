@@ -9,6 +9,7 @@
     "electron:pack": "npm run build && electron-builder build --dir",
     "electron:build-windows": "npm run build && electron-builder build --windows",
     "electron:build-mac": "npm run build && electron-builder build --mac",
+    "postserver": "npx pouchdb-server --sqlite &",
     "server": "nodemon --watch 'src/**' --ext 'ts, json, gql' --exec 'ts-node src/server'"
   },
   "dependencies": {
