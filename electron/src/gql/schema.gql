@@ -21,15 +21,22 @@ type Mutation {
     sellerId: String
     buyerId: String
   ): Record
+  createCustomer(phoneNumber: String!, name: String!): Customer
+  addSecondWeight(recordId: String!, weight: Int!, createdAt: String!): Record
+  printRecord(id: String!): String
   createVehicle(
     type: Int!
     plateNumber: String!
     plateCode: Int!
     plateRegion: String!
   ): Vehicle
-  createCustomer(phoneNumber: String!, name: String!): Customer
-  addSecondWeight(recordId: String!, weight: Int!, createdAt: String!): Record
-  printRecord(id: String!): String
+  updateVehicle(
+    id: String!
+    type: Int
+    plateNumber: String
+    plateCode: Int
+    plateRegion: String
+  ): Vehicle
 }
 
 type User {

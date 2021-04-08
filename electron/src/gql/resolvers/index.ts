@@ -11,13 +11,17 @@ import {
   addSecondWeight,
 } from './record.resolvers'
 
+export enum events {
+  NEW_READING = 'NEW_READING',
+}
+
 env.config()
 
 const pubsub = new PubSub()
 const comPort = process.env.SERIAL_PORT || '/dev/ttyS0'
 
 const publish = (reading: number) => {
-  pubsub.publish('NEW_READING', {
+  pubsub.publish(events.NEW_READING, {
     reading,
   })
 }
@@ -27,10 +31,10 @@ SerialPort.list().then((ports) => {
     .map((port) => port.path.toLowerCase())
     .filter((path) => path === comPort.toLowerCase())
 
-  if (process.env.FAKE_SERIAL_PORT) {
+  if (process.env.EMULATE_SCALE) {
     setInterval(() => {
       publish(Math.floor(Math.random() * 1000) * 10)
-    }, 100)
+    }, 30 * 1000)
   } else {
     if (search.length > 0) {
       const port = new SerialPort(comPort, {
@@ -68,10 +72,6 @@ SerialPort.list().then((ports) => {
     }
   }
 })
-
-export enum events {
-  NEW_READING = 'NEW_READING',
-}
 
 const resolvers = {
   Query: {
