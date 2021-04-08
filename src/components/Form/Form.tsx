@@ -7,7 +7,12 @@ import {
   deleteRecordDraft,
   updateRecordResult,
 } from '../../state/actions/record.action'
-import { addOutline, closeOutline, speedometerOutline } from 'ionicons/icons'
+import {
+  addOutline,
+  closeOutline,
+  reloadOutline,
+  speedometerOutline,
+} from 'ionicons/icons'
 import { VEHICLE_TYPES } from '../../model/vehicle.model'
 import { useMutation, useQuery } from '@apollo/client'
 import { FETCH_RECORD, FETCH_RECORDS } from '../../gql/queries/record.queries'
@@ -267,10 +272,28 @@ const Form = (props: any) => {
                     })}
                   >
                     {' '}
-                    {(!isLoaded() || !isSynced()) && (
-                      <IonText>Weight has changed</IonText>
+                    {!isSynced() ? (
+                      <>
+                        <IonText>Weight has changed</IonText>
+                        <IonButton
+                          className='update-button'
+                          shape='round'
+                          color='secondary'
+                          fill='solid'
+                          onClick={recordReading}
+                        >
+                          <IonIcon icon={reloadOutline} />
+                          Update
+                        </IonButton>
+                      </>
+                    ) : (
+                      !isLoaded() && <IonText>Weight is too small</IonText>
                     )}
-                    <IonButton size='large' onClick={createRecord}>
+                    <IonButton
+                      className='create-button'
+                      size='large'
+                      onClick={createRecord}
+                    >
                       <IonIcon icon={addOutline} />
                       Create New Record
                     </IonButton>

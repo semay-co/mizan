@@ -1,14 +1,14 @@
-import resolvers from "./gql/resolvers";
-import typeDefs from "./gql/typeDefs";
-import { ApolloServer, PubSub } from "apollo-server";
-import env from "dotenv-flow";
-import { sms } from "./sms/sms";
+import resolvers from './gql/resolvers'
+import typeDefs from './gql/typeDefs'
+import { ApolloServer, PubSub } from 'apollo-server'
+import env from 'dotenv-flow'
+import { sms } from './sms/sms'
 
-env.config();
+env.config()
 
-const pubsub = new PubSub();
+const pubsub = new PubSub()
 
-sms();
+sms()
 
 const server = () => {
   const server = new ApolloServer({
@@ -19,11 +19,13 @@ const server = () => {
       res,
       pubsub,
     }),
-  });
+  })
 
-  server.listen(8989, () => console.info(`Mizan server is running`));
-};
+  server.listen(process.env.SERVER_PORT || 8989, () =>
+    console.info(`Mizan server is running`)
+  )
+}
 
-server();
+server()
 
-export default server;
+export default server

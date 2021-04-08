@@ -9,6 +9,7 @@ import { asCustomer } from '../../lib/customer.lib'
 const base36 = require('base36')
 
 const serialStart = process.env.SERIAL_START || 100000
+console.log(serialStart)
 
 export const records = async (parent: any, args: any) => {
   const filters = args.filters
@@ -16,6 +17,8 @@ export const records = async (parent: any, args: any) => {
   const docs = await DB.records.allDocs({
     include_docs: true,
   })
+
+  const sorted = _.sortBy(_.compose(parseInt, _.prop('createdAt')))(docs.rows)
 
   // docs.rows.map((record: any, i: number) =>
   //   DB.records.put({
@@ -25,7 +28,7 @@ export const records = async (parent: any, args: any) => {
   //   })
   // )
 
-  const rows = _.filter((row: any) => row.doc.docType === 'record')(docs.rows)
+  const rows = _.filter((row: any) => row.doc.docType === 'record')(sorted)
 
   const records = await Promise.all(
     _.map(async (row: any) => {

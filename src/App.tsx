@@ -37,15 +37,18 @@ const errorLink = onError(({ graphQLErrors }) => {
   graphQLErrors?.map(console.error)
 })
 
+const serverPort = process.env.REACT_APP_SERVER_PORT || 8989
+console.log(serverPort)
+
 const httpLink = from([
   errorLink,
   new HttpLink({
-    uri: 'http://localhost:8989/',
+    uri: `http://localhost:${serverPort}/`,
   }),
 ])
 
 const wsLink = new WebSocketLink({
-  uri: 'ws://localhost:8989/graphql',
+  uri: `ws://localhost:${serverPort}/graphql`,
   options: {
     reconnect: true,
   },

@@ -26,7 +26,7 @@ const Scoreboard = (props: any) => {
     if (sub.error)
       props.updateReading({
         receivedAt: new Date().getTime(),
-        weight: sub.error.message,
+        weight: 0,
         status: STATUS_CODES.error,
       })
     if (sub.loading && !props.ui.manualInput)

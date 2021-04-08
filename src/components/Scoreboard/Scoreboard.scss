@@ -80,13 +80,14 @@ $indicator-warn: #ffd534;
 
 .status-bar {
   text-align: end;
-  border-bottom: 3px solid;
+  // border-bottom: 3px solid;
   opacity: 0.6;
   background-color: $indicator-background;
 
   &.error {
     border-color: $indicator-error;
   }
+
   &.warn {
     border-color: $indicator-warn;
   }

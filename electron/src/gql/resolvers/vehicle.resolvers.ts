@@ -3,17 +3,36 @@ import { v4 as uuid } from 'uuid'
 import { asVehicle } from '../../lib/vehicle.lib'
 
 export const createVehicle = async (parent: any, args: any) => {
-  const vehicles = await DB.vehicles.find({
-    selector: {
-      licensePlateNumber: args.plateNumber,
-      licenseCode: args.plateCode,
-      licenseRegion: args.plateRegion,
-    },
-    fields: ['createdAt', 'plateNumber', 'plateCode', 'plateRegion'],
+  // const vehicles = await DB.vehicles.find({
+  //   selector: {
+  //     licensePlateNumber: args.plateNumber,
+  //     licenseCode: args.plateCode,
+  //     licenseRegion: args.plateRegion,
+  //   },
+  //   fields: ['createdAt', 'plateNumber', 'plateCode', 'plateRegion'],
+  // })
+
+  const vehicles = await DB.vehicles.allDocs({
+    include_docs: true,
   })
 
-  if (vehicles.docs.length > 0) {
-    const vehicleId = vehicles.docs[0]._id
+  const existing = vehicles.rows
+    .map(
+      (row) =>
+        ({
+          ...row.doc,
+          id: row.id,
+        } as any)
+    )
+    .filter(
+      (row) =>
+        row.licensePlateNumber === args.plateNumber &&
+        row.licensePlateCode === args.plateCode &&
+        row.licensePlateRegion === args.plateCode
+    )
+
+  if (existing.length > 0) {
+    const vehicleId = existing[0]._id
     return vehicleId
   } else {
     const query = await DB.vehicles
@@ -36,7 +55,7 @@ export const createVehicle = async (parent: any, args: any) => {
   }
 }
 
-export const editLicensePlate = async (parent: any, args: any) => {
+export const updateVehicle = async (parent: any, args: any) => {
   const vehicle = args.vehicleId
 
   console.log(vehicle)
