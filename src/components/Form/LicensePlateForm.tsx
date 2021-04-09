@@ -10,6 +10,7 @@ import React, { useEffect } from 'react'
 import {
   updateRecordDraft,
   deleteRecordDraft,
+  updateRecordQuery,
 } from '../../state/actions/record.action'
 import { PLATE_CODES, PLATE_REGIONS } from '../../model/vehicle.model'
 import VehicleSuggestions from './VehicleSuggestions'
@@ -46,6 +47,8 @@ const LicensePlateForm = (props: any) => {
         plate,
       },
     })
+
+    props.updateRecordQuery(props.draft?.licensePlate.plate)
 
     vehicles.refetch()
   }
@@ -153,5 +156,6 @@ const mapStateToProps = (state: any) => {
 
 export default connect(mapStateToProps, {
   updateRecordDraft,
+  updateRecordQuery,
   deleteRecordDraft,
 })(LicensePlateForm)

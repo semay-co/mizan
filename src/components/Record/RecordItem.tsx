@@ -170,7 +170,7 @@ const RecordItem = (props: any) => {
                   fill='outline'
                 >
                   <IonIcon icon={checkmarkOutline}></IonIcon>
-                  Use for third weight
+                  Use Weight
                 </IonButton>
               )}
             </div>
@@ -192,7 +192,7 @@ const RecordItem = (props: any) => {
                     fill='outline'
                   >
                     <IonIcon icon={checkmarkOutline}></IonIcon>
-                    Use for third weight
+                    Use Weight
                   </IonButton>
                 </>
               ) : (
@@ -223,25 +223,23 @@ const RecordItem = (props: any) => {
                         )}
                       </div>
                     </>
+                  ) : true ? (
+                    <>
+                      <span className='record-pending'>Pending</span>
+                      <IonButton
+                        onClick={selectRecord}
+                        className='record-pending-button'
+                        color='success'
+                        fill='outline'
+                      >
+                        <IonIcon icon={speedometerOutline}></IonIcon>
+                        {`${
+                          props.draft?.reading ? props.draft.reading?.weight : 0
+                        } KG`}
+                      </IonButton>
+                    </>
                   ) : (
-                    true && (
-                      <>
-                        <span className='record-pending'>Pending</span>
-                        <IonButton
-                          onClick={selectRecord}
-                          className='record-pending-button'
-                          color='success'
-                          fill='outline'
-                        >
-                          <IonIcon icon={speedometerOutline}></IonIcon>
-                          {`${
-                            props.draft?.reading
-                              ? props.draft.reading?.weight
-                              : 0
-                          } KG`}
-                        </IonButton>
-                      </>
-                    )
+                    <></>
                   )}
                 </>
               )}
