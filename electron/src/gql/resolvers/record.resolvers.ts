@@ -14,19 +14,17 @@ console.log(serialStart)
 export const records = async (parent: any, args: any) => {
   const filters = args.filters
 
-  const docs = await DB.records.allDocs({
+  const result = await DB.records.allDocs({
     include_docs: true,
   })
 
-  const sorted = _.sortBy(_.compose(parseInt, _.prop('createdAt')))(docs.rows)
+  console.log(result.rows)
 
-  // docs.rows.map((record: any, i: number) =>
-  //   DB.records.put({
-  //     ...record.doc,
-  //     recordNumber: undefined,
-  //     serial: base36.base36encode(i + 100000),
-  //   })
-  // )
+  const sortByCreated = _.descend(
+    _.compose(_.prop('createdAt') as any, _.prop('doc') as any)
+  )
+
+  const sorted = _.sort(sortByCreated, result.rows)
 
   const rows = _.filter((row: any) => row.doc.docType === 'record')(sorted)
 
