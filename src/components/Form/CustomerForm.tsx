@@ -27,6 +27,7 @@ const CustomerForm = (props: any) => {
       query: props.draft?.buyer?.phoneNumber,
       limit: 5,
     },
+    fetchPolicy: 'network-only',
   })
 
   useEffect(() => {

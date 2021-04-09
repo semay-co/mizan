@@ -25,12 +25,14 @@ const VehicleSuggestions = (props: any) => {
       query: props.draft?.licensePlate?.plate,
       limit: 5,
     },
+    fetchPolicy: 'network-only',
   })
 
   const selectedVehicleRecords = useQuery(FETCH_RECORDS, {
     variables: {
       vehicleId: props.draft?.vehicleId,
     },
+    fetchPolicy: 'network-only',
   })
 
   const onSelectPlate = (vehicleId: string) => {

@@ -22,6 +22,7 @@ const SelectedVehicleCard = (props: any) => {
     variables: {
       id: props.draft?.vehicleId,
     },
+    fetchPolicy: 'network-only',
   })
   return (
     <>

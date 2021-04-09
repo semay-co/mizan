@@ -27,6 +27,7 @@ const RecordList = (props: any) => {
       filters: props.ui.recordFilters,
       limit: 10,
     },
+    fetchPolicy: 'network-only',
   })
 
   const onQueryChange = (ev: any) => {

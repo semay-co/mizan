@@ -27,6 +27,7 @@ const CustomerSuggestions = (props: any) => {
           : props.draft?.buyer?.phoneNumber,
       limit: 5,
     },
+    fetchPolicy: 'network-only',
   })
 
   const onSelectCustomer = (customerId: string) => {

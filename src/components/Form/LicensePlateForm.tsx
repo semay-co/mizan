@@ -23,6 +23,7 @@ const LicensePlateForm = (props: any) => {
       query: props.draft?.licensePlate?.plate,
       limit: 5,
     },
+    fetchPolicy: 'network-only',
   })
 
   useEffect(() => {
