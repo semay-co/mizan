@@ -60,6 +60,7 @@ export const FETCH_RECORD = gql`
     record(id: $id) {
       id
       createdAt
+      serial
       weights {
         weight
         createdAt

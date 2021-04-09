@@ -24,6 +24,7 @@ const RecordList = (props: any) => {
   const recordsQuery = useQuery(FETCH_RECORDS, {
     variables: {
       query: props.recordQuery,
+      licensePlate: props.recordQueryLicensePlate,
       filters: props.ui.recordFilters,
       limit: 10,
     },

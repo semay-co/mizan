@@ -5,6 +5,7 @@ type Query {
     limit: Int
     vehicleId: String
     serial: String
+    licensePlate: String
     filters: [String]
   ): [Record]
   record(id: String!): Record

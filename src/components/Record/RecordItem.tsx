@@ -12,7 +12,9 @@ import {
 } from '@ionic/react'
 import {
   checkmark,
+  checkmarkOutline,
   printOutline,
+  pulseOutline,
   refreshOutline,
   speedometerOutline,
 } from 'ionicons/icons'
@@ -159,6 +161,18 @@ const RecordItem = (props: any) => {
               <div className='weight-measure'>
                 {record?.weights[0]?.weight.toLocaleString()} KG
               </div>
+
+              {record?.weights[1] && (
+                <IonButton
+                  // onClick={selectRecord}
+                  className='use-record-button'
+                  color='success'
+                  fill='outline'
+                >
+                  <IonIcon icon={checkmarkOutline}></IonIcon>
+                  Use for third weight
+                </IonButton>
+              )}
             </div>
             <div className='weight-entry second-weight'>
               <h3>Second Weight</h3>
@@ -170,6 +184,16 @@ const RecordItem = (props: any) => {
                   <div className='weight-measure'>
                     {record.weights[1].weight.toLocaleString()} KG
                   </div>
+
+                  <IonButton
+                    // onClick={selectRecord}
+                    className='use-record-button'
+                    color='success'
+                    fill='outline'
+                  >
+                    <IonIcon icon={checkmarkOutline}></IonIcon>
+                    Use for third weight
+                  </IonButton>
                 </>
               ) : (
                 <>
@@ -200,20 +224,24 @@ const RecordItem = (props: any) => {
                       </div>
                     </>
                   ) : (
-                    <>
-                      <span className='record-pending'>Pending</span>
-                      <IonButton
-                        onClick={selectRecord}
-                        className='record-pending-button'
-                        color='success'
-                        fill='outline'
-                      >
-                        <IonIcon icon={speedometerOutline}></IonIcon>
-                        {`${
-                          props.draft?.reading ? props.draft.reading?.weight : 0
-                        } KG`}
-                      </IonButton>
-                    </>
+                    true && (
+                      <>
+                        <span className='record-pending'>Pending</span>
+                        <IonButton
+                          onClick={selectRecord}
+                          className='record-pending-button'
+                          color='success'
+                          fill='outline'
+                        >
+                          <IonIcon icon={speedometerOutline}></IonIcon>
+                          {`${
+                            props.draft?.reading
+                              ? props.draft.reading?.weight
+                              : 0
+                          } KG`}
+                        </IonButton>
+                      </>
+                    )
                   )}
                 </>
               )}
