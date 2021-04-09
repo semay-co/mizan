@@ -61,6 +61,8 @@ const Scoreboard = (props: any) => {
     props.updateUIState({
       manualInput: !props.ui.manualInput,
     })
+
+    $('scoreboard-input').trigger('focus')
   }
 
   const isManualInput =
@@ -93,6 +95,8 @@ const Scoreboard = (props: any) => {
             {isManualInput ? (
               <>
                 <IonInput
+                  id='scoreboard-input'
+                  autofocus={true}
                   clearInput={true}
                   onIonChange={manualInput}
                   className='reading'

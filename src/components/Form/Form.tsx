@@ -75,7 +75,10 @@ const Form = (props: any) => {
 
   const isLoaded = () => props.draft?.reading?.weight >= 1000
 
-  const recordReading = () => {
+  const recordReading = (
+    skipBuyer: boolean = false,
+    skipSeller: boolean = false
+  ) => {
     if (props.reading) {
       props.updateRecordDraft({
         ...props.draft,
@@ -85,6 +88,8 @@ const Form = (props: any) => {
           code: props.draft?.licensePlate?.code || 3,
           region: props.draft?.licensePlate?.region || 'AA',
         },
+        skipBuyer: props.draft?.skipBuyer || skipBuyer,
+        skipSeller: props.draft?.skipSeller || skipSeller,
       })
 
       setTimeout(() => {
@@ -183,7 +188,7 @@ const Form = (props: any) => {
                 className='big-record-button'
                 color='primary'
                 button={true}
-                onClick={recordReading}
+                onClick={() => recordReading(true, true)}
               >
                 <IonIcon icon={speedometerOutline}></IonIcon>
                 Start Meauring
@@ -280,7 +285,7 @@ const Form = (props: any) => {
                           shape='round'
                           color='secondary'
                           fill='solid'
-                          onClick={recordReading}
+                          onClick={() => recordReading()}
                         >
                           <IonIcon icon={reloadOutline} />
                           Update
