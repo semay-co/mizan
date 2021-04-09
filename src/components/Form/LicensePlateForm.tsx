@@ -124,7 +124,7 @@ const LicensePlateForm = (props: any) => {
           </IonSelect>
         </IonItem>
       </IonCard>
-      {props.draft.licensePlate.plate && (
+      {props.draft?.licensePlate?.plate && (
         <>
           {vehicles.data?.vehicles?.length > 0 && <VehicleSuggestions />}
           {vehicles.data?.vehicles.filter((vehicle: any) => {

@@ -42,6 +42,12 @@ const Form = (props: any) => {
     },
   })
 
+  const selectedRecord = useQuery(FETCH_RECORD, {
+    variables: {
+      id: props.draft?.recordId,
+    },
+  })
+
   const clearForm = () => {
     props.deleteRecordDraft()
     // props.updateRecordResult(undefined)
@@ -171,6 +177,15 @@ const Form = (props: any) => {
               />
             </div>
           ))}
+
+      {props.draft && props.draft.recordId && (
+        <div key={selectedRecord.data?.record.id} className='existing-record'>
+          <RecordItem
+            record={selectedRecord.data?.record}
+            secondWeightDraft={props.draft.reading}
+          />
+        </div>
+      )}
 
       <div className='form-wrap'>
         {!props.draft ? (

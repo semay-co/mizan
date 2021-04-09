@@ -8,7 +8,34 @@ ion-split-pane {
   background: #ffffff22;
   display: grid;
   grid-template-rows: 1fr auto;
-  width: 60px;
+  position: fixed;
+
+  ion-list {
+    display: grid;
+    justify-items: stretch;
+
+    ion-item {
+      align-content: center;
+
+      ion-text {
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-left: 1rem;
+        display: none;
+        transition: 2s;
+      }
+    }
+  }
+
+  &:hover {
+    ion-list {
+      ion-item {
+        ion-text {
+          display: block;
+        }
+      }
+    }
+  }
 }
 
 .wrap {
