@@ -1,16 +1,16 @@
 import { Actions } from '../../model/action.model'
 import { RecordDraft } from '../../model/record.model'
 
-export const updateRecordDraft = (draft: RecordDraft) => (dispatch: any) =>
+export const updateRecordDraft = (payload: RecordDraft) => (dispatch: any) =>
   dispatch({
     type: Actions.UPDATE_RECORD_DRAFT,
-    payload: draft,
+    payload,
   })
 
-export const updateRecordResult = (result: string) => (dispatch: any) =>
+export const updateRecordResult = (payload: string) => (dispatch: any) =>
   dispatch({
     type: Actions.UPDATE_RECORD_RESULT,
-    payload: result,
+    payload,
   })
 
 export const updateRecordQuery = (payload: string) => (dispatch: any) =>

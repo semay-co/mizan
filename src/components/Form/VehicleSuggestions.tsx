@@ -11,6 +11,7 @@ import { connect } from 'react-redux'
 import React from 'react'
 import {
   updateRecordDraft,
+  updateRecordQuery,
   deleteRecordDraft,
 } from '../../state/actions/record.action'
 import LicensePlate from '../LicensePlate/LicensePlate'
@@ -35,13 +36,15 @@ const VehicleSuggestions = (props: any) => {
     fetchPolicy: 'network-only',
   })
 
-  const onSelectPlate = (vehicleId: string) => {
+  const onSelectPlate = (vehicle: any) => {
     selectedVehicleRecords.refetch()
 
     props.updateRecordDraft({
       ...props.draft,
-      vehicleId,
+      vehicleId: vehicle.id,
     })
+
+    props.updateRecordQuery(vehicle.licensePlate.plate)
   }
 
   // const getVehicleType = (type: number) => VEHICLE_TYPES[type] || 'UNKNOWN'
@@ -58,7 +61,7 @@ const VehicleSuggestions = (props: any) => {
             <IonItem
               key={vehicle.id}
               button
-              onClick={() => onSelectPlate(vehicle.id)}
+              onClick={() => onSelectPlate(vehicle)}
             >
               <LicensePlate
                 number={vehicle.licensePlate.plate}
@@ -86,5 +89,6 @@ const mapStateToProps = (state: any) => {
 
 export default connect(mapStateToProps, {
   updateRecordDraft,
+  updateRecordQuery,
   deleteRecordDraft,
 })(VehicleSuggestions)
