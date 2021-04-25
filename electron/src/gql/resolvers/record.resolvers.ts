@@ -95,85 +95,78 @@ export const createRecord = async (parent: any, args: any) => {
 
   const records = _.filter((row: any) => row.doc.docType === 'record')(
     docs.rows
+  ) as any
+
+  const serials = _.map((row: any) => base36.base36decode(row.doc.serial) || 0)(
+    records
   )
 
-  if (process.env.SERIAL_MIGRATION) {
-  } else {
-    const serials = _.map(
-      (row: any) => base36.base36decode(row.doc.serial) || 0
-    )(records as any)
+  const highest = _.reduce(_.max)(0, serials) || serialStart
 
-    const highest = _.reduce(_.max)(0, serials) || serialStart
+  const saveRecord = (vehicleId: string, sellerId: string, buyerId: string) => {
+    console.log('save record')
+    console.log(sellerId)
+    console.log(buyerId)
 
-    const saveRecord = (
-      vehicleId: string,
-      sellerId: string,
-      buyerId: string
-    ) => {
-      console.log('save record')
-      console.log(sellerId)
-      console.log(buyerId)
+    const creation = DB.records.put({
+      _id: uuid(),
+      docType: 'record',
+      createdAt: new Date().getTime(),
+      serial: base36.base36encode((highest as number) + 1),
+      weights: [
+        {
+          createdAt: args.createdAt || new Date().getTime(),
+          weight: args.weight,
+        },
+      ],
+      vehicleId,
+      sellerId,
+      buyerId,
+    })
 
-      const creation = DB.records.put({
-        _id: uuid(),
-        docType: 'record',
-        createdAt: new Date().getTime(),
-        serial: base36.base36encode((highest as number) + 1),
-        weights: [
-          {
-            createdAt: args.createdAt || new Date().getTime(),
-            weight: args.weight,
-          },
-        ],
-        vehicleId,
-        sellerId,
-        buyerId,
-      })
-
-      return creation.then((doc: any) => doc)
-    }
-
-    const vehicleDoc = await DB.vehicles.get(args.vehicleId).then(asVehicle)
-    const vehicle = args.vehicleId && {
-      vehicle: vehicleDoc,
-    }
-
-    const sellerDoc =
-      args.sellerId && (await DB.customers.get(args.sellerId).then(asCustomer))
-
-    const seller =
-      args.sellerId && sellerDoc
-        ? {
-            seller: sellerDoc,
-          }
-        : {}
-
-    const buyerDoc =
-      args.buyerId && (await DB.customers.get(args.buyerId).then(asCustomer))
-
-    const buyer =
-      args.buyerId && buyerDoc
-        ? {
-            buyer: buyerDoc,
-          }
-        : {}
-
-    console.log('seller')
-    console.log(seller)
-
-    const save = await saveRecord(args.vehicleId, args.sellerId, args.buyerId)
-
-    const record = (await DB.records.get(save.id)) as any
-
-    if (record)
-      return {
-        ...record,
-        id: record._id,
-        ...vehicle,
-        ...seller,
-        ...buyer,
-      }
+    return creation.then((doc: any) => doc)
   }
+
+  const vehicleDoc = await DB.vehicles.get(args.vehicleId).then(asVehicle)
+  const vehicle = args.vehicleId && {
+    vehicle: vehicleDoc,
+  }
+
+  const sellerDoc =
+    args.sellerId && (await DB.customers.get(args.sellerId).then(asCustomer))
+
+  const seller =
+    args.sellerId && sellerDoc
+      ? {
+          seller: sellerDoc,
+        }
+      : {}
+
+  const buyerDoc =
+    args.buyerId && (await DB.customers.get(args.buyerId).then(asCustomer))
+
+  const buyer =
+    args.buyerId && buyerDoc
+      ? {
+          buyer: buyerDoc,
+        }
+      : {}
+
+  console.log('seller')
+  console.log(seller)
+
+  const save = await saveRecord(args.vehicleId, args.sellerId, args.buyerId)
+
+  const record = (await DB.records.get(save.id)) as any
+
+  if (record)
+    return {
+      ...record,
+      id: record._id,
+      ...vehicle,
+      ...seller,
+      ...buyer,
+    }
 }
 
 export const update = async (parent: any, args: any) => {
