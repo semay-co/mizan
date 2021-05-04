@@ -61,7 +61,7 @@
   },
   "scripts": {
     "client": "PORT=4000 REACT_APP_SERVER_PORT=8998 BROWSER=none react-scripts start",
-    "server": "SERVER_PORT=8998 SERIAL_START=400000 npm run server --prefix ./electron",
+    "server": "SERVER_PORT=8998 SERIAL_START=200000 npm run server --prefix ./electron",
     "build": "react-scripts build",
     "electron": "ionic build && npx cap copy && npx cap open @capacitor-community/electron",
     "test": "react-scripts test",
