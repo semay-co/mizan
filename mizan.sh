@@ -1,2 +1,2 @@
 #!/bin/bash
-npm run server --prefix ~/projects/mizan & npm run client --prefix ~/projects/mizan; npx pouchdb-server --sqlite;
+npm run server --prefix ~/projects/mizan.next & npm run client --prefix ~/projects/mizan.next; npx pouchdb-server --sqlite;
