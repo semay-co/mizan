@@ -18,8 +18,6 @@ export const records = async (parent: any, args: any) => {
     include_docs: true,
   })
 
-  console.log(result.rows)
-
   const sortByCreated = _.descend(
     _.compose(_.prop('createdAt') as any, _.prop('doc') as any)
   )
@@ -76,16 +74,18 @@ export const records = async (parent: any, args: any) => {
     (record: any) => !args.vehicleId || record.vehicleId === args.vehicleId
   )(filtered)
 
-  const limited = filteredByVehicle.slice(0, args.limit || 10)
-
-  return _.filter((record: any) => {
+  const filteredByQuery = _.filter((record: any) => {
     return args.query
       ? record.serial.toLowerCase().includes(args.query.toLowerCase()) ||
           record.vehicle?.licensePlate?.plate
             ?.toLowerCase()
             .includes(args.query.toLowerCase())
       : true
-  })(limited)
+  })(filteredByVehicle)
+
+  const limited = filteredByQuery.slice(0, args.limit || 10)
+
+  return limited
 }
 
 export const createRecord = async (parent: any, args: any) => {
