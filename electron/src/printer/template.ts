@@ -27,6 +27,7 @@ export const watermarkText = Array(600)
   .fill(0)
   .map((_, i: number) => {
     const tag = i % 2 === 0 ? 'even' : 'odd'
+
     return `
 			<span class="tag-wrap">
 				<span class="${tag}">

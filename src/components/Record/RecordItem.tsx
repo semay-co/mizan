@@ -14,7 +14,6 @@ import {
   checkmark,
   checkmarkOutline,
   printOutline,
-  pulseOutline,
   refreshOutline,
   speedometerOutline,
 } from 'ionicons/icons'
