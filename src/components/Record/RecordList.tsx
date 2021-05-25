@@ -25,7 +25,10 @@ const RecordList = (props: any) => {
     variables: {
       query: props.recordQuery,
       licensePlate: props.recordQueryLicensePlate,
-      filters: props.ui.recordFilters,
+      filters: _.concat(
+        props.ui.recordFilters || [],
+        props.draft?.reading ? ['pending'] : []
+      ),
       limit: 10,
     },
     fetchPolicy: 'network-only',
@@ -100,6 +103,7 @@ const mapStateToProps = (state: any) => {
   return {
     recordQuery: state.record.recordQuery,
     ui: state.ui,
+    draft: state.record.recordDraft,
   }
 }
 

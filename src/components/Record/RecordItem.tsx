@@ -13,6 +13,7 @@ import {
 import {
   checkmark,
   checkmarkOutline,
+  personAddOutline,
   printOutline,
   refreshOutline,
   speedometerOutline,
@@ -33,7 +34,6 @@ import classNames from 'classnames'
 
 const RecordItem = (props: any) => {
   const record = props.record
-  const secondWeightDraft = props.secondWeightDraft
   const [printRecord] = useMutation(PRINT_RECORD)
 
   const [addSecondWeight] = useMutation(ADD_SECOND_WEIGHT)
@@ -43,20 +43,23 @@ const RecordItem = (props: any) => {
 
   const getNetWeight = () => {
     const firstWeight = record.weights[0].weight
-    const secondWeight = record.weights[1]?.weight || secondWeightDraft?.weight
+    const secondWeight = record.weights[1]?.weight || weightDraft()?.weight
 
     return secondWeight
       ? Math.abs(firstWeight - secondWeight).toLocaleString() + ' KG'
       : '...'
   }
 
+  const weightDraft = () => {
+    return props.draft?.reading || props.secondWeightDraft
+  }
+
   const onSaveSecondWeight = () => {
-    console.log('record id:', record.id)
     addSecondWeight({
       variables: {
         recordId: record.id,
-        weight: secondWeightDraft.weight,
-        createdAt: secondWeightDraft.receivedAt.toString(),
+        weight: weightDraft().weight,
+        createdAt: weightDraft().receivedAt.toString(),
       },
     })
 
@@ -93,7 +96,7 @@ const RecordItem = (props: any) => {
     })
   }
 
-  const isSynced = () => props.reading.weight === props.draft?.reading?.weight
+  const isSynced = () => props.reading?.weight === props.draft?.reading?.weight
 
   const isLoaded = () => props.draft?.reading?.weight > 1000
 
@@ -125,7 +128,7 @@ const RecordItem = (props: any) => {
                   </IonChip>
                 </IonLabel>
               </IonItem>
-              {record?.buyer && (
+              {record?.buyer ? (
                 <IonItem className='customer-row'>
                   <IonLabel>
                     <h2>Buyer</h2>
@@ -135,8 +138,13 @@ const RecordItem = (props: any) => {
                     </div>
                   </IonLabel>
                 </IonItem>
+              ) : (
+                <IonItem button>
+                  <IonIcon icon={personAddOutline} />
+                  <IonLabel>Add Buyer</IonLabel>
+                </IonItem>
               )}
-              {record?.seller && (
+              {record?.seller ? (
                 <IonItem className='customer-row'>
                   <IonLabel>
                     <h2>Seller</h2>
@@ -145,6 +153,11 @@ const RecordItem = (props: any) => {
                       <IonChip>{record.seller.phoneNumber?.number}</IonChip>
                     </div>
                   </IonLabel>
+                </IonItem>
+              ) : (
+                <IonItem button>
+                  <IonIcon icon={personAddOutline} />
+                  <IonLabel>Add Seller</IonLabel>
                 </IonItem>
               )}
             </IonList>
@@ -173,6 +186,7 @@ const RecordItem = (props: any) => {
                 </IonButton>
               )}
             </div>
+
             <div className='weight-entry second-weight'>
               <h3>Second Weight</h3>
               {record?.weights[1] ? (
@@ -196,10 +210,10 @@ const RecordItem = (props: any) => {
                 </>
               ) : (
                 <>
-                  {secondWeightDraft ? (
+                  {weightDraft() ? (
                     <>
                       <span className='record-date'>
-                        {formatDate(+secondWeightDraft.receivedAt)}
+                        {formatDate(+weightDraft().receivedAt)}
                       </span>
                       <div
                         className={classNames(
@@ -207,7 +221,7 @@ const RecordItem = (props: any) => {
                           isLoaded() && isSynced() ? 'green-draft' : 'red-draft'
                         )}
                       >
-                        {secondWeightDraft.weight.toLocaleString()} KG
+                        {weightDraft().weight.toLocaleString()} KG
                         {!isSynced() && (
                           <IonButton
                             className='update-button'
@@ -254,7 +268,7 @@ const RecordItem = (props: any) => {
               <div className='weight-measure'>{getNetWeight()}</div>
             </div>
 
-            {!secondWeightDraft && (
+            {!weightDraft() && (
               <div className='right-button'>
                 <IonButton onClick={onPrint}>
                   <IonIcon icon={printOutline} />
@@ -263,7 +277,7 @@ const RecordItem = (props: any) => {
               </div>
             )}
           </div>
-          {secondWeightDraft && (
+          {weightDraft() && (
             <div
               className={classNames({
                 'bottom-button': true,

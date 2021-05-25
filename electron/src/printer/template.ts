@@ -4,7 +4,7 @@ import { PAGE_TYPES } from '../../../src/model/print.model'
 
 const company = 'Furi Truck Scale Service'
 const address = 'Sebeta, Furi - Around Police Club'
-const phone = '+251 118 83 8043'
+const phone = '011 883 8043'
 
 const getPrice = (type: number) => {
   switch (type) {
@@ -110,11 +110,11 @@ export const styles = `
 				position: absolute;
 				width: 200vw; 
 				line-height: 25px; 
-				color: #f8f8f8aa; 
+				color: #000; 
 				text-wrap: no-wrap;
 				font-size: 10px;
 				transform: rotate(-45deg) scale(1.3) translate(-100px, -150px);
-				opacity: .4;
+				opacity: .2;
 				text-shadow: 1px 1px white, -1px 1px white, 1px -1px white, -1px -1px white;
 			}
 
@@ -127,7 +127,7 @@ export const styles = `
 				position: relative;
 				z-inxex: 0;
 				text-shadow: none;
-				color: #f4f4f488;
+				// color: #d4d4d4;
 				opacity: .8;
 			}
 
@@ -140,7 +140,7 @@ export const styles = `
 				text-transform: uppercase;
 				transform: rotate(-45deg);
 				z-index: -10;
-				color: #dddddd55;
+				color: #dddddd99;
 				text-shadow: 5px 5px white, -5px 5px white, 5px -5px white, -5px -5px white;
 				width: 100%;
 				text-align: center;
@@ -149,11 +149,11 @@ export const styles = `
 			}
 
 			.stamp.top {
-				bottom: 650px;
+				bottom: 750px;
 			}
 
 			.stamp.bottom {
-				bottom: 200px;
+				bottom: 300px;
 			}
 
 			.stamp.compact {
@@ -261,8 +261,9 @@ export const styles = `
 				text-align: end;
 			}
 
-			.row.serial-row h3 b {
-				// background-color: #000000!important;
+			.serial-row h3 b {
+				// border: 1px solid red;
+				// background: red!important;
 				// padding: 2px 4px;
 				// color: #ffffff!important;
 			}
@@ -289,8 +290,41 @@ export const styles = `
 				margin-top: 20px;
 			}
 
-			.net-weight {
-				font-size: 25px;
+			.highlight-weight,
+			.highlight-price {
+				box-shadow: 100px 100px #aaa inset;
+				// color: #fff;
+				align-self: left;
+				font-size: 24px;
+				padding: 20px;
+				// -webkit-text-stroke: 1px #fff;
+				// -webkit-text-fill-color: #fff;
+			}
+
+			.customer-form-grid {
+				display: grid;
+				gap: 10px;
+			}
+
+			.customer-form-grid .form-row {
+				display: grid;
+				grid-auto-flow: column;
+				grid-template-columns: 50px auto;
+				align-items: center;
+			}
+
+			.customer-form-grid .form-row .form-input {
+				border: 1px dashed #000;	
+				background: #dddddd88;
+				height: 30px;
+				box-shadow: 100px 100px #fff inset;
+				z-index: 100;
+			}
+			
+			.customer-form-grid .form-title {
+				grid-column: span 2;
+				font-size: 20px;
+				font-weight: bold;
 			}
 
 			.operator {
@@ -360,9 +394,12 @@ export const header = (company: string, address: string, phone: string) => {
   </div>`
 }
 
-const grid = (record: any, compact: boolean = false) => `<div class="grid ${
-  compact && 'compact'
-}">
+const grid = (
+  record: any,
+  compact: boolean = false,
+  type: string = PAGE_TYPES.ORIGINAL
+) => {
+  return `<div class="grid ${compact && 'compact'}">
 		<div class="left-content">
 			<div class="row serial-row">
 				<h3>
@@ -386,15 +423,46 @@ const grid = (record: any, compact: boolean = false) => `<div class="grid ${
 				
 				</div>	
 			</div>
-			<div class="row">
-				<h3>Vehicle Type</h3>
-				<div class="row-field">
-					${VEHICLE_TYPES[record.vehicle.type] || 'UNKNOWN'}
+
+			${
+        type === PAGE_TYPES.ATTACHMENT
+          ? `<div class="row">
+
+					<h3>
+						Type: ${VEHICLE_TYPES[record.vehicle.type]}
+					</h3>
+					<h3>
+						Price: ${getPrice(record.vehicle.type)} Birr
+					</h3>
+				</div>`
+          : ''
+      }
+
+			${
+        record.weights[1]
+          ? `<div class="row">
+						<h3>Vehicle Type</h3>
+						<div class="row-field">
+							${VEHICLE_TYPES[record.vehicle.type]}
+						</div>
+					</div>`
+          : type === PAGE_TYPES.ATTACHMENT
+          ? `<div class="row">
+				<h3>First Weight</h3>
+
+				<div class="weight-date">
+					${moment(+record.weights[0].createdAt).format('LLL')}
+				</div>
+				<div class="weight-measure highlight-weight">
+					${record.weights[0].weight} KG
 				</div>
 			</div>
-			${
-        !compact && record.seller
-          ? `
+		`
+          : ''
+      }
+					${
+            !compact && record.seller
+              ? `
 				<div class="row">
 					<h3>Seller</h3>
 					<div class="row-field">
@@ -409,8 +477,8 @@ const grid = (record: any, compact: boolean = false) => `<div class="grid ${
 					</div>
 				</div>
 			`
-          : ''
-      }
+              : ''
+          }
 			${
         !compact && record.buyer
           ? `
@@ -435,16 +503,66 @@ const grid = (record: any, compact: boolean = false) => `<div class="grid ${
       }
 		</div>
 		<div class="right-content">
-			<div class="row">
-				<h3>First Weight</h3>
-				<div class="weight-date">
-					${moment(+record.weights[0].createdAt).format('LLLL')}
-				</div>
+			${
+        record.weights[1] || type === PAGE_TYPES.PENDING
+          ? `<div class="row">
+					<h3>First Weight</h3>
+					<div class="weight-date">
+						${moment(+record.weights[0].createdAt).format('LLLL')}
+					</div>
 
-				<div class="weight-measure">
-					${record.weights[0].weight.toLocaleString()} KG
+					<div class=" weight-measure">
+						${record.weights[0].weight} KG
+					</div>
 				</div>
-			</div>
+				
+				${
+          type === PAGE_TYPES.PENDING
+            ? `<div class="row">
+					<h3>Price</h3>
+
+					<div class="highlight-price weight-measure">
+						${getPrice(record.vehicle.type)} BIRR
+					</div>
+				</div>`
+            : ''
+        }
+ 
+				`
+          : `<div class="row">
+					<div class="customer-form-grid">
+						<div class="form-row">
+							<h3 class="form-title">አቅራቢ</h3>
+						</div>
+						<div class="form-row">
+							<h3>ስም:</h3>
+							<div class="form-input"></div>
+						</div>
+						<div class="form-row">
+							<h3>ስልክ:</h3>
+							<div class="form-input"></div>
+						</div>
+					</div>
+					<div class="input-box"></div>
+				</div>
+				<div class="row">
+					<div class="customer-form-grid">
+						<div class="form-row">
+							<h3 class="form-title">ተረካቢ</h3>
+						</div>
+						<div class="form-row">
+							<h3>ስም:</h3>
+							<div class="form-input"></div>
+						</div>
+						<div class="form-row">
+							<h3>ስልክ:</h3>
+							<div class="form-input"></div>
+						</div>
+					</div>
+					<div class="input-box"></div>
+				</div>
+				`
+      }
 			
 			${
         record.weights[1]
@@ -455,7 +573,7 @@ const grid = (record: any, compact: boolean = false) => `<div class="grid ${
 					</div>
 
 					<div class="weight-measure">
-						${record.weights[1].weight.toLocaleString()} KG
+						${record.weights[1].weight} KG
 					</div>
 				</div>
 				<div class="row">
@@ -464,21 +582,16 @@ const grid = (record: any, compact: boolean = false) => `<div class="grid ${
 						${moment(+record.weights[1].createdAt).from(+record.weights[0].createdAt)}
 					</div>
 
-					<div class="net-weight weight-measure">
-						${record.netWeight.toLocaleString()} KG
+					<div class="highlight-weight weight-measure">
+						${record.netWeight} KG
 					</div>
 				</div>`
-          : `<div class="row">
-					<h3>Price</h3>
-
-					<div class="weight-measure">
-						${getPrice(record.vehicle.type)} ETB
-					</div>
-				</div>`
+          : ''
       }
 
 		</div>
 	</div>`
+}
 
 const printTime = (time: any) => `
 		<div class="date">
@@ -487,9 +600,9 @@ const printTime = (time: any) => `
 	`
 
 export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
-  console.log(record)
   return `
 		${leftDetail}
+
 		<div class="container">
 			${watermark}
 			${
@@ -503,18 +616,18 @@ export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
           : ''
       }
 			<div class="watermark"></div>
-			${header(company, address, phone)}
+			${stamp !== PAGE_TYPES.PENDING ? header(company, address, phone) : ''}
 
-			${printTime(new Date().getTime())}
+			${stamp !== PAGE_TYPES.PENDING ? printTime(new Date().getTime()) : ''}
 			
-			${grid(record, stamp === PAGE_TYPES.PENDING)}
+			${grid(record, stamp === PAGE_TYPES.PENDING, stamp)}
 			${stamp === PAGE_TYPES.PENDING ? '<div class="cut-line"></div>' : ''}
 
 			${
         stamp === PAGE_TYPES.PENDING
           ? `${header(company, address, phone)} ${printTime(
               new Date().getTime()
-            )} ${grid(record, true)}`
+            )} ${grid(record, true, PAGE_TYPES.ATTACHMENT)}`
           : `
 				<div class="operator">
 					<div class="operator-signature">

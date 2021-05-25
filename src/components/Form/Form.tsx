@@ -81,7 +81,7 @@ const Form = (props: any) => {
     })
   }
 
-  const isSynced = () => props.reading.weight === props.draft?.reading?.weight
+  const isSynced = () => props.reading?.weight === props.draft?.reading?.weight
 
   const isLoaded = () => props.draft?.reading?.weight >= 1000
 
@@ -168,7 +168,7 @@ const Form = (props: any) => {
 
   return (
     <div>
-      {props.draft &&
+      {/* {props.draft &&
         props.draft.vehicleId &&
         selectedVehicleRecords.data?.records &&
         selectedVehicleRecords.data.records
@@ -180,7 +180,7 @@ const Form = (props: any) => {
                 secondWeightDraft={props.draft.reading}
               />
             </div>
-          ))}
+          ))} */}
 
       {props.draft && props.draft.recordId && (
         <div key={selectedRecord.data?.record.id} className='existing-record'>
@@ -210,7 +210,7 @@ const Form = (props: any) => {
                 onClick={() => recordReading(true, true)}
               >
                 <IonIcon icon={speedometerOutline}></IonIcon>
-                Start Meauring
+                Start Measuring
               </IonCard>
             )}
           </>

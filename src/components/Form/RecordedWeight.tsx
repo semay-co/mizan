@@ -20,7 +20,7 @@ const RecordedWeight = (props: any) => {
     props.deleteRecordDraft()
   }
 
-  const isUpdated = () => props.reading.weight === props.draft?.reading?.weight
+  const isUpdated = () => props.reading?.weight === props.draft?.reading?.weight
 
   const isLoaded = () => props.draft?.reading?.weight >= 1000
 
