@@ -2,8 +2,8 @@ import puppeteer from 'puppeteer'
 
 const startBrowser = async () => {
   const browser = await puppeteer.launch({
-    headless: false,
-    executablePath: '/usr/bin/chromium-browser',
+    headless: true,
+    executablePath: '/usr/bin/chromium',
   })
 
   const page = await browser.newPage()
@@ -23,47 +23,56 @@ const sendSms = async () => {
 
   const goToLoginPage = async () =>
     Promise.all([
-      await page.goto(`${baseUrl}/html/index.html`),
-      await page.waitForNavigation({ waitUntil: 'load' }),
+      await page.goto(`${baseUrl}/html/index.html`).catch((err) => {
+        console.error('unable to go to url', err)
+      }),
+      await page.waitForSelector('#login_password'),
     ])
 
   const login = async () => {
     Promise.all([
       await goToLoginPage(),
       await page
-        .type('#login_pwd_input', '$implepass')
+        .type('#login_password', '$implepass')
+        .then(() => console.log('yaaay!'))
         .catch((err) => console.log('writing password failed')),
+      await page.waitForSelector('#login_btn'),
       await page
         .click('#login_btn')
         .catch((err) => console.log('clicking failed')),
-      await page.waitForNavigation({ waitUntil: 'load' }),
     ])
   }
 
-  const goToSmsPage = async () =>
+  const sendSms = async (numbers: string, text: string) =>
     Promise.all([
-      await page.goto(`${baseUrl}/index.html#sms`),
-      await page.click('#smslist-new-sms'),
-    ])
-
-  const sendSms = async () =>
-    Promise.all([
-      await goToSmsPage(),
-      await page.click('#chosen-search-field-input'),
-      await page.type('#chosen-search-field-input', '+251944108619;'),
-      await page.type('#chat-input', 'Server started'),
-      await page.click('#btn-send'),
+      await login(),
+      await page.waitForSelector('#header_sms_info'),
+      await page.goto(`${baseUrl}/html/content.html#sms`),
+      await page.waitForSelector('#sms_message_new'),
+      await page.click('#sms_message_new'),
+      await page.waitForSelector('#sms_send_user_input'),
+      await page.waitForSelector('#sms_current_content'),
+      await page.type('#sms_send_user_input', numbers),
+      await page.type('#sms_current_content', text),
+      // await page.waitForSelector('.sms_send_normal'),
+      // await page.click('.sms_send_normal'),
+      await page.evaluate(() => {
+        // @ts-ignore
+        EMUI.smsSendAndSaveController.sendMessage()
+      }),
     ])
 
   await page
     .$('a[href="#sms"]')
     .then((btn) => btn?.click)
     .then(async () => {
-      await sendSms().catch((err) => console.log('couldnt write number', err))
+      await sendSms('+251961005748', 'whoopsie').catch((err) =>
+        console.log('could not send message', err)
+      )
     })
     .catch(async () => {
       await login()
-      await sendSms()
+      await sendSms('+251961005748', 'okay')
     })
 }
 

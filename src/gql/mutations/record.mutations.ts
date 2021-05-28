@@ -3,12 +3,14 @@ import { gql } from '@apollo/client'
 export const CREATE_RECORD = gql`
   mutation CreateRecord(
     $weight: Int!
+    $weightTime: String
     $vehicleId: String!
     $sellerId: String
     $buyerId: String
   ) {
     createRecord(
       weight: $weight
+      weightTime: $weightTime
       vehicleId: $vehicleId
       sellerId: $sellerId
       buyerId: $buyerId

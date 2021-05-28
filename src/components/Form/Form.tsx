@@ -9,6 +9,7 @@ import {
 } from '../../state/actions/record.action'
 import {
   addOutline,
+  chevronUp,
   closeOutline,
   reloadOutline,
   speedometerOutline,
@@ -54,7 +55,7 @@ const Form = (props: any) => {
   const clearForm = () => {
     console.log('clear form')
     props.deleteRecordDraft()
-    // props.updateRecordResult(undefined)
+    props.updateRecordResult(undefined)
   }
 
   const clearSelectedVehicle = () => {
@@ -135,6 +136,7 @@ const Form = (props: any) => {
       }).then((record) => {
         console.log('record', record)
         props.updateRecordResult(record.data.createRecord.id)
+        props.deleteRecordDraft()
 
         if (props.result) {
           recordQuery.refetch()
@@ -194,24 +196,33 @@ const Form = (props: any) => {
       <div className='form-wrap'>
         {!props.draft ? (
           <>
+            <IonCard
+              className='big-record-button'
+              color='primary'
+              button={true}
+              onClick={() => recordReading(true, true)}
+            >
+              <IonIcon icon={speedometerOutline}></IonIcon>
+              New Measurement
+            </IonCard>
+
             {recordQuery.data ? (
-              <>
-                <IonButton fill='clear' size='large' onClick={clearForm}>
+              <IonCard className='result-card'>
+                <IonButton
+                  fill='clear'
+                  size='large'
+                  expand='block'
+                  color='medium'
+                  onClick={clearForm}
+                  className='clear-form-button'
+                >
                   <IonIcon icon={closeOutline}></IonIcon>
                   Clear
                 </IonButton>
-                <RecordItem record={recordQuery.data.record} />
-              </>
-            ) : (
-              <IonCard
-                className='big-record-button'
-                color='primary'
-                button={true}
-                onClick={() => recordReading(true, true)}
-              >
-                <IonIcon icon={speedometerOutline}></IonIcon>
-                Start Measuring
+                <RecordItem record={recordQuery.data.record} type='result' />
               </IonCard>
+            ) : (
+              <></>
             )}
           </>
         ) : (

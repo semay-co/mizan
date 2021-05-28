@@ -15,7 +15,12 @@ import {
   IonIcon,
   IonSearchbar,
 } from '@ionic/react'
-import { hourglassOutline } from 'ionicons/icons'
+import {
+  calendarClearOutline,
+  calendarNumberOutline,
+  calendarOutline,
+  hourglassOutline,
+} from 'ionicons/icons'
 import { FETCH_RECORDS } from '../../gql/queries/record.queries'
 import * as _ from 'ramda'
 
@@ -75,6 +80,9 @@ const RecordList = (props: any) => {
             <IonIcon icon={hourglassOutline} />
             Pending
           </IonButton>
+          <IonButton shape='round' fill='clear'>
+            <IonIcon icon={calendarClearOutline} />
+          </IonButton>
         </IonCardContent>
       </IonCard>
 
@@ -84,7 +92,9 @@ const RecordList = (props: any) => {
         </IonCard>
       )}
 
-      {recordsQuery.data?.length === 0 && (
+      {(!recordsQuery.data ||
+        !recordsQuery.data?.records ||
+        recordsQuery.data?.records.length === 0) && (
         <IonCard className='info-card'>
           <h3>NO RECORDS FOUND</h3>
         </IonCard>

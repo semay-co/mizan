@@ -292,13 +292,15 @@ export const styles = `
 
 			.highlight-weight,
 			.highlight-price {
-				box-shadow: 100px 100px #aaa inset;
+				box-shadow: 100px 100px #bbb inset;
+				border-radius: 5px;
 				// color: #fff;
 				align-self: left;
 				font-size: 24px;
 				padding: 20px;
 				// -webkit-text-stroke: 1px #fff;
 				// -webkit-text-fill-color: #fff;
+				text-align: right;
 			}
 
 			.customer-form-grid {
@@ -404,7 +406,9 @@ const grid = (
 			<div class="row serial-row">
 				<h3>
 					Serial: 
-					<b style="background: black;">${record.serial}</b> 
+					<b style="font-size: 18px; padding: 10px; letter-spacing: 3px;">${
+            record.serial
+          }</b> 
 				</h3>
 			</div>
 			<div class="row">

@@ -38,6 +38,17 @@
         margin: 1rem;
       }
     }
+
+    .serial-row {
+      h2 {
+        span {
+          letter-spacing: 3px;
+          font-size: 2rem;
+          color: #fff;
+          text-shadow: 3px 3px 0 #000;
+        }
+      }
+    }
   }
 
   .card-right-content {
@@ -109,6 +120,13 @@
         --border-radius: 0.3rem 0 0 0.3rem;
       }
     }
+
+    .price-card {
+      h1 {
+        padding: 1rem 3rem;
+        text-align: end;
+      }
+    }
   }
 
   .bottom-button {
@@ -119,7 +137,8 @@
       --border-radius: 0 0 0.3rem 0.3rem;
     }
 
-    &.danger-button {
+    &.danger-button,
+    &.warn-button {
       color: #ff496188;
       background: #ff496122;
 
@@ -131,6 +150,20 @@
         --color: #ff496188;
         --background: #ff496111;
       }
+    }
+
+    &.warn-button {
+      ion-button {
+      }
+    }
+  }
+
+  ion-button.time-warning {
+    margin-top: 2rem;
+
+    ion-button {
+      --color: #fff;
+      color: red;
     }
   }
 }

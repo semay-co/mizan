@@ -12,6 +12,17 @@ ion-card {
   max-width: 60rem;
 }
 
+.result-card {
+  background-color: transparent;
+  border: 1px solid #aaaa;
+
+  .clear-form-button {
+    button {
+      text-align: right;
+    }
+  }
+}
+
 .big-record-button {
   cursor: pointer;
   padding: 4rem 2rem;
@@ -20,6 +31,7 @@ ion-card {
   display: grid;
   grid-auto-flow: column;
   align-content: center;
+  margin-bottom: 5rem;
 
   ion-icon {
     margin-top: 1rem;

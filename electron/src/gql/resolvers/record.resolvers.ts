@@ -9,7 +9,6 @@ import { asCustomer } from '../../lib/customer.lib'
 const base36 = require('base36')
 
 const serialStart = process.env.SERIAL_START || 100000
-console.log(serialStart)
 
 export const records = async (parent: any, args: any) => {
   const filters = args.filters
@@ -115,7 +114,7 @@ export const createRecord = async (parent: any, args: any) => {
       serial: base36.base36encode((highest as number) + 1),
       weights: [
         {
-          createdAt: args.createdAt || new Date().getTime(),
+          createdAt: args.weightTime || new Date().getTime(),
           weight: args.weight,
         },
       ],

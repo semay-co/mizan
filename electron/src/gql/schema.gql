@@ -18,6 +18,7 @@ type Query {
 type Mutation {
   createRecord(
     weight: Int!
+    weightTime: String
     vehicleId: String!
     sellerId: String
     buyerId: String

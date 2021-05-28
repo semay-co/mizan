@@ -46,13 +46,13 @@ const CustomerForm = (props: any) => {
       props.party === 'seller'
         ? {
             seller: {
-              ...props.draft.seller,
+              ...props.draft?.seller,
               phoneNumber: number,
             },
           }
         : {
             buyer: {
-              ...props.draft.buyer,
+              ...props.draft?.buyer,
               phoneNumber: number,
             },
           }
