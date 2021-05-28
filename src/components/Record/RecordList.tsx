@@ -60,7 +60,7 @@ const RecordList = (props: any) => {
   }
 
   return (
-    <div>
+    <div className='left-col'>
       <IonCard className='search-card'>
         <IonSearchbar
           debounce={1000}

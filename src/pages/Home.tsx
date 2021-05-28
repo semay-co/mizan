@@ -5,7 +5,6 @@ import {
   IonItem,
   IonList,
   IonPage,
-  IonSplitPane,
   IonText,
   IonToolbar,
 } from '@ionic/react'
