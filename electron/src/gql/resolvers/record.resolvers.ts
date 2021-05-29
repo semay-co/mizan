@@ -5,6 +5,7 @@ import { print } from '../../printer/printer'
 import { PAGE_TYPES } from '../../../../src/model/print.model'
 import { asVehicle } from '../../lib/vehicle.lib'
 import { asCustomer } from '../../lib/customer.lib'
+import { sendSms } from '../../sms/sms'
 
 const base36 = require('base36')
 
@@ -190,8 +191,6 @@ export const addCustomer = async (parent: any, args: any) => {
     ...customer,
   }
 
-  console.log(doc)
-
   return await DB.records.put(doc)
 }
 
@@ -272,6 +271,20 @@ export const record = async (parent: any, args: any) => {
   return record
 }
 
+export const sendConfirmationSms = async (parent: any, args: any) => {
+  // const doc = await DB.records
+  //   .get(args.id)
+  //   .then((record: any) => record as any)
+  //   .then((record: any) => ({
+  //     id: record._id,
+  //     ...record,
+  //   }))
+
+  // sendSms('+251944108619', 'hello, can you hear me?')
+
+  return 'okay!'
+}
+
 export const printRecord = async (parent: any, args: any) => {
   const doc = await DB.records
     .get(args.id)
@@ -308,6 +321,28 @@ export const printRecord = async (parent: any, args: any) => {
     ...buyerSpread,
     netWeight: Math.abs(doc.weights[0]?.weight - doc.weights[1]?.weight),
   }
+
+  const numbers = []
+
+  record.buyer && numbers.push(record.buyer?.phoneNumber?.number)
+  record.seller && numbers.push(record.seller?.phoneNumber?.number)
+
+  const msgLines = [`1st wt: ${record.weights[0].weight}KG`]
+
+  record.weights[1] && msgLines.push(`2nd wt: ${record.weights[1].weight}KG`)
+  record.weights[1] &&
+    msgLines.push(
+      `Net wt: ${Math.abs(
+        +record.weights[1].weight - +record.weights[0].weight
+      )}KG`
+    )
+  msgLines.push(`Serial: ${record.serial.toUpperCase()}`)
+  msgLines.push('__________')
+  msgLines.push('FURI MIZAN')
+
+  console.log(msgLines)
+
+  sendSms(numbers.join(';'), msgLines.join('  \n'))
 
   return record.weights?.length > 1
     ? print(record, PAGE_TYPES.ORIGINAL) && print(record, PAGE_TYPES.COPY)

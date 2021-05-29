@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer'
 
 const startBrowser = async () => {
   const browser = await puppeteer.launch({
-    headless: true,
+    headless: false,
     executablePath: '/usr/bin/chromium',
   })
 
@@ -15,7 +15,7 @@ const closeBrowser = async (browser: any) => {
   return browser.close()
 }
 
-const sendSms = async () => {
+export const sendSms = async (numbers: string, text: string) => {
   const { browser, page } = await startBrowser()
   const baseUrl = 'http://192.168.8.1'
 
@@ -33,6 +33,7 @@ const sendSms = async () => {
     Promise.all([
       await goToLoginPage(),
       await page
+        // TODO: make it an env var
         .type('#login_password', '$implepass')
         .then(() => console.log('yaaay!'))
         .catch((err) => console.log('writing password failed')),
@@ -43,7 +44,7 @@ const sendSms = async () => {
     ])
   }
 
-  const sendSms = async (numbers: string, text: string) =>
+  const send = async () =>
     Promise.all([
       await login(),
       await page.waitForSelector('#header_sms_info'),
@@ -60,22 +61,19 @@ const sendSms = async () => {
         // @ts-ignore
         EMUI.smsSendAndSaveController.sendMessage()
       }),
-    ])
+      await setTimeout(() => {
+        browser.close()
+      }, 20000),
+    ]) //.then(() => browser.close())
 
   await page
     .$('a[href="#sms"]')
     .then((btn) => btn?.click)
     .then(async () => {
-      await sendSms('+251961005748', 'whoopsie').catch((err) =>
-        console.log('could not send message', err)
-      )
+      await send().catch((err) => console.log('could not send message', err))
     })
     .catch(async () => {
       await login()
-      await sendSms('+251961005748', 'okay')
+      await send()
     })
-}
-
-export const sms = () => {
-  sendSms()
 }

@@ -34,6 +34,7 @@ import {
   ADD_CUSTOMER,
   ADD_SECOND_WEIGHT,
   CREATE_RECORD,
+  SEND_CONFIRMATION_SMS,
 } from '../../gql/mutations/record.mutations'
 import { VEHICLE_TYPES } from '../../model/vehicle.model'
 import { PRINT_RECORD } from '../../gql/mutations/record.mutations'
@@ -45,6 +46,7 @@ import CustomerForm from '../Form/CustomerForm'
 const RecordItem = (props: any) => {
   const record = props.record
   const [printRecord] = useMutation(PRINT_RECORD)
+  const [sendConfirmationSms] = useMutation(SEND_CONFIRMATION_SMS)
   const [runCreateRecord] = useMutation(CREATE_RECORD)
 
   const [addSecondWeightMutation] = useMutation(ADD_SECOND_WEIGHT)
@@ -95,6 +97,12 @@ const RecordItem = (props: any) => {
     printRecord({
       variables: {
         id: record.id,
+      },
+    }).catch(console.error)
+
+    sendConfirmationSms({
+      variables: {
+        recordId: record.id,
       },
     }).catch(console.error)
   }

@@ -8,6 +8,7 @@ import {
   records,
   createRecord,
   printRecord,
+  sendConfirmationSms,
   addSecondWeight,
   addCustomer,
 } from './record.resolvers'
@@ -95,6 +96,7 @@ const resolvers = {
     addSecondWeight,
     addCustomer,
     printRecord,
+    sendConfirmationSms,
   },
 }
 

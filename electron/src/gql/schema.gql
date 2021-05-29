@@ -31,6 +31,7 @@ type Mutation {
     customerType: String!
   ): Record
   printRecord(id: String!): String
+  sendConfirmationSms(recordId: String!): String
   createVehicle(
     type: Int!
     plateNumber: String!

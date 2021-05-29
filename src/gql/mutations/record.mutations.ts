@@ -88,3 +88,9 @@ export const PRINT_RECORD = gql`
     printRecord(id: $id)
   }
 `
+
+export const SEND_CONFIRMATION_SMS = gql`
+  mutation SendConfirmationSms($recordId: String!) {
+    sendConfirmationSms(recordId: $recordId)
+  }
+`

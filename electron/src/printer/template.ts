@@ -285,6 +285,16 @@ export const styles = `
 				color: #555;
 			}
 
+			.outdated-record {
+				font-size: 18px;
+				border: 1px dashed #333;
+				color: #333;
+				padding: 3px 5px;
+				box-shadow: 100px 100px #00000033 inset;
+				font-weight: bold;
+				border-radius: 5px;
+			}
+
 			.weight-measure {
 				font-size: 18px;
 				margin-top: 20px;
@@ -391,7 +401,7 @@ export const header = (company: string, address: string, phone: string) => {
     </div>
     <div class="address">
       <div>Address: ${address}</div>
-      <div>Phone: ${phone}</div>
+      <div>Phone: ${phone} | 0968343616 (SMS)</div>
     </div>
   </div>`
 }
@@ -582,7 +592,13 @@ const grid = (
 				</div>
 				<div class="row">
 					<h3>Net Weight</h3>
-					<div class="weight-date">
+					<div class="weight-date ${
+            moment(+record.weights[0].createdAt).isBefore(
+              moment(+record.weights[1].createdAt).subtract(2, 'days')
+            )
+              ? 'outdated-record'
+              : ''
+          }">
 						${moment(+record.weights[1].createdAt).from(+record.weights[0].createdAt)}
 					</div>
 
