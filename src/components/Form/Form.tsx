@@ -164,6 +164,22 @@ const Form = (props: any) => {
     })
   }
 
+  const onSelectCustomer = (customerId: string, partyType: string) => {
+    const party =
+      partyType === 'seller'
+        ? {
+            sellerId: customerId,
+          }
+        : {
+            buyerId: customerId,
+          }
+
+    props.updateRecordDraft({
+      ...props.draft,
+      ...party,
+    })
+  }
+
   const getVehicleType = (type: number) => {
     return VEHICLE_TYPES[type] || 'UNKNOWN'
   }
@@ -241,7 +257,10 @@ const Form = (props: any) => {
                 {!props.draft.buyerId && !props.draft.skipBuyer ? (
                   <>
                     {!props.draft.skipBuyer ? (
-                      <CustomerForm party='buyer' />
+                      <CustomerForm
+                        onSelectCustomer={onSelectCustomer}
+                        party='buyer'
+                      />
                     ) : (
                       ''
                     )}
@@ -255,7 +274,10 @@ const Form = (props: any) => {
                     {!props.draft.sellerId ? (
                       <>
                         {!props.draft.skipSeller ? (
-                          <CustomerForm party='seller' />
+                          <CustomerForm
+                            onSelectCustomer={onSelectCustomer}
+                            party='seller'
+                          />
                         ) : (
                           ''
                         )}

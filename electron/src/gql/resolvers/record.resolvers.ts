@@ -103,10 +103,6 @@ export const createRecord = async (parent: any, args: any) => {
   const highest = _.reduce(_.max)(0, serials) || serialStart
 
   const saveRecord = (vehicleId: string, sellerId: string, buyerId: string) => {
-    console.log('save record')
-    console.log(sellerId)
-    console.log(buyerId)
-
     const creation = DB.records.put({
       _id: uuid(),
       docType: 'record',
@@ -151,9 +147,6 @@ export const createRecord = async (parent: any, args: any) => {
         }
       : {}
 
-  console.log('seller')
-  console.log(seller)
-
   const save = await saveRecord(args.vehicleId, args.sellerId, args.buyerId)
 
   const record = (await DB.records.get(save.id)) as any
@@ -176,6 +169,30 @@ export const update = async (parent: any, args: any) => {
     ...record,
     updatedAt: new Date().getTime(),
   }
+}
+
+export const addCustomer = async (parent: any, args: any) => {
+  const record = (await DB.records.get(args.recordId)) as any
+
+  console.log('args', args)
+
+  const customer =
+    args.customerType === 'seller'
+      ? {
+          sellerId: args.customerId,
+        }
+      : {
+          buyerId: args.customerId,
+        }
+
+  const doc = {
+    ...record,
+    ...customer,
+  }
+
+  console.log(doc)
+
+  return await DB.records.put(doc)
 }
 
 export const addSecondWeight = async (parent: any, args: any) => {

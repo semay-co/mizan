@@ -34,19 +34,7 @@ const NewCustomerForm = (props: any) => {
         .then((plate) => {
           const customerId = plate.data.createCustomer.id
 
-          const party =
-            props.party === 'seller'
-              ? {
-                  sellerId: customerId,
-                }
-              : {
-                  buyerId: customerId,
-                }
-
-          props.updateRecordDraft({
-            ...props.draft,
-            ...party,
-          })
+          props.onSelectCustomer(customerId, props.party)
         })
         .catch(console.error)
     } else {

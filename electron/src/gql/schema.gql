@@ -25,6 +25,11 @@ type Mutation {
   ): Record
   createCustomer(phoneNumber: String!, name: String!): Customer
   addSecondWeight(recordId: String!, weight: Int!, createdAt: String!): Record
+  addCustomer(
+    recordId: String!
+    customerId: String!
+    customerType: String!
+  ): Record
   printRecord(id: String!): String
   createVehicle(
     type: Int!

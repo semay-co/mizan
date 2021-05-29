@@ -87,13 +87,15 @@ const CustomerForm = (props: any) => {
   return (
     <>
       <IonCard className='customer-form entity-card'>
-        <IonCardHeader className='form-title'>
-          Add {props.party || 'Customer'}
-          <IonButton fill='clear' onClick={onSkip} className='justify-right'>
-            Skip
-            <IonIcon icon={chevronForward} />
-          </IonButton>
-        </IonCardHeader>
+        {!props.noTitle && (
+          <IonCardHeader className='form-title'>
+            Add {props.party || 'Customer'}
+            <IonButton fill='clear' onClick={onSkip} className='justify-right'>
+              Skip
+              <IonIcon icon={chevronForward} />
+            </IonButton>
+          </IonCardHeader>
+        )}
         <IonItem>
           <IonLabel className='uppercase'>
             {props.party || 'Customer'}'s Phone:
@@ -120,14 +122,22 @@ const CustomerForm = (props: any) => {
       {draft?.phoneNumber && (
         <>
           {customers.data?.customers?.length > 0 && (
-            <CustomerSuggestions party={props.party} />
+            <CustomerSuggestions
+              onSelectCustomer={props.onSelectCustomer}
+              party={props.party}
+            />
           )}
           {customers.data?.customers?.filter((customer: any) => {
             const suggestion = customer.phoneNumber
             const phoneNumber = draft?.phoneNumber
 
             return suggestion.number === '09' + phoneNumber
-          }).length === 0 && <NewCustomerForm party={props.party} />}
+          }).length === 0 && (
+            <NewCustomerForm
+              onSelectCustomer={props.onSelectCustomer}
+              party={props.party}
+            />
+          )}
         </>
       )}
     </>

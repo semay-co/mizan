@@ -86,24 +86,26 @@ const RecordList = (props: any) => {
         </IonCardContent>
       </IonCard>
 
-      {recordsQuery.loading && (
-        <IonCard className='info-card'>
-          <h3>LOADING...</h3>
-        </IonCard>
-      )}
+      <div className='results-list'>
+        {recordsQuery.loading && (
+          <IonCard className='info-card'>
+            <h3>LOADING...</h3>
+          </IonCard>
+        )}
 
-      {(!recordsQuery.data ||
-        !recordsQuery.data?.records ||
-        recordsQuery.data?.records.length === 0) && (
-        <IonCard className='info-card'>
-          <h3>NO RECORDS FOUND</h3>
-        </IonCard>
-      )}
+        {(!recordsQuery.data ||
+          !recordsQuery.data?.records ||
+          recordsQuery.data?.records.length === 0) && (
+          <IonCard className='info-card'>
+            <h3>NO RECORDS FOUND</h3>
+          </IonCard>
+        )}
 
-      <div className='records-wrap'>
-        {recordsQuery.data?.records?.map((record: any) => (
-          <RecordItem key={record.id} record={record} />
-        ))}
+        <div className='records-wrap'>
+          {recordsQuery.data?.records?.map((record: any) => (
+            <RecordItem key={record.id} record={record} />
+          ))}
+        </div>
       </div>
     </div>
   )

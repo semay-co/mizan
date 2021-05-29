@@ -9,6 +9,7 @@ import {
   createRecord,
   printRecord,
   addSecondWeight,
+  addCustomer,
 } from './record.resolvers'
 
 export enum events {
@@ -92,6 +93,7 @@ const resolvers = {
     createVehicle,
     createCustomer,
     addSecondWeight,
+    addCustomer,
     printRecord,
   },
 }

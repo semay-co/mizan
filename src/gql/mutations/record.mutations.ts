@@ -67,6 +67,22 @@ export const ADD_SECOND_WEIGHT = gql`
   }
 `
 
+export const ADD_CUSTOMER = gql`
+  mutation AddCustomer(
+    $recordId: String!
+    $customerId: String!
+    $customerType: String!
+  ) {
+    addCustomer(
+      recordId: $recordId
+      customerId: $customerId
+      customerType: $customerType
+    ) {
+      id
+    }
+  }
+`
+
 export const PRINT_RECORD = gql`
   mutation PrintRecord($id: String!) {
     printRecord(id: $id)

@@ -3,9 +3,7 @@ import {
   IonCardHeader,
   IonChip,
   IonItem,
-  IonItemDivider,
   IonItemGroup,
-  IonLabel,
   IonList,
 } from '@ionic/react'
 import { connect } from 'react-redux'
@@ -30,22 +28,6 @@ const CustomerSuggestions = (props: any) => {
     fetchPolicy: 'network-only',
   })
 
-  const onSelectCustomer = (customerId: string) => {
-    const party =
-      props.party === 'seller'
-        ? {
-            sellerId: customerId,
-          }
-        : {
-            buyerId: customerId,
-          }
-
-    props.updateRecordDraft({
-      ...props.draft,
-      ...party,
-    })
-  }
-
   const suggestions = customers.data?.customers
 
   return (
@@ -61,7 +43,9 @@ const CustomerSuggestions = (props: any) => {
                 <IonItem
                   key={customer.id}
                   button
-                  onClick={() => onSelectCustomer(customer.id)}
+                  onClick={() =>
+                    props.onSelectCustomer(customer.id, props.party)
+                  }
                 >
                   <div className='suggestion'>
                     <div className='phone-number'>

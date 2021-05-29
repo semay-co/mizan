@@ -1,7 +1,10 @@
 .left-col {
-  overflow-y: scroll;
-  height: 100vh;
+  .results-list {
+    overflow-y: scroll;
+    height: 100vh;
+  }
 }
+
 .search-card {
   margin-bottom: 1.5rem;
 }
