@@ -403,7 +403,7 @@ const RecordItem = (props: any) => {
                           </>
                         )}
                       </div>
-                      {weightDraft() && (
+                      {(weightDraft() || record.weights[1]) && (
                         <div className='weight-entry net-weight'>
                           <h3>Net Weight</h3>
                           <span className='record-date'>
