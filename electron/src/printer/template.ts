@@ -320,6 +320,11 @@ export const styles = `
 				text-transform: uppercase;
 			}
 
+			.sms-notice {
+				font-size: 16px;
+				text-align: center;
+			}
+
 			.customer-form-grid {
 				display: grid;
 				gap: 10px;
@@ -547,8 +552,8 @@ const grid = (
 				</div>`
             : ''
         }`
-          : `<div>
-						ውጤቱ በSMS እንዲደርሳቹ የአቅራቢ እና የተረካቢ ስልክ ይፃፉ
+          : `<div class="sms-notice">
+						ውጤቱ በ<b>SMS</b> እንዲደርሳቹ የአቅራቢ እና የተረካቢ ስልክ ይፃፉ
           </div>
 					<div class="row">
 					<div class="customer-form-grid">
