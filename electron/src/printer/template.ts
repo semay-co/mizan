@@ -311,7 +311,7 @@ export const styles = `
 				// -webkit-text-stroke: 1px #fff;
 				// -webkit-text-fill-color: #fff;
 				text-align: right;
-				text-shadow: 3px 3px #fff, 3px -3px #fff, -3px -3px #fff, -3px 3px #fff;
+				text-shadow: 1px 1px #fff, 1px -1px #fff, -1px -1px #fff, -1px 1px #fff;
 			}
 
 			.price-row h3 {
@@ -548,7 +548,7 @@ const grid = (
             : ''
         }`
           : `<div>
-						SMS እንዲደርሳቹ የአቅራቢ እና የተረካቢ ስልክ ይፃፉ
+						ውጤቱ በSMS እንዲደርሳቹ የአቅራቢ እና የተረካቢ ስልክ ይፃፉ
           </div>
 					<div class="row">
 					<div class="customer-form-grid">
