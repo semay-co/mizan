@@ -4,7 +4,7 @@ import { PAGE_TYPES } from '../../../src/model/print.model'
 
 const company = 'Furi Truck Scale Service'
 const address = 'Sebeta, Furi - Around Police Club'
-const phone = '011 883 8043'
+const phone = '0118 83 8043 | 0968 34 3616 (SMS)'
 
 const getPrice = (type: number) => {
   switch (type) {
@@ -302,7 +302,7 @@ export const styles = `
 
 			.highlight-weight,
 			.highlight-price {
-				box-shadow: 100px 100px #bbb inset;
+				box-shadow: 100px 100px #9999 inset;
 				border-radius: 5px;
 				// color: #fff;
 				align-self: left;
@@ -311,6 +311,13 @@ export const styles = `
 				// -webkit-text-stroke: 1px #fff;
 				// -webkit-text-fill-color: #fff;
 				text-align: right;
+				text-shadow: 3px 3px #fff, 3px -3px #fff, -3px -3px #fff, -3px 3px #fff;
+			}
+
+			.price-row h3 {
+				font-size: 20px;
+				text-align: end;
+				text-transform: uppercase;
 			}
 
 			.customer-form-grid {
@@ -327,9 +334,10 @@ export const styles = `
 
 			.customer-form-grid .form-row .form-input {
 				border: 1px dashed #000;	
-				background: #dddddd88;
+				background: #ddd0;
 				height: 30px;
-				box-shadow: 100px 100px #fff inset;
+				box-shadow: 100px 100px #fff8 inset;
+				outline: 3px solid #fff;
 				z-index: 100;
 			}
 			
@@ -401,7 +409,7 @@ export const header = (company: string, address: string, phone: string) => {
     </div>
     <div class="address">
       <div>Address: ${address}</div>
-      <div>Phone: ${phone} | 0968343616 (SMS)</div>
+      <div>Phone: ${phone}</div>
     </div>
   </div>`
 }
@@ -445,9 +453,7 @@ const grid = (
 					<h3>
 						Type: ${VEHICLE_TYPES[record.vehicle.type]}
 					</h3>
-					<h3>
-						Price: ${getPrice(record.vehicle.type)} Birr
-					</h3>
+					
 				</div>`
           : ''
       }
@@ -540,10 +546,11 @@ const grid = (
 					</div>
 				</div>`
             : ''
-        }
- 
-				`
-          : `<div class="row">
+        }`
+          : `<div>
+						SMS እንዲደርሳቹ የአቅራቢ እና የተረካቢ ስልክ ይፃፉ
+          </div>
+					<div class="row">
 					<div class="customer-form-grid">
 						<div class="form-row">
 							<h3 class="form-title">አቅራቢ</h3>
@@ -574,6 +581,11 @@ const grid = (
 						</div>
 					</div>
 					<div class="input-box"></div>
+				</div>
+				<div class="price-row">
+					<h3>
+						Price: ${getPrice(record.vehicle.type)} Birr
+					</h3>
 				</div>
 				`
       }

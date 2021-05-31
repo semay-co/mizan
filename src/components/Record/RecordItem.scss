@@ -137,8 +137,14 @@
       --border-radius: 0 0 0.3rem 0.3rem;
     }
 
-    &.danger-button,
     &.warn-button {
+      ion-button {
+        --color: rgba(0, 0, 0, 0.486);
+        --background: #d4b92049;
+      }
+    }
+
+    &.danger-button {
       color: #ff496188;
       background: #ff496122;
 
@@ -149,11 +155,6 @@
       ion-button {
         --color: #ff496188;
         --background: #ff496111;
-      }
-    }
-
-    &.warn-button {
-      ion-button {
       }
     }
   }

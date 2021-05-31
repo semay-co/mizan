@@ -288,24 +288,6 @@ const RecordItem = (props: any) => {
                   {formatDate(+record?.weights[0]?.createdAt)}
                 </span>
 
-                {!record?.weights[1] &&
-                  moment(+record?.weights[0].createdAt).isBefore(
-                    moment().subtract(2, 'days')
-                  ) && (
-                    <>
-                      <IonButton
-                        color='warning'
-                        disabled
-                        className='time-warning'
-                      >
-                        <IonIcon icon={alertCircleOutline} />
-                        <IonLabel>
-                          {moment(+record?.weights[0].createdAt).fromNow()}
-                        </IonLabel>
-                      </IonButton>
-                    </>
-                  )}
-
                 <div className='weight-measure'>
                   {record?.weights[0]?.weight.toLocaleString()} KG
                 </div>
@@ -439,6 +421,23 @@ const RecordItem = (props: any) => {
                     ).isBefore(moment().subtract(2, 'days')),
                   })}
                 >
+                  {!record?.weights[1] &&
+                    moment(+record?.weights[0].createdAt).isBefore(
+                      moment().subtract(2, 'days')
+                    ) && (
+                      <>
+                        <IonButton
+                          color='warning'
+                          disabled
+                          className='time-warning'
+                        >
+                          <IonIcon icon={alertCircleOutline} />
+                          <IonLabel>
+                            {moment(+record?.weights[0].createdAt).fromNow()}
+                          </IonLabel>
+                        </IonButton>
+                      </>
+                    )}
                   <IonButton
                     onClick={onSaveSecondWeight}
                     size='large'
