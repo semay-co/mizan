@@ -1,16 +1,19 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './RecordItem.scss'
 import { v4 as uuid } from 'uuid'
 
 import {
   IonButton,
   IonCard,
+  IonCardContent,
   IonCardTitle,
   IonChip,
   IonIcon,
   IonItem,
   IonLabel,
   IonList,
+  IonToast,
+  useIonToast,
 } from '@ionic/react'
 import {
   addOutline,
@@ -51,6 +54,9 @@ const RecordItem = (props: any) => {
 
   const [addSecondWeightMutation] = useMutation(ADD_SECOND_WEIGHT)
   const [addCustomerMutation] = useMutation(ADD_CUSTOMER)
+
+  const [showPrintingToast, setPrinting] = useState(false)
+  const [isResultPaid, setResultPaid] = useState(false)
 
   const recordQuery = useQuery(FETCH_RECORD, {
     variables: {
@@ -94,11 +100,15 @@ const RecordItem = (props: any) => {
   }
 
   const onPrint = () => {
+    setPrinting(true)
+
     printRecord({
       variables: {
         id: record.id,
       },
-    }).catch(console.error)
+    })
+      .then(() => {})
+      .catch(console.error)
 
     sendConfirmationSms({
       variables: {
@@ -314,8 +324,27 @@ const RecordItem = (props: any) => {
               </div>
 
               {props.type === 'result' && !record?.weights[1] ? (
-                <IonCard className='price-card' color='success'>
+                <IonCard
+                  className='price-card'
+                  color={isResultPaid ? 'success' : 'warning'}
+                >
                   <h1>{getPrice(record.vehicle.type)} BIRR</h1>
+
+                  {!isResultPaid && (
+                    <IonCardContent>
+                      <IonButton
+                        onClick={() => {
+                          setResultPaid(true)
+                        }}
+                        expand='block'
+                        color='light'
+                        size='large'
+                        slot='end'
+                      >
+                        Paid
+                      </IonButton>
+                    </IonCardContent>
+                  )}
                 </IonCard>
               ) : (
                 <>
@@ -448,12 +477,14 @@ const RecordItem = (props: any) => {
                   </IonButton>
                 </div>
               ) : (
-                <div className='right-button'>
-                  <IonButton onClick={onPrint}>
-                    <IonIcon icon={printOutline} />
-                    Print
-                  </IonButton>
-                </div>
+                (props.type !== 'result' || isResultPaid) && (
+                  <div className='right-button'>
+                    <IonButton onClick={onPrint}>
+                      <IonIcon icon={printOutline} />
+                      Print
+                    </IonButton>
+                  </div>
+                )
               )}
             </div>
           </IonCard>
@@ -477,6 +508,14 @@ const RecordItem = (props: any) => {
                 />
               </IonCard>
             )}
+          <IonToast
+            color='success'
+            cssClass='printing-toast'
+            isOpen={showPrintingToast}
+            onDidDismiss={() => setPrinting(false)}
+            message='PRINTING...'
+            duration={2000}
+          />
         </>
       )}
     </>
