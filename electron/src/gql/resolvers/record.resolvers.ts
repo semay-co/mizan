@@ -327,18 +327,24 @@ export const printRecord = async (parent: any, args: any) => {
   record.buyer && numbers.push(record.buyer?.phoneNumber?.number)
   record.seller && numbers.push(record.seller?.phoneNumber?.number)
 
-  const msgLines = [`1st wt: ${record.weights[0].weight}KG`]
+  const msgLines = [`1st Wt: ${record.weights[0].weight}KG`]
 
-  record.weights[1] && msgLines.push(`2nd wt: ${record.weights[1].weight}KG`)
+  record.weights[1] && msgLines.push(`2nd Wt: ${record.weights[1].weight}KG`)
   record.weights[1] &&
     msgLines.push(
-      `Net wt: ${Math.abs(
+      `Net Wt: ${Math.abs(
         +record.weights[1].weight - +record.weights[0].weight
       )}KG`
     )
+  const licensePlate = record.vehicle?.licensePlate
+  msgLines.push(
+    `License Plate: (${licensePlate?.code})${
+      licensePlate?.plate
+    }[${licensePlate?.region?.code?.slice(0, 2)}]`
+  )
+
   msgLines.push(`Serial: ${record.serial.toUpperCase()}`)
-  msgLines.push('__________')
-  msgLines.push('FURI MIZAN')
+  msgLines.push('-- FURI MIZAN')
 
   console.log(msgLines)
 

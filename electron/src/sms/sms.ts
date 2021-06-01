@@ -51,13 +51,13 @@ export const sendSms = async (numbers: string, text: string) => {
       await page.waitForSelector('#sms_current_content'),
       await page.type('#sms_send_user_input', numbers),
       await page.type('#sms_current_content', text),
-      await page.evaluate(() => {
-        const txta = document.getElementById('sms_current_content')
+      // await page.evaluate(() => {
+      //   const txta = document.getElementById('sms_current_content')
 
-        if (txta?.innerHTML) {
-          txta.innerHTML = text
-        }
-      }),
+      //   if (txta?.innerHTML) {
+      //     txta.innerHTML = text
+      //   }
+      // }),
       // await page.waitForSelector('.sms_send_normal'),
       // await page.click('.sms_send_normal'),
       await page.evaluate(() => {

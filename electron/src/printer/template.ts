@@ -612,6 +612,9 @@ const grid = (
 					<div class="weight-date ${
             moment(+record.weights[0].createdAt).isBefore(
               moment(+record.weights[1].createdAt).subtract(2, 'days')
+            ) ||
+            moment(+record.weights[0].createdAt).isAfter(
+              moment(+record.weights[1].createdAt).add(10, 'minutes')
             )
               ? 'outdated-record'
               : ''
@@ -668,7 +671,6 @@ export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
           : `
 				<div class="operator">
 					<div class="operator-signature">
-						Operator Signature
 					</div>
 				</div>`
       }
