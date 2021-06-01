@@ -307,6 +307,7 @@ export const styles = `
 				// color: #fff;
 				align-self: left;
 				font-size: 24px;
+				font-weight: bold;
 				padding: 20px;
 				// -webkit-text-stroke: 1px #fff;
 				// -webkit-text-fill-color: #fff;

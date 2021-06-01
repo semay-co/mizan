@@ -34,9 +34,9 @@ SerialPort.list().then((ports) => {
     .filter((path) => path === comPort.toLowerCase())
 
   if (process.env.EMULATE_SCALE) {
-    setInterval(() => {
-      publish(Math.floor(Math.random() * 1000) * 10)
-    }, 30 * 1000)
+    // setInterval(() => {
+    //   publish(Math.floor(Math.random() * 1000) * 10)
+    // }, 30 * 1000)
   } else {
     if (search.length > 0) {
       const port = new SerialPort(comPort, {
