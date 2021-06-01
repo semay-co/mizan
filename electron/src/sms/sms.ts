@@ -1,4 +1,7 @@
 import puppeteer from 'puppeteer'
+import env from 'dotenv-flow'
+
+env.config()
 
 const startBrowser = async () => {
   const browser = await puppeteer.launch({

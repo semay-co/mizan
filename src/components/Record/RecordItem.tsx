@@ -477,7 +477,9 @@ const RecordItem = (props: any) => {
                   </IonButton>
                 </div>
               ) : (
-                (props.type !== 'result' || isResultPaid) && (
+                (record.weights[1] ||
+                  props.type !== 'result' ||
+                  isResultPaid) && (
                   <div className='right-button'>
                     <IonButton onClick={onPrint}>
                       <IonIcon icon={printOutline} />
