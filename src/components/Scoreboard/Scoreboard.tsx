@@ -11,36 +11,50 @@ import { IonFabButton, IonIcon, IonInput } from '@ionic/react'
 import { createOutline, speedometerOutline } from 'ionicons/icons'
 import $ from 'jquery'
 import { STATUS_CODES } from '../../model/scoreboard.model'
+import io from 'socket.io-client'
+
+const endpoint = 'http://192.168.8.113:6969'
 
 const Scoreboard = (props: any) => {
   const sub = useSubscription(SUBSCRIBE_READING)
 
   useEffect(() => {
-    if (sub.data && !props.ui.manualInput)
-      +sub.data.reading?.weight !== +props.reading?.weight &&
-        props.updateReading({
-          receivedAt: new Date().getTime(),
-          weight: +sub.data.reading,
-          status: STATUS_CODES.ok,
-        })
-    if (sub.error)
+    const socket = io(endpoint)
+
+    socket.on('reading', (data) => {
+      console.log(data)
       props.updateReading({
         receivedAt: new Date().getTime(),
-        weight: 0,
-        status: STATUS_CODES.error,
+        weight: +data,
+        status: STATUS_CODES.ok,
       })
-    if (sub.loading && !props.ui.manualInput)
-      props.updateReading({
-        receivedAt: new Date().getTime(),
-        weight: 0,
-        status: STATUS_CODES.loading,
-      })
+    })
+
+    // if (sub.data && !props.ui.manualInput)
+    //   +sub.data.reading?.weight !== +props.reading?.weight &&
+    //     props.updateReading({
+    //       receivedAt: new Date().getTime(),
+    //       weight: +sub.data.reading,
+    //       status: STATUS_CODES.ok,
+    //     })
+    // if (sub.error)
+    //   props.updateReading({
+    //     receivedAt: new Date().getTime(),
+    //     weight: 0,
+    //     status: STATUS_CODES.error,
+    //   })
+    // if (sub.loading && !props.ui.manualInput)
+    //   props.updateReading({
+    //     receivedAt: new Date().getTime(),
+    //     weight: 0,
+    //     status: STATUS_CODES.loading,
+    //   })
   }, [sub.data, sub.error, sub.loading, props])
 
-  isNaN(+props.reading?.weight) &&
-    props.updateUIState({
-      manualInput: true,
-    })
+  // isNaN(+props.reading?.weight) &&
+  //   props.updateUIState({
+  //     manualInput: true,
+  //   })
 
   const manualInput = (ev: any) => {
     props.updateReading({
