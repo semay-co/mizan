@@ -18,25 +18,33 @@ const endpoint = 'http://192.168.8.113:6969'
 const Scoreboard = (props: any) => {
   const sub = useSubscription(SUBSCRIBE_READING)
 
+  // props.updateReading({
+  //   receivedAt: new Date().getTime(),
+  //   weight: 0,
+  //   status: STATUS_CODES.ok,
+  // })
+
   useEffect(() => {
     const socket = io(endpoint)
 
-    socket.on('reading', (data) => {
-      console.log(data)
-      props.updateReading({
-        receivedAt: new Date().getTime(),
-        weight: +data,
-        status: STATUS_CODES.ok,
+    if (!props.ui.manualInput) {
+      socket.on('reading', (data) => {
+        console.log(data)
+        props.updateReading({
+          receivedAt: new Date().getTime(),
+          weight: +data || 0,
+          status: STATUS_CODES.ok,
+        })
       })
-    })
+    }
 
     // if (sub.data && !props.ui.manualInput)
-    //   +sub.data.reading?.weight !== +props.reading?.weight &&
-    //     props.updateReading({
-    //       receivedAt: new Date().getTime(),
-    //       weight: +sub.data.reading,
-    //       status: STATUS_CODES.ok,
-    //     })
+    // +sub.data.reading?.weight !== +props.reading?.weight &&
+    //   props.updateReading({
+    //     receivedAt: new Date().getTime(),
+    //     weight: +sub.data.reading,
+    //     status: STATUS_CODES.ok,
+    //   })
     // if (sub.error)
     //   props.updateReading({
     //     receivedAt: new Date().getTime(),
@@ -49,6 +57,10 @@ const Scoreboard = (props: any) => {
     //     weight: 0,
     //     status: STATUS_CODES.loading,
     //   })
+
+    return () => {
+      socket.off('reading')
+    }
   }, [sub.data, sub.error, sub.loading, props])
 
   // isNaN(+props.reading?.weight) &&
@@ -79,8 +91,7 @@ const Scoreboard = (props: any) => {
     $('scoreboard-input').trigger('focus')
   }
 
-  const isManualInput =
-    props.ui?.manualInput || props.reading?.status !== STATUS_CODES.ok
+  const isManualInput = props.ui?.manualInput //|| props.reading?.status !== STATUS_CODES.ok
 
   return (
     <>
