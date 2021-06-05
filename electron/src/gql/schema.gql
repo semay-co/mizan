@@ -19,12 +19,18 @@ type Mutation {
   createRecord(
     weight: Int!
     weightTime: String
+    manual: Boolean!
     vehicleId: String!
     sellerId: String
     buyerId: String
   ): Record
   createCustomer(phoneNumber: String!, name: String!): Customer
-  addSecondWeight(recordId: String!, weight: Int!, createdAt: String!): Record
+  addSecondWeight(
+    recordId: String!
+    weight: Int!
+    createdAt: String!
+    manual: Boolean
+  ): Record
   addCustomer(
     recordId: String!
     customerId: String!

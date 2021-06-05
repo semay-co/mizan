@@ -93,6 +93,18 @@
         align-content: center;
         gap: 1rem;
 
+        &.manual-input {
+          color: var(--ion-color-secondary);
+
+          ion-chip {
+            text-transform: uppercase;
+
+            ion-icon {
+              margin-right: 1rem;
+            }
+          }
+        }
+
         ion-button.update-button {
           margin: 0;
 

@@ -118,6 +118,7 @@ const Form = (props: any) => {
       runCreateRecord({
         variables: {
           weight: draft.reading.weight,
+          manual: draft.reading.manual || false,
           vehicleId: draft.vehicleId,
           sellerId: draft.sellerId || undefined,
           buyerId: draft.buyerId || undefined,

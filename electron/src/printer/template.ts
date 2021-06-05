@@ -554,7 +554,7 @@ const grid = (
             : ''
         }`
           : `<div class="sms-notice">
-						ውጤቱ በ<b>SMS</b> እንዲደርሳቹ የአቅራቢ እና የተረካቢ ስልክ ይፃፉ
+						የሚዛኑ ውጤት በ<b>SMS</b> እንዲደርሳቹ የአቅራቢ እና የተረካቢ ስልክ ይፃፉ
           </div>
 					<div class="row">
 					<div class="customer-form-grid">

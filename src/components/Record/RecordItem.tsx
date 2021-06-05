@@ -1,25 +1,23 @@
 import React, { useState } from 'react'
 import './RecordItem.scss'
-import { v4 as uuid } from 'uuid'
 
 import {
   IonButton,
   IonCard,
   IonCardContent,
-  IonCardTitle,
   IonChip,
   IonIcon,
   IonItem,
   IonLabel,
   IonList,
   IonToast,
-  useIonToast,
 } from '@ionic/react'
 import {
   addOutline,
   alertCircleOutline,
   chevronForward,
   closeOutline,
+  create,
   personAddOutline,
   printOutline,
   refreshOutline,
@@ -83,10 +81,12 @@ const RecordItem = (props: any) => {
   }
 
   const onSaveSecondWeight = () => {
+    console.log(weightDraft())
     addSecondWeightMutation({
       variables: {
         recordId: record.id,
         weight: weightDraft().weight,
+        manual: weightDraft().manual,
         createdAt: weightDraft().receivedAt.toString(),
       },
       update: () => {
@@ -149,10 +149,10 @@ const RecordItem = (props: any) => {
   }
 
   const makeNewRecord = (weight: number, weightTime: string) => {
-    console.log(record)
     runCreateRecord({
       variables: {
         weight,
+        manual: props.draft?.reading?.manual || false,
         weightTime,
         vehicleId: record.vehicle?.id,
         sellerId: undefined,
@@ -226,6 +226,7 @@ const RecordItem = (props: any) => {
       {record && (
         <>
           <IonCard className='record-card'>
+            {/* <pre>{JSON.stringify(record)}</pre> */}
             <div className='card-left-content'>
               <IonList>
                 {record?.serial && (
@@ -247,7 +248,7 @@ const RecordItem = (props: any) => {
                 <IonItem>
                   <IonLabel>
                     <h2>Vehicle Type</h2>
-                    <IonChip color='secondary'>
+                    <IonChip color='tertiary'>
                       {VEHICLE_TYPES[record?.vehicle?.type] || 'Unknown'}
                     </IonChip>
                   </IonLabel>
@@ -298,8 +299,18 @@ const RecordItem = (props: any) => {
                   {formatDate(+record?.weights[0]?.createdAt)}
                 </span>
 
-                <div className='weight-measure'>
+                <div
+                  className={classNames(
+                    'weight-measure',
+                    record?.weights[0]?.manual && 'manual-input'
+                  )}
+                >
                   {record?.weights[0]?.weight.toLocaleString()} KG
+                  {record?.weights[0]?.manual && (
+                    <IonChip color='secondary'>
+                      <IonIcon icon={create} /> Manual
+                    </IonChip>
+                  )}
                 </div>
 
                 {record?.weights[1] &&
@@ -359,10 +370,19 @@ const RecordItem = (props: any) => {
                             <span className='record-date'>
                               {formatDate(+record.weights[1]?.createdAt)}
                             </span>
-                            <div className='weight-measure'>
+                            <div
+                              className={classNames(
+                                'weight-measure',
+                                record?.weights[1]?.manual && 'manual-input'
+                              )}
+                            >
                               {record.weights[1].weight.toLocaleString()} KG
+                              {record?.weights[1]?.manual && (
+                                <IonChip color='secondary'>
+                                  <IonIcon icon={create} /> Manual
+                                </IonChip>
+                              )}
                             </div>
-
                             {moment(+record.weights[1].createdAt).isAfter(
                               moment().subtract(2, 'days')
                             ) && (

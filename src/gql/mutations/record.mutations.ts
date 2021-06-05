@@ -3,6 +3,7 @@ import { gql } from '@apollo/client'
 export const CREATE_RECORD = gql`
   mutation CreateRecord(
     $weight: Int!
+    $manual: Boolean!
     $weightTime: String
     $vehicleId: String!
     $sellerId: String
@@ -10,6 +11,7 @@ export const CREATE_RECORD = gql`
   ) {
     createRecord(
       weight: $weight
+      manual: $manual
       weightTime: $weightTime
       vehicleId: $vehicleId
       sellerId: $sellerId
@@ -55,11 +57,13 @@ export const ADD_SECOND_WEIGHT = gql`
   mutation AddSecondWeight(
     $recordId: String!
     $weight: Int!
+    $manual: Boolean!
     $createdAt: String!
   ) {
     addSecondWeight(
       recordId: $recordId
       weight: $weight
+      manual: $manual
       createdAt: $createdAt
     ) {
       id

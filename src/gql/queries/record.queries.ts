@@ -20,6 +20,7 @@ export const FETCH_RECORDS = gql`
       serial
       weights {
         weight
+        manual
         createdAt
       }
       vehicle {
@@ -63,6 +64,7 @@ export const FETCH_RECORD = gql`
       serial
       weights {
         weight
+        manual
         createdAt
       }
       vehicle {

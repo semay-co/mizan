@@ -8,7 +8,7 @@ import { useSubscription } from '@apollo/client'
 import classNames from 'classnames'
 import { SUBSCRIBE_READING } from '../../gql/subscriptions'
 import { IonFabButton, IonIcon, IonInput } from '@ionic/react'
-import { createOutline, speedometerOutline } from 'ionicons/icons'
+import { create, speedometer } from 'ionicons/icons'
 import $ from 'jquery'
 import { STATUS_CODES } from '../../model/scoreboard.model'
 import io from 'socket.io-client'
@@ -33,6 +33,7 @@ const Scoreboard = (props: any) => {
         props.updateReading({
           receivedAt: new Date().getTime(),
           weight: +data || 0,
+          manual: false,
           status: STATUS_CODES.ok,
         })
       })
@@ -88,7 +89,9 @@ const Scoreboard = (props: any) => {
       manualInput: !props.ui.manualInput,
     })
 
-    $('scoreboard-input').trigger('focus')
+    setTimeout(() => {
+      $('#scoreboard-input').focus()
+    }, 300)
   }
 
   const isManualInput = props.ui?.manualInput //|| props.reading?.status !== STATUS_CODES.ok
@@ -105,15 +108,13 @@ const Scoreboard = (props: any) => {
         <div className='scoreboard-wrap'>
           <IonFabButton
             onClick={() => toggleManualInput()}
-            color={isManualInput ? 'success' : 'light'}
+            color={isManualInput ? 'secondary' : 'success'}
             // fill="clear"
             // size="large"
             // shape="round"
             className='manual-input-button'
           >
-            <IonIcon
-              icon={isManualInput ? speedometerOutline : createOutline}
-            />
+            <IonIcon icon={isManualInput ? create : speedometer} />
           </IonFabButton>
 
           <div className='scoreboard-text'>
@@ -121,6 +122,7 @@ const Scoreboard = (props: any) => {
               <>
                 <IonInput
                   id='scoreboard-input'
+                  color='secondary'
                   autofocus={true}
                   clearInput={true}
                   onIonChange={manualInput}

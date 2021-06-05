@@ -34,7 +34,6 @@ export const sendSms = async (numbers: string, text: string) => {
       await page
         // TODO: make it an env var
         .type('#login_password', '$implepass')
-        .then(() => console.log('yaaay!'))
         .catch((err) => console.log('writing password failed')),
       await page.waitForSelector('#login_btn'),
       await page

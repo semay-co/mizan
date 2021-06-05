@@ -113,6 +113,7 @@ export const createRecord = async (parent: any, args: any) => {
         {
           createdAt: args.weightTime || new Date().getTime(),
           weight: args.weight,
+          manual: args.manual || false,
         },
       ],
       vehicleId,
@@ -203,6 +204,7 @@ export const addSecondWeight = async (parent: any, args: any) => {
     weights: _.append({
       createdAt: args.createdAt || new Date().getTime(),
       weight: args.weight,
+      manual: args.manual || false,
     })(record.weights),
   }
 
@@ -344,7 +346,7 @@ export const printRecord = async (parent: any, args: any) => {
   )
 
   msgLines.push(`Serial: ${record.serial.toUpperCase()}`)
-  msgLines.push('-- FURI MIZAN')
+  msgLines.push('-- FURI MIZAN | ፉሪ ሚዛን')
 
   console.log(msgLines)
 
