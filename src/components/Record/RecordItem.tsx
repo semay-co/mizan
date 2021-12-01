@@ -11,6 +11,7 @@ import {
   IonLabel,
   IonList,
   IonToast,
+  useIonPopover,
 } from '@ionic/react'
 import {
   addOutline,
@@ -18,8 +19,9 @@ import {
   chevronForward,
   closeOutline,
   create,
+  menuOutline,
   personAddOutline,
-  printOutline,
+  print,
   refreshOutline,
 } from 'ionicons/icons'
 import moment from 'moment'
@@ -55,6 +57,30 @@ const RecordItem = (props: any) => {
 
   const [showPrintingToast, setPrinting] = useState(false)
   const [isResultPaid, setResultPaid] = useState(false)
+
+  const PopoverList: React.FC<{
+    onHide: () => void
+  }> = ({ onHide }) => (
+    <IonList>
+      <IonItem
+        button
+        onClick={() => {
+          onPrint()
+          onHide()
+        }}
+      >
+        <IonIcon icon={print} />
+        <IonLabel>Print</IonLabel>
+      </IonItem>
+      <IonItem lines='none' detail={false} button onClick={onHide}>
+        Close
+      </IonItem>
+    </IonList>
+  )
+
+  const [presentPopover, dismissPopover] = useIonPopover(PopoverList, {
+    onHide: () => dismissPopover(),
+  })
 
   const recordQuery = useQuery(FETCH_RECORD, {
     variables: {
@@ -308,7 +334,8 @@ const RecordItem = (props: any) => {
                   {record?.weights[0]?.weight.toLocaleString()} KG
                   {record?.weights[0]?.manual && (
                     <IonChip color='secondary'>
-                      <IonIcon icon={create} /> Manual
+                      <IonIcon icon={create} />
+                      <IonLabel>Manual</IonLabel>
                     </IonChip>
                   )}
                 </div>
@@ -379,7 +406,8 @@ const RecordItem = (props: any) => {
                               {record.weights[1].weight.toLocaleString()} KG
                               {record?.weights[1]?.manual && (
                                 <IonChip color='secondary'>
-                                  <IonIcon icon={create} /> Manual
+                                  <IonIcon icon={create} />
+                                  <IonLabel>Manual</IonLabel>
                                 </IonChip>
                               )}
                             </div>
@@ -497,16 +525,32 @@ const RecordItem = (props: any) => {
                   </IonButton>
                 </div>
               ) : (
-                (record.weights[1] ||
-                  props.type !== 'result' ||
-                  isResultPaid) && (
+                <>
+                  {props.type === 'result' &&
+                    !record?.weights[1] &&
+                    (record.weights[1] ||
+                      props.type !== 'result' ||
+                      isResultPaid) && (
+                      <div className='right-button'>
+                        <IonButton onClick={onPrint}>
+                          <IonIcon icon={print} />
+                          Print
+                        </IonButton>
+                      </div>
+                    )}
                   <div className='right-button'>
-                    <IonButton onClick={onPrint}>
-                      <IonIcon icon={printOutline} />
-                      Print
+                    <IonButton
+                      size='large'
+                      onClick={(e) =>
+                        presentPopover({
+                          event: e.nativeEvent,
+                        })
+                      }
+                    >
+                      <IonIcon icon={menuOutline} />
                     </IonButton>
                   </div>
-                )
+                </>
               )}
             </div>
           </IonCard>

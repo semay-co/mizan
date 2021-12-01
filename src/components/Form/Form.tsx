@@ -53,7 +53,6 @@ const Form = (props: any) => {
   })
 
   const clearForm = () => {
-    console.log('clear form')
     props.deleteRecordDraft()
     props.updateRecordResult(undefined)
   }
@@ -135,7 +134,6 @@ const Form = (props: any) => {
           })
         },
       }).then((record) => {
-        console.log('record', record)
         props.updateRecordResult(record.data.createRecord.id)
         props.deleteRecordDraft()
 
