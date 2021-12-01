@@ -65,10 +65,10 @@ export const records = async (parent: any, args: any) => {
     })(rows as any)
   )
 
-  const filtered =
-    filters && filters.includes('pending')
-      ? _.filter((record: any) => record.weights.length <= 1)(records)
-      : records
+  const filtered = records
+  // filters && filters.includes('pending')
+  //   ? _.filter((record: any) => record.weights.length <= 1)(records)
+  //   : records
 
   const filteredByVehicle = _.filter(
     (record: any) => !args.vehicleId || record.vehicleId === args.vehicleId
