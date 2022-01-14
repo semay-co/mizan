@@ -28,10 +28,10 @@ const publish = (reading: number) => {
   })
 }
 
-SerialPort.list().then((ports) => {
+SerialPort.list().then((ports: any) => {
   const search = ports
-    .map((port) => port.path.toLowerCase())
-    .filter((path) => path === comPort.toLowerCase())
+    .map((port: any) => port.path.toLowerCase())
+    .filter((path: any) => path === comPort.toLowerCase())
 
   if (process.env.EMULATE_SCALE) {
     // setInterval(() => {
@@ -50,7 +50,7 @@ SerialPort.list().then((ports) => {
       var publishedAt = new Date().getTime()
 
       port
-        .on('data', (data) => {
+        .on('data', (data: any) => {
           const snap = data.toString()
 
           if (snap === '0' || snap === '-') {
@@ -70,7 +70,7 @@ SerialPort.list().then((ports) => {
             }
           }
         })
-        .on('error', (error) => console.error)
+        .on('error', (err: any) => console.error(err))
     }
   }
 })

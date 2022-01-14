@@ -49,3 +49,6 @@
 [Sat, 27 Mar 2021 15:46:25 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_replicator?_=1616859965985 200
 [Sat, 27 Mar 2021 15:46:26 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_users?_=1616859965986 200
 [Sat, 27 Mar 2021 15:46:31 GMT] [info] [<0.000.0>] 127.0.0.1 - - GET /_utils/dashboard.assets/img/pouchdb-favicon.png 200
+[Thu, 13 Jan 2022 13:47:15 GMT] [info] [<0.000.0>] pouchdb-server has started on http://127.0.0.1:5984/
+[Thu, 13 Jan 2022 13:47:15 GMT] [info] [<0.000.0>] database will use sqlite3.
+[Thu, 13 Jan 2022 13:47:15 GMT] [info] [<0.000.0>] navigate to http://127.0.0.1:5984/_utils for the Fauxton UI.

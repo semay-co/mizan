@@ -18,14 +18,14 @@ export const createVehicle = async (parent: any, args: any) => {
 
   const existing = vehicles.rows
     .map(
-      (row) =>
+      (row: any) =>
         ({
           ...row.doc,
           id: row.id,
         } as any)
     )
     .filter(
-      (row) =>
+      (row: any) =>
         row.licensePlateNumber === args.plateNumber &&
         row.licensePlateCode === args.plateCode &&
         row.licensePlateRegion === args.plateCode
