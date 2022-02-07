@@ -55,8 +55,8 @@ export const FETCH_RECORDS = gql`
             number
           }
         }
-        count
       }
+      count
     }
   }
 `

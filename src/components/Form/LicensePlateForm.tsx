@@ -17,6 +17,7 @@ import VehicleSuggestions from './VehicleSuggestions'
 import NewVehicleForm from './NewVehicleForm'
 import { useQuery } from '@apollo/client'
 import { FETCH_VEHICLES } from '../../gql/queries/vehicle.queries'
+import { updateUIState } from '../../state/actions/ui.action'
 
 const LicensePlateForm = (props: any) => {
   const vehicles = useQuery(FETCH_VEHICLES, {
@@ -49,6 +50,10 @@ const LicensePlateForm = (props: any) => {
     })
 
     props.updateRecordQuery(props.draft?.licensePlate.plate)
+
+    props.updateUIState({
+      page: 0,
+    })
 
     vehicles.refetch()
   }
@@ -158,4 +163,5 @@ export default connect(mapStateToProps, {
   updateRecordDraft,
   updateRecordQuery,
   deleteRecordDraft,
+  updateUIState,
 })(LicensePlateForm)

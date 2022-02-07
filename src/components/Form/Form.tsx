@@ -26,6 +26,7 @@ import SelectedVehicleCard from './SelectedVehicleCard'
 import classNames from 'classnames'
 import CustomerForm from './CustomerForm'
 import SelectedCustomerCard from './SelectedCustomerCard'
+import { updateUIState } from '../../state/actions/ui.action'
 
 const Form = (props: any) => {
   const [runCreateRecord] = useMutation(CREATE_RECORD)
@@ -54,6 +55,10 @@ const Form = (props: any) => {
   const clearForm = () => {
     props.deleteRecordDraft()
     props.updateRecordResult(undefined)
+
+    props.updateUIState({
+      page: 0,
+    })
   }
 
   const clearSelectedVehicle = () => {
@@ -61,6 +66,10 @@ const Form = (props: any) => {
       ...props.draft,
       vehicleId: undefined,
       vehicle: undefined,
+    })
+
+    props.updateUIState({
+      page: 0,
     })
   }
 
@@ -88,6 +97,8 @@ const Form = (props: any) => {
     skipBuyer: boolean = false,
     skipSeller: boolean = false
   ) => {
+    clearForm()
+
     if (props.reading) {
       props.updateRecordDraft({
         ...props.draft,
@@ -375,4 +386,5 @@ export default connect(mapStateToProps, {
   updateRecordDraft,
   updateRecordResult,
   deleteRecordDraft,
+  updateUIState,
 })(Form)

@@ -34,7 +34,7 @@ const RecordList = (props: any) => {
         props.ui.recordFilters || [],
         props.draft?.reading ? ['pending'] : []
       ),
-      limit: 20,
+      limit: props.ui.limit || 20,
       page: props.ui.page || 0,
     },
     fetchPolicy: 'network-only',
@@ -42,6 +42,9 @@ const RecordList = (props: any) => {
 
   const onQueryChange = (ev: any) => {
     props.updateRecordQuery(ev.detail?.value)
+    props.updateUIState({
+      page: 0,
+    })
     // recordsQuery.refetch({
     //   query: props.recordQuery,
     //   filters: props.ui.recordFilters,
@@ -100,11 +103,22 @@ const RecordList = (props: any) => {
             <IonIcon icon={calendarClearOutline} />
           </IonButton>
           <div className='pagination'>
-            <IonButton onClick={prevPage}>
+            <IonButton onClick={prevPage} disabled={props.ui.page < 1}>
               <IonIcon icon={chevronBack}></IonIcon>
             </IonButton>
-            Page: {+(props.ui.page || 0) + 1}
-            <IonButton onClick={nextPage}>
+            Page {+(props.ui.page || 0) + 1} of{' '}
+            {Math.ceil(
+              recordsQuery.data?.records?.count / (props.ui.limit || 20)
+            )}
+            <IonButton
+              onClick={nextPage}
+              disabled={
+                props.ui.page >=
+                Math.floor(
+                  recordsQuery.data?.records?.count / (props.ui.limit || 20)
+                )
+              }
+            >
               <IonIcon icon={chevronForward}></IonIcon>
             </IonButton>
           </div>
