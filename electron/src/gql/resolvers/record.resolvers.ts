@@ -40,8 +40,13 @@ export const records = async (parent: any, args: any) => {
       : true
   })(filteredByVehicle)
 
+  const page = args.page || 0
+  const limit = args.limit || 20
+  const start = page * limit
+  const end = start + limit
+
   const sorted = _.sort(sortByCreated, filteredByQuery)
-  const limited = sorted.slice(0, args.limit || 10)
+  const limited = sorted.slice(start, end)
 
   const records = limited.map((row) => {
     const doc = row.doc as any
@@ -58,9 +63,6 @@ export const records = async (parent: any, args: any) => {
         }
       : {}
 
-    console.log(buyer)
-    console.log(seller)
-
     return {
       ...doc,
       id: row.id,
@@ -70,7 +72,10 @@ export const records = async (parent: any, args: any) => {
     }
   })
 
-  return records
+  return {
+    payload: records,
+    count: sorted.length,
+  }
 }
 
 export const createRecord = async (parent: any, args: any) => {
@@ -272,8 +277,6 @@ export const sendConfirmationSms = async (parent: any, args: any) => {
       id: record._id,
       ...record,
     }))
-
-  console.log('doc', doc)
 
   const vehicleSpread = doc.vehicleId
     ? {

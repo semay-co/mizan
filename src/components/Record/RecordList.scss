@@ -22,3 +22,9 @@ ion-searchbar {
     letter-spacing: 4px;
   }
 }
+
+.pagination {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: space-between;
+}

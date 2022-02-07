@@ -17,9 +17,9 @@ import {
 } from '@ionic/react'
 import {
   calendarClearOutline,
-  calendarNumberOutline,
-  calendarOutline,
   hourglassOutline,
+  chevronBack,
+  chevronForward,
 } from 'ionicons/icons'
 import { FETCH_RECORDS } from '../../gql/queries/record.queries'
 import * as _ from 'ramda'
@@ -34,7 +34,8 @@ const RecordList = (props: any) => {
         props.ui.recordFilters || [],
         props.draft?.reading ? ['pending'] : []
       ),
-      limit: 10,
+      limit: 20,
+      page: props.ui.page || 0,
     },
     fetchPolicy: 'network-only',
   })
@@ -55,8 +56,23 @@ const RecordList = (props: any) => {
     props.updateUIState({
       recordFilters,
     })
-
     // recordsQuery.refetch()
+  }
+
+  const nextPage = () => {
+    const current = +(props.ui.page || 0)
+
+    props.updateUIState({
+      page: current + 1,
+    })
+  }
+
+  const prevPage = () => {
+    const current = +(props.ui.page || 0)
+
+    props.updateUIState({
+      page: current > 0 ? current - 1 : 0,
+    })
   }
 
   return (
@@ -83,6 +99,15 @@ const RecordList = (props: any) => {
           <IonButton shape='round' fill='clear'>
             <IonIcon icon={calendarClearOutline} />
           </IonButton>
+          <div className='pagination'>
+            <IonButton onClick={prevPage}>
+              <IonIcon icon={chevronBack}></IonIcon>
+            </IonButton>
+            Page: {+(props.ui.page || 0) + 1}
+            <IonButton onClick={nextPage}>
+              <IonIcon icon={chevronForward}></IonIcon>
+            </IonButton>
+          </div>
         </IonCardContent>
       </IonCard>
 
@@ -94,15 +119,15 @@ const RecordList = (props: any) => {
         )}
 
         {(!recordsQuery.data ||
-          !recordsQuery.data?.records ||
-          recordsQuery.data?.records.length === 0) && (
+          !recordsQuery.data?.records?.payload ||
+          recordsQuery.data?.records?.payload?.length === 0) && (
           <IonCard className='info-card'>
             <h3>NO RECORDS FOUND</h3>
           </IonCard>
         )}
 
         <div className='records-wrap'>
-          {recordsQuery.data?.records?.map((record: any) => (
+          {recordsQuery.data?.records.payload?.map((record: any) => (
             <RecordItem key={record.id} record={record} />
           ))}
         </div>

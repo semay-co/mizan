@@ -9,7 +9,6 @@ import {
 } from '../../state/actions/record.action'
 import {
   addOutline,
-  chevronUp,
   closeOutline,
   reloadOutline,
   speedometerOutline,
@@ -130,7 +129,7 @@ const Form = (props: any) => {
 
           cache.writeQuery({
             query: FETCH_RECORDS,
-            data: [...current.records, result],
+            data: [...current.records?.payload, result],
           })
         },
       }).then((record) => {

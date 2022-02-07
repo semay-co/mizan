@@ -4,6 +4,7 @@ export const FETCH_RECORDS = gql`
   query FetchRecords(
     $query: String
     $limit: Int
+    $page: Int
     $vehicleId: String
     $serial: String
     $filters: [String]
@@ -11,6 +12,7 @@ export const FETCH_RECORDS = gql`
     records(
       query: $query
       limit: $limit
+      page: $page
       vehicleId: $vehicleId
       serial: $serial
       filters: $filters

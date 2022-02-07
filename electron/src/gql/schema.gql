@@ -3,11 +3,12 @@ type Query {
   records(
     query: String
     limit: Int
+    page: Int
     vehicleId: String
     serial: String
     licensePlate: String
     filters: [String]
-  ): [Record]
+  ): RecordResult
   record(id: String!): Record
   vehicles(query: String, limit: Int): [Vehicle]
   vehicle(id: String): Vehicle
@@ -121,6 +122,11 @@ type Record {
   product: Product
   serial: String
   weights: [Weight]
+}
+
+type RecordResult {
+  payload: [Record]
+  count: Int
 }
 
 type Subscription {
