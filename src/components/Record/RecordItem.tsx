@@ -215,7 +215,7 @@ const RecordItem = (props: any) => {
 
         cache.writeQuery({
           query: FETCH_RECORDS,
-          data: [...current.records, result],
+          data: [...current.records.payload, result],
         })
       },
     }).then((record) => {
