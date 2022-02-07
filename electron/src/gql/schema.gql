@@ -11,7 +11,7 @@ type Query {
   record(id: String!): Record
   vehicles(query: String, limit: Int): [Vehicle]
   vehicle(id: String): Vehicle
-  customers(query: String, limit: Int): [Customer]
+  customers(phoneNumber: String, name: String, limit: Int): [Customer]
   customer(id: String): Customer
 }
 

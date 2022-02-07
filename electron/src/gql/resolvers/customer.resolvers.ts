@@ -24,22 +24,24 @@ export const createCustomer = async (parent: any, args: any) => {
       })
       .catch(console.error)
 
-    console.log(query)
-
     if (query) {
       const customer = await DB.customers.get(query.id).then(asCustomer)
-      console.log(customer)
       return customer
     }
   }
 }
 
 export const customers = async (parent: any, args: any) => {
-  const customers = DB.customers.allDocs({
+  const customers = await DB.customers.allDocs({
     include_docs: true,
   })
 
-  return (await customers).rows
+  const name = args.name?.trim().toLowerCase()
+  const phoneNumber = args.phoneNumber?.toString().trim()
+
+  // TODO: implement fuzzy search, already implemented it's a matter of prioritizing exact matches
+  // first items that start with the query, then items that contain the query, then items that fuzzy match
+  const res = customers.rows
     .map((row: any) => {
       return {
         ...row.doc,
@@ -47,12 +49,26 @@ export const customers = async (parent: any, args: any) => {
       } as any
     })
     .filter((row: any) => row.docType === 'customer')
-    .filter(
-      (customer: any) =>
-        !args.query || customer.phoneNumber.includes(args.query.toString())
-    )
+    .filter((customer: any) => {
+      const searchableName = customer.name
+        .toLowerCase()
+        .split(/[aeiouy\s]+/)
+        .join('')
+      const searchableNameQuery = name?.split(/[aeiouy\s]+/).join('')
+
+      return (
+        (!phoneNumber && !name) ||
+        (phoneNumber && customer.phoneNumber?.includes(phoneNumber)) ||
+        (name && customer.name?.toLowerCase().includes(name))
+        // || searchableName.includes(searchableNameQuery)
+      )
+    })
     .map(asCustomer)
     .slice(0, args.limit)
+  console.log(args)
+  console.log(res)
+
+  return res
 }
 
 export const customer = async (parent: any, args: any) => {

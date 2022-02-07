@@ -56,46 +56,46 @@ DB.customers.createIndex({
   },
 })
 
-DB.records
-  .allDocs({
-    include_docs: true,
-  })
-  .then((docs) => docs.rows)
-  .then((rows) => JSON.stringify(rows))
-  .then((rows) =>
-    fs.writeFile(
-      path.join(backupDir, `records.backup.${new Date().getTime()}`),
-      rows,
-      () => {}
-    )
-  )
+// DB.records
+//   .allDocs({
+//     include_docs: true,
+//   })
+//   .then((docs) => docs.rows)
+//   .then((rows) => JSON.stringify(rows))
+//   .then((rows) =>
+//     fs.writeFile(
+//       path.join(backupDir, `records.backup.${new Date().getTime()}`),
+//       rows,
+//       () => {}
+//     )
+//   )
 
-DB.vehicles
-  .allDocs({
-    include_docs: true,
-  })
-  .then((docs) => docs.rows)
-  .then((rows) => JSON.stringify(rows))
-  .then((rows) =>
-    fs.writeFile(
-      path.join(backupDir, `vehicles.backup.${new Date().getTime()}`),
-      rows,
-      () => {}
-    )
-  )
+// DB.vehicles
+//   .allDocs({
+//     include_docs: true,
+//   })
+//   .then((docs) => docs.rows)
+//   .then((rows) => JSON.stringify(rows))
+//   .then((rows) =>
+//     fs.writeFile(
+//       path.join(backupDir, `vehicles.backup.${new Date().getTime()}`),
+//       rows,
+//       () => {}
+//     )
+//   )
 
-DB.customers
-  .allDocs({
-    include_docs: true,
-  })
-  .then((docs) => docs.rows)
-  .then((rows) => JSON.stringify(rows))
-  .then((rows) =>
-    fs.writeFile(
-      path.join(backupDir, `customers.backup.${new Date().getTime()}`),
-      rows,
-      () => {}
-    )
-  )
+// DB.customers
+//   .allDocs({
+//     include_docs: true,
+//   })
+//   .then((docs) => docs.rows)
+//   .then((rows) => JSON.stringify(rows))
+//   .then((rows) =>
+//     fs.writeFile(
+//       path.join(backupDir, `customers.backup.${new Date().getTime()}`),
+//       rows,
+//       () => {}
+//     )
+//   )
 
 export default DB

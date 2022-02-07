@@ -22,6 +22,7 @@ import {
   menuOutline,
   personAddOutline,
   print,
+  send,
   refreshOutline,
 } from 'ionicons/icons'
 import moment from 'moment'
@@ -62,6 +63,16 @@ const RecordItem = (props: any) => {
     onHide: () => void
   }> = ({ onHide }) => (
     <IonList>
+      <IonItem
+        button
+        onClick={() => {
+          onSendSMS()
+          onHide()
+        }}
+      >
+        <IonIcon icon={send} />
+        <IonLabel>Send SMS</IonLabel>
+      </IonItem>
       <IonItem
         button
         onClick={() => {
@@ -136,6 +147,14 @@ const RecordItem = (props: any) => {
       .then(() => {})
       .catch(console.error)
 
+    // sendConfirmationSms({
+    //   variables: {
+    //     recordId: record.id,
+    //   },
+    // }).catch(console.error)
+  }
+
+  const onSendSMS = () => {
     sendConfirmationSms({
       variables: {
         recordId: record.id,
@@ -532,6 +551,10 @@ const RecordItem = (props: any) => {
                       props.type !== 'result' ||
                       isResultPaid) && (
                       <div className='right-button'>
+                        <IonButton onClick={onSendSMS}>
+                          <IonIcon icon={send} />
+                          Send SMS
+                        </IonButton>
                         <IonButton onClick={onPrint}>
                           <IonIcon icon={print} />
                           Print

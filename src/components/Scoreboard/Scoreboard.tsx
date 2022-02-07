@@ -46,12 +46,12 @@ const Scoreboard = (props: any) => {
     //     weight: +sub.data.reading,
     //     status: STATUS_CODES.ok,
     //   })
-    // if (sub.error)
-    //   props.updateReading({
-    //     receivedAt: new Date().getTime(),
-    //     weight: 0,
-    //     status: STATUS_CODES.error,
-    //   })
+    if (sub.error)
+      props.updateReading({
+        receivedAt: new Date().getTime(),
+        weight: 0,
+        status: STATUS_CODES.error,
+      })
     // if (sub.loading && !props.ui.manualInput)
     //   props.updateReading({
     //     receivedAt: new Date().getTime(),

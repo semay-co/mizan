@@ -19,10 +19,14 @@ import './CustomerSuggestions.scss'
 const CustomerSuggestions = (props: any) => {
   const customers = useQuery(FETCH_CUSTOMERS, {
     variables: {
-      query:
+      phoneNumber:
         props.party === 'seller'
           ? props.draft?.seller?.phoneNumber
           : props.draft?.buyer?.phoneNumber,
+      name:
+        props.party === 'seller'
+          ? props.draft?.seller?.name
+          : props.draft?.buyer?.name,
       limit: 5,
     },
     fetchPolicy: 'network-only',

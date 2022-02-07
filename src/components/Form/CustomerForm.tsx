@@ -24,7 +24,8 @@ import { chevronForward } from 'ionicons/icons'
 const CustomerForm = (props: any) => {
   const customers = useQuery(FETCH_CUSTOMERS, {
     variables: {
-      query: props.draft?.buyer?.phoneNumber,
+      phoneNumber: props.draft?.buyer?.phoneNumber,
+      name: props.draft?.buyer?.name,
       limit: 5,
     },
     fetchPolicy: 'network-only',
@@ -33,6 +34,29 @@ const CustomerForm = (props: any) => {
   useEffect(() => {
     return () => customers.data
   }, [customers.data])
+
+  const onNameChange = (ev: any) => {
+    const name = ev.detail?.value.trim()
+    const draft =
+      props.party === 'seller'
+        ? {
+            seller: {
+              ...props.draft?.seller,
+              name,
+            },
+          }
+        : {
+            buyer: {
+              ...props.draft?.buyer,
+              name,
+            },
+          }
+    props.updateRecordDraft({
+      ...props.draft,
+      ...draft,
+    })
+    customers.refetch()
+  }
 
   const onPhoneNumberChange = (ev: any) => {
     const number = ev.detail?.value
@@ -116,10 +140,26 @@ const CustomerForm = (props: any) => {
           </div>
         </IonItem>
 
+        <IonItem>
+          <IonLabel className='uppercase'>
+            {props.party || 'Customer'}'s Name:
+          </IonLabel>
+          <div className='name-input'>
+            <IonInput
+              onIonChange={onNameChange}
+              type='text'
+              debounce={500}
+              maxlength={20}
+              placeholder='Enter Name'
+              clearInput
+            />
+          </div>
+        </IonItem>
+
         <div className='card-footer'></div>
       </IonCard>
 
-      {draft?.phoneNumber && (
+      {(draft?.phoneNumber || draft?.name) && (
         <>
           {customers.data?.customers?.length > 0 && (
             <CustomerSuggestions

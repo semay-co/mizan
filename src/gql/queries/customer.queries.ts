@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const FETCH_CUSTOMERS = gql`
-  query FetchCustomers($query: String, $limit: Int) {
-    customers(query: $query, limit: $limit) {
+  query FetchCustomers($phoneNumber: String, $name: String, $limit: Int) {
+    customers(phoneNumber: $phoneNumber, name: $name, limit: $limit) {
       id
       createdAt
       name {
