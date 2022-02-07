@@ -17,42 +17,45 @@ export const FETCH_RECORDS = gql`
       serial: $serial
       filters: $filters
     ) {
-      id
-      createdAt
-      serial
-      weights {
-        weight
-        manual
+      payload {
+        id
         createdAt
-      }
-      vehicle {
-        id
-        type
-        licensePlate {
-          code
-          region {
+        serial
+        weights {
+          weight
+          manual
+          createdAt
+        }
+        vehicle {
+          id
+          type
+          licensePlate {
             code
+            region {
+              code
+            }
+            plate
           }
-          plate
         }
-      }
-      buyer {
-        id
-        name {
-          display
+        buyer {
+          id
+          name {
+            display
+          }
+          phoneNumber {
+            number
+          }
         }
-        phoneNumber {
-          number
+        seller {
+          id
+          name {
+            display
+          }
+          phoneNumber {
+            number
+          }
         }
-      }
-      seller {
-        id
-        name {
-          display
-        }
-        phoneNumber {
-          number
-        }
+        count
       }
     }
   }
