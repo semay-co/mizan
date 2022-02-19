@@ -63,20 +63,20 @@ const RecordItem = (props: any) => {
     onHide: () => void
   }> = ({ onHide }) => (
     <IonList>
-      {record.seller || record.buyer ? (
-        <IonItem
-          button
-          onClick={() => {
-            onSendSMS()
-            onHide()
-          }}
-        >
-          <IonIcon icon={send} />
-          <IonLabel>Send SMS</IonLabel>
-        </IonItem>
-      ) : (
+      {/* {record.seller || record.buyer ? ( */}
+      <IonItem
+        button
+        onClick={() => {
+          onSendSMS()
+          onHide()
+        }}
+      >
+        <IonIcon icon={send} />
+        <IonLabel>Send SMS</IonLabel>
+      </IonItem>
+      {/* ) : (
         <></>
-      )}
+      )} */}
       <IonItem
         button
         onClick={() => {
@@ -555,14 +555,14 @@ const RecordItem = (props: any) => {
                       props.type !== 'result' ||
                       isResultPaid) && (
                       <div className='right-button'>
-                        {record.seller || record.buyer ? (
-                          <IonButton onClick={onSendSMS}>
-                            <IonIcon icon={send} />
-                            Send SMS
-                          </IonButton>
-                        ) : (
+                        {/* {record.seller || record.buyer ? ( */}
+                        <IonButton onClick={onSendSMS}>
+                          <IonIcon icon={send} />
+                          Send SMS
+                        </IonButton>
+                        {/* ) : (
                           <></>
-                        )}
+                        )} */}
                         <IonButton onClick={onPrint}>
                           <IonIcon icon={print} />
                           Print
