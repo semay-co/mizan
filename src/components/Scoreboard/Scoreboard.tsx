@@ -3,7 +3,7 @@ import './Scoreboard.scss'
 import { updateReading } from '../../state/actions/scoreboard.action'
 import { updateUIState } from '../../state/actions/ui.action'
 import { deleteRecordDraft } from '../../state/actions/record.action'
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useSubscription } from '@apollo/client'
 import classNames from 'classnames'
 import { SUBSCRIBE_READING } from '../../gql/subscriptions'
@@ -19,6 +19,7 @@ const endpoint =
 const Scoreboard = (props: any) => {
   const sub = useSubscription(SUBSCRIBE_READING)
 
+  const now = useRef(0)
   // props.updateReading({
   //   receivedAt: new Date().getTime(),
   //   weight: 0,
@@ -30,35 +31,42 @@ const Scoreboard = (props: any) => {
 
     if (!props.ui.manualInput) {
       socket.on('reading', (data) => {
-        console.log(data)
+        const now = new Date().getTime()
+
+        console.log('data', { data, now })
         props.updateReading({
-          receivedAt: new Date().getTime(),
+          receivedAt: now,
           weight: +data || 0,
           manual: false,
           status: STATUS_CODES.ok,
         })
       })
-    }
-
-    // if (sub.data && !props.ui.manualInput)
-    // +sub.data.reading?.weight !== +props.reading?.weight &&
-    //   props.updateReading({
-    //     receivedAt: new Date().getTime(),
-    //     weight: +sub.data.reading,
-    //     status: STATUS_CODES.ok,
-    //   })
-    if (sub.error)
+    } else if (sub.error) {
       props.updateReading({
         receivedAt: new Date().getTime(),
         weight: 0,
+        manual: false,
         status: STATUS_CODES.error,
       })
-    // if (sub.loading && !props.ui.manualInput)
-    //   props.updateReading({
-    //     receivedAt: new Date().getTime(),
-    //     weight: 0,
-    //     status: STATUS_CODES.loading,
-    //   })
+    } else if (sub.loading && !props.ui.manualInput) {
+      props.updateReading({
+        receivedAt: new Date().getTime(),
+        weight: 0,
+        manual: false,
+        status: STATUS_CODES.loading,
+      })
+    } else if (sub.data && !props.ui.manualInput) {
+      // +sub.data.reading?.weight !== +props.reading?.weight &&
+      //   props.updateReading({
+      //     receivedAt: new Date().getTime(),
+      //     weight: +sub.data.reading,
+      //     status: STATUS_CODES.ok,
+      //   })
+    }
+
+    setInterval(() => {
+      now.current = new Date().getTime()
+    }, 1000)
 
     return () => {
       socket.off('reading')
@@ -102,7 +110,9 @@ const Scoreboard = (props: any) => {
       <div
         className={classNames({
           scoreboard: true,
-          error: props.reading?.status === STATUS_CODES.error,
+          error:
+            props.reading?.status === STATUS_CODES.error ||
+            Math.abs(now.current - props.reading?.receivedAt) > 2000,
           warn: props.reading?.status === STATUS_CODES.loading,
         })}
       >
@@ -163,15 +173,14 @@ const Scoreboard = (props: any) => {
           </div>
         </div>
       </div>
-      {props.reading?.status !== STATUS_CODES.ok && (
-        <div
-          className={classNames({
-            'status-bar': true,
-            error: props.reading?.status === STATUS_CODES.error,
-            warn: props.reading?.status === STATUS_CODES.loading,
-          })}
-        ></div>
-      )}
+
+      <div
+        className={classNames({
+          'status-bar': true,
+          error: props.reading?.status === STATUS_CODES.error,
+          warn: props.reading?.status === STATUS_CODES.loading,
+        })}
+      ></div>
     </>
   )
 }
