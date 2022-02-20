@@ -6,6 +6,11 @@ import { PAGE_TYPES } from '../../../../src/model/print.model'
 import { asVehicle } from '../../lib/vehicle.lib'
 import { asCustomer } from '../../lib/customer.lib'
 import { sendSms } from '../../sms/sms'
+import dotenv from 'dotenv-flow'
+
+dotenv.config()
+
+const smsSignature = process.env.SMS_SIGNATURE || 'FURI MIZAN | ፉሪ ሚዛን'
 
 const base36 = require('base36')
 
@@ -330,7 +335,7 @@ export const sendConfirmationSms = async (parent: any, args: any) => {
   )
 
   msgLines.push(`Serial: ${record.serial.toUpperCase()}`)
-  msgLines.push('-- FURI MIZAN | ፉሪ ሚዛን')
+  msgLines.push(`-- ${smsSignature}`)
 
   console.log(msgLines)
 

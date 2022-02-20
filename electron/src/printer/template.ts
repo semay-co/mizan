@@ -1,10 +1,14 @@
 import moment from 'moment'
 import { VEHICLE_TYPES } from '../../../src/model/vehicle.model'
 import { PAGE_TYPES } from '../../../src/model/print.model'
+import dotenv from 'dotenv-flow'
 
-const company = 'Furi Truck Scale Service'
-const address = 'Sebeta, Furi - Around Police Club'
-const phone = '0118 83 8043 | 0968 34 3616 (SMS)'
+dotenv.config()
+
+const company = process.env.COMPANY_NAME || 'Furi Weighbridge Service'
+const address =
+  process.env.COMPANY_ADDRESS || 'Sebeta, Furi - Around Police Club'
+const phone = process.env.PHONE_NUMBERS || '0118 83 8043 | 0968 34 3616 (SMS)'
 
 const getPrice = (type: number) => {
   switch (type) {

@@ -1,7 +1,7 @@
 import { app } from 'electron'
 import { createCapacitorElectronApp } from '@capacitor-community/electron'
 //import server from './server'
-import dotenv from 'dotenv'
+import dotenv from 'dotenv-flow'
 
 dotenv.config({
   path: __dirname + '/electron/.env.local',

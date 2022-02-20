@@ -13,7 +13,8 @@ import $ from 'jquery'
 import { STATUS_CODES } from '../../model/scoreboard.model'
 import io from 'socket.io-client'
 
-const endpoint = 'http://192.168.8.100:6969'
+const endpoint =
+  process.env.REACT_APP_INDICATOR_ENDPOINT || 'http://192.168.8.100:6969'
 
 const Scoreboard = (props: any) => {
   const sub = useSubscription(SUBSCRIBE_READING)
