@@ -199,9 +199,23 @@ export const addCustomer = async (parent: any, args: any) => {
           buyerId: args.customerId,
         }
 
+  const customerDoc = await DB.customers.get(args.customerId)
+
+  const dataCache = {
+    ...(record.dataCache || {}),
+    ...(args.customerType === 'seller'
+      ? {
+          seller: customerDoc,
+        }
+      : {
+          buyer: customerDoc,
+        }),
+  }
+
   const doc = {
     ...record,
     ...customer,
+    ...dataCache,
   }
 
   return await DB.records.put(doc)
