@@ -102,26 +102,6 @@ const RecordList = (props: any) => {
           <IonButton shape='round' fill='clear'>
             <IonIcon icon={calendarClearOutline} />
           </IonButton>
-          <div className='pagination'>
-            <IonButton onClick={prevPage} disabled={props.ui.page < 1}>
-              <IonIcon icon={chevronBack}></IonIcon>
-            </IonButton>
-            Page {+(props.ui.page || 0) + 1} of{' '}
-            {Math.ceil(
-              recordsQuery.data?.records?.count / (props.ui.limit || 20)
-            )}
-            <IonButton
-              onClick={nextPage}
-              disabled={
-                props.ui.page >=
-                Math.floor(
-                  recordsQuery.data?.records?.count / (props.ui.limit || 20)
-                )
-              }
-            >
-              <IonIcon icon={chevronForward}></IonIcon>
-            </IonButton>
-          </div>
         </IonCardContent>
       </IonCard>
 
@@ -145,6 +125,24 @@ const RecordList = (props: any) => {
             <RecordItem key={record.id} record={record} />
           ))}
         </div>
+      </div>
+      <div className='pagination'>
+        <IonButton onClick={prevPage} disabled={props.ui.page < 1}>
+          <IonIcon icon={chevronBack}></IonIcon>
+        </IonButton>
+        Page {+(props.ui.page || 0) + 1} of{' '}
+        {Math.ceil(recordsQuery.data?.records?.count / (props.ui.limit || 20))}
+        <IonButton
+          onClick={nextPage}
+          disabled={
+            props.ui.page >=
+            Math.floor(
+              recordsQuery.data?.records?.count / (props.ui.limit || 20)
+            )
+          }
+        >
+          <IonIcon icon={chevronForward}></IonIcon>
+        </IonButton>
       </div>
     </div>
   )
