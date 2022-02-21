@@ -22,6 +22,9 @@ const RecordedWeight = (props: any) => {
 
   const isUpdated = () => props.reading?.weight === props.draft?.reading?.weight
 
+  const isOutdated = () =>
+    props.reading?.receivedAt - 1000 < props.draft?.reading?.receivedAt
+
   const isLoaded = () => props.draft?.reading?.weight >= 1000
 
   return (
@@ -29,7 +32,7 @@ const RecordedWeight = (props: any) => {
       className={classNames(
         'current-weight-card',
         'entity-card',
-        isLoaded() && isUpdated() ? 'green-card' : 'red-card'
+        isLoaded() && isUpdated() && !isOutdated() ? 'green-card' : 'red-card'
       )}
     >
       <IonCardHeader>
@@ -39,7 +42,7 @@ const RecordedWeight = (props: any) => {
           onClick={onClear}
           shape='round'
           fill='clear'
-          color={isLoaded() && isUpdated() ? 'light' : 'dark'}
+          color={isLoaded() && isUpdated() && !isOutdated() ? 'light' : 'dark'}
         >
           <IonIcon slot='start' icon={closeCircleOutline}></IonIcon>
           Clear
@@ -48,7 +51,7 @@ const RecordedWeight = (props: any) => {
       <IonCardContent>
         <div className='current-weight-measure'>
           {props.draft?.reading?.weight.toLocaleString()} KG
-          {!isUpdated() && (
+          {(!isUpdated() || isOutdated()) && (
             <IonButton
               onClick={props.onRecord}
               shape='round'
