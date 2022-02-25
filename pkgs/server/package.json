@@ -1,6 +1,7 @@
 {
-  "name": "mizan",
-  "version": "1.0.0",
+  "name": "@mizan/server",
+  "version": "2.0.0",
+  "private": true,
   "description": "An Amazing Capacitor App",
   "main": "./build/src/index.js",
   "scripts": {
@@ -45,26 +46,5 @@
     "nodemon": "^2.0.7",
     "ts-node": "^9.1.1",
     "typescript": "^4.1.5"
-  },
-  "build": {
-    "appId": "com.example.capacitor-app",
-    "productName": "Capacitor App",
-    "files": [
-      "assets/*",
-      "build/*",
-      "preloader.js",
-      "plugins/*",
-      "capacitor.config.json",
-      "app/**"
-    ],
-    "mac": {
-      "category": "public.app-category.developer-tools",
-      "target": "dmg",
-      "icon": "appIcon.png"
-    },
-    "win": {
-      "target": "nsis",
-      "icon": "appIcon.ico"
-    }
   }
 }

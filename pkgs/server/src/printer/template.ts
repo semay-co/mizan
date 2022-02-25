@@ -1,6 +1,6 @@
 import moment from 'moment'
-import { VEHICLE_TYPES } from '../../../src/model/vehicle.model'
-import { PAGE_TYPES } from '../../../src/model/print.model'
+import { VEHICLE_TYPES } from '../model/vehicle.model'
+import { PAGE_TYPES } from '../model/print.model'
 import dotenv from 'dotenv-flow'
 
 dotenv.config()

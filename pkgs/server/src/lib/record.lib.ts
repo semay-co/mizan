@@ -1,4 +1,4 @@
-import { LicensePlate, Vehicle } from '../../../src/model/vehicle.model'
+import { LicensePlate, Vehicle } from '../model/vehicle.model'
 
 export const asVehicle = (vehicle: any) =>
   ({

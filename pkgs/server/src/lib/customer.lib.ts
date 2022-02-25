@@ -1,4 +1,4 @@
-import { Customer } from '../../../src/model/customer.model'
+import { Customer } from '../model/customer.model'
 
 export const asCustomer = (customer: any) =>
   ({

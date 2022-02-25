@@ -37,7 +37,7 @@ const errorLink = onError(({ graphQLErrors }) => {
   graphQLErrors?.map(console.error)
 })
 
-const serverPort = process.env.REACT_APP_SERVER_PORT || 8989
+const serverPort = process.env.REACT_APP_SERVER_PORT || 8998
 console.log(serverPort)
 
 const httpLink = from([

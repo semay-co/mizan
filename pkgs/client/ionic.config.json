@@ -1,7 +1,0 @@
-{
-  "name": "Mizan",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "react"
-}

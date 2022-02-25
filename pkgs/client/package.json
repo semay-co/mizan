@@ -1,11 +1,9 @@
 {
-  "name": "mizan",
-  "version": "0.0.1",
+  "name": "@mizan/client",
+  "version": "2.0.0",
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.3.9",
-    "@capacitor-community/electron": "^1.3.3",
-    "@capacitor/core": "2.4.6",
     "@chakra-ui/react": "^1.3.4",
     "@emotion/react": "^11.1.5",
     "@emotion/styled": "^11.1.5",
@@ -62,11 +60,7 @@
   },
   "scripts": {
     "client": "PORT=4000 REACT_APP_SERVER_PORT=8998 BROWSER=none react-scripts start",
-    "server": "SERVER_PORT=8998 SERIAL_START=400000 npm run server --prefix ./electron",
-    "build": "react-scripts build",
-    "electron": "ionic build && npx cap copy && npx cap open @capacitor-community/electron",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "build": "react-scripts build REACT_APP_SERVER_PORT=8998"
   },
   "eslintConfig": {
     "extends": [
@@ -87,7 +81,6 @@
     ]
   },
   "devDependencies": {
-    "@capacitor/cli": "2.4.6",
     "@types/dotenv-flow": "^3.1.0",
     "@types/react-redux": "^7.1.16",
     "@types/socket.io-client": "^3.0.0",
