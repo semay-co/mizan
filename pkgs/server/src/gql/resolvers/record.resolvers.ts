@@ -84,6 +84,8 @@ export const records = async (parent: any, args: any) => {
 }
 
 export const createRecord = async (parent: any, args: any) => {
+  const clientId = process.env.CLIENT_ID || 'FURI_MIZAN'
+
   const docs = await DB.records.allDocs({
     include_docs: true,
   })
@@ -103,7 +105,7 @@ export const createRecord = async (parent: any, args: any) => {
     vehicleId: string,
     sellerId: string,
     buyerId: string,
-    dataCache: any
+    dataCache: any,
   ) => {
     const creation = DB.records.put({
       _id: uuid(),
@@ -121,6 +123,7 @@ export const createRecord = async (parent: any, args: any) => {
       sellerId,
       buyerId,
       dataCache,
+      clientId,
     })
 
     return creation.then((doc: any) => doc)

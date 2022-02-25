@@ -1,4 +1,4 @@
-type Query {
+export default `type Query {
   users: [User]
   records(
     query: String
@@ -131,4 +131,4 @@ type RecordResult {
 
 type Subscription {
   reading: Float!
-}
+}`

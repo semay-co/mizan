@@ -59,8 +59,8 @@
     "workbox-streams": "^5.1.4"
   },
   "scripts": {
-    "client": "PORT=4000 REACT_APP_SERVER_PORT=8998 BROWSER=none react-scripts start",
-    "build": "react-scripts build REACT_APP_SERVER_PORT=8998"
+    "client": "react-scripts start",
+    "build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": [

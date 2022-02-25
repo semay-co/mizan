@@ -38,7 +38,7 @@ const errorLink = onError(({ graphQLErrors }) => {
 })
 
 const serverPort = process.env.REACT_APP_SERVER_PORT || 8998
-console.log(serverPort)
+console.log('server port:', serverPort)
 
 const httpLink = from([
   errorLink,
@@ -88,11 +88,11 @@ const App = () => (
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet>
-          <Route exact path='/home'>
+          <Route exact path='/'>
             <Home />
           </Route>
-          <Route exact path='/'>
-            <Redirect to='/home' />
+          <Route exact path='/home'>
+            <Redirect to='/' />
           </Route>
         </IonRouterOutlet>
       </IonReactRouter>

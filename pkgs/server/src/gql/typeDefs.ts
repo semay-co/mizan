@@ -1,13 +1,8 @@
 import { gql } from 'apollo-server'
 import fs from 'fs'
 import path from 'path'
+import schema from './schema'
 
-const schema = path.join(__dirname, './schema.gql')
-
-const typeDefs = gql(
-  fs.readFileSync(schema, {
-    encoding: 'utf8',
-  })
-)
+const typeDefs = gql(schema)
 
 export default typeDefs
