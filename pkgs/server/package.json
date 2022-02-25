@@ -1,26 +1,28 @@
-
+{
   "name": "mizan",
   "version": "1.0.0",
   "description": "An Amazing Capacitor App",
   "main": "./build/src/index.js",
   "scripts": {
     "build": "tsc",
-    "postserver": "npx pouchdb-server --sqlite &",
     "server": "nodemon --watch 'src/**' --ext 'ts, json, gql' --exec 'ts-node src/server'"
   },
   "dependencies": {
     "@thiagoelg/node-printer": "^0.5.3",
     "apollo-server": "^2.21.0",
+    "base36": "^1.0.0",
     "cheerio": "^1.0.0-rc.5",
+    "dotenv-flow": "^3.2.0",
     "express": "^4.17.1",
     "express-graphql": "^0.12.0",
     "graphql": "^15.5.0",
     "html-pdf-node": "^1.0.7",
+    "moment": "^2.29.1",
     "pouchdb": "^7.2.2",
     "pouchdb-find": "^7.2.2",
     "pouchdb-server": "^4.2.0",
     "puppeteer": "^5.5.0",
-    "ramda": "^0.27.1",
+    "ramda": "^0.28.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "rxjs": "^6.6.6",
@@ -29,10 +31,13 @@
   },
   "devDependencies": {
     "@serialport/parser-delimiter": "^9.0.1",
+    "@types/dotenv-flow": "^3.2.0",
     "@types/express": "^4.17.11",
+    "@types/moment": "^2.13.0",
     "@types/pouchdb": "^6.4.0",
     "@types/pouchdb-find": "^6.3.6",
     "@types/puppeteer": "^5.4.3",
+    "@types/ramda": "^0.27.65",
     "@types/request-promise": "^4.1.47",
     "@types/serialport": "^8.0.1",
     "@types/uuid": "^8.3.0",
@@ -41,8 +46,6 @@
     "ts-node": "^9.1.1",
     "typescript": "^4.1.5"
   },
-  "author": "",
-  "private": true,
   "build": {
     "appId": "com.example.capacitor-app",
     "productName": "Capacitor App",

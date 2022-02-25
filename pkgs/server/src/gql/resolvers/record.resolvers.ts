@@ -16,8 +16,8 @@ const base36 = require('base36')
 
 const serialStart = process.env.SERIAL_START || 100000
 
-const sortByCreated = _.descend(
-  _.compose(_.prop('createdAt') as any, _.prop('doc') as any)
+const sortByCreated: any = _.descend(
+  _.compose(_.prop('createdAt') as any, _.prop('doc') as any) as any
 )
 
 export const records = async (parent: any, args: any) => {

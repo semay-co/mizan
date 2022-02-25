@@ -18,8 +18,9 @@ const server = () => {
     }),
   })
 
-  server.listen(process.env.SERVER_PORT || 8989, () =>
-    console.info(`Mizan server is running`)
+  const port = process.env.SERVER_PORT || 8989
+  server.listen(port, () =>
+    console.info(`Mizan server is running on port ${port}`)
   )
 }
 
