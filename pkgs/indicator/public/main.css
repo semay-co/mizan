@@ -31,9 +31,8 @@
   src: url('fonts/RobotoMono/RobotoMono-Italic-VariableFont_wght.ttf');
 }
 
-
 body {
-	background: #666;
+	background: #444;
 	display: grid;
 	height: 100vh;
 	align-items: center;
@@ -41,11 +40,82 @@ body {
 	margin: 0;
 }
 
-h1 {
-	color: #00ff88;
+#reading {
+	color: #000000;
 	font-family: DotMatrixTwo;
 	text-align: center;
-	padding: 50px;
-	background: #000;
 	font-size: 150px;
+    z-index: 100;
+    position: relative;
 }
+
+#container {
+    position: relative;
+    background: #00ff88;
+}
+
+#container.danger #reading {
+	color: #fff;
+}
+
+#container.danger {
+	background: #f00;
+}
+
+#container.warn #reading {
+	color: #000;
+}
+
+#container.warn {
+	background: gold;
+}
+
+#container.zero {
+  background: black;
+}
+
+#container.zero #reading {
+	color: #00ff88;
+}
+
+#elapsed {
+  text-align: center;
+  color: #000000;
+  font-family: monospace;
+  font-weight: bold;
+}
+
+#container.zero #elapsed,
+#container.warn #elapsed {
+  color: #fff;
+}
+
+#time {
+    color: #fff;
+    font-family: monospace;
+    text-align: center;
+    margin: 0;
+    font-size: 50px;
+    font-weight: normal;
+}
+
+#notice {
+	font-size: 40px;
+	color: #fff;
+	text-align: center;
+	font-family: sans-serif;
+}
+
+#chart {
+    position: absolute;
+    z-index: 1;
+}
+
+.area {
+	fill: #00000033;
+}
+
+#container.zero .area {
+	fill: #00ff8855;
+}
+

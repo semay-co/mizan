@@ -5,6 +5,7 @@ import dotenv from 'dotenv-flow'
 
 dotenv.config()
 
+const brand = 'Mizan Weighbridge System'
 const company = process.env.COMPANY_NAME || 'Furi Weighbridge Service'
 const address =
   process.env.COMPANY_ADDRESS || 'Sebeta, Furi - Around Police Club'
@@ -35,7 +36,7 @@ export const watermarkText = Array(600)
     return `
 			<span class="tag-wrap">
 				<span class="${tag}">
-					${company.toUpperCase()}
+					${brand.toUpperCase()}
 				</span>
 			<span class="tag-wrap">
 			`
@@ -400,7 +401,7 @@ export const styles = `
 				z-index: 10;
 			}
 
-			.disclaimer {
+			.system-info {
 				width: 100%;
 				font-family: monospace;
 				color: #00000088;
@@ -684,9 +685,9 @@ export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
 				${
           stamp === PAGE_TYPES.PENDING
             ? '<div class="return-notice">ሲመለሱ ይህን ወረቀት ይዘው ይምጡ።</div>'
-            : `<div class="disclaimer">
-						Disclaimer: We can only guarantee the weight, not the material.
-					</div>`
+            : `<div class="system-info">
+		Mizan Weighbridge By Spearforce Systems | +251 961 00 5748
+	</div>`
         }
 			</div>
 		</div>`

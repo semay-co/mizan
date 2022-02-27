@@ -4,7 +4,8 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
-    "build": "tsc",
+    "webpack": "rm -rf ./dist/* && cp ./public ./dist -r && cp index.html ./dist && webpack",
+    "build": "rm -rf ./dist/* && cp ./public ./dist -r && cp index.html ./dist && tsc",
     "prestart": "npm run build",
     "start": "node dist/server.js"
   },

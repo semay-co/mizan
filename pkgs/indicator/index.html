@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Mizan Indicator</title>
+  <script src='/socket.io/socket.io.js'></script>
+  <script src='d3.min.js'></script>
+  <script src='moment.min.js'></script>
+
+  <link rel="stylesheet" href="main.css">
+</head>
+
+<body>
+  <h2 id="time"></h2>
+
+  <div id="container">
+    <svg id="chart"></svg>
+    <h1 id="reading">WAITING FOR READING</h1>
+    <h2 id="elapsed"></h2>
+  </div>
+
+  <div id="notice">
+    የሚዛኑ ውጤት በ<b>TEXT</b> እንዲደርሳቹ ወረቀቱ</br> ላይ ስልክ ይፃፉ
+  </div>
+
+  <script>
+
+    document.onload = document.documentElement.requestFullscreen()
+    const socket = io()
+    const zeroPad = (num, places) => String(num).padStart(places, '0')
+
+    setInterval(() => {
+      const now = new Date()
+      const timeEl = document.getElementById('time')
+      const time = `${zeroPad(now.getHours(), 2)}:${zeroPad(now.getMinutes(), 2)}:${zeroPad(now.getSeconds(), 2)}`
+
+      timeEl.innerText = `${time}`
+    }, 1000)
+
+    let lastReading = 0
+    let lastSnap = new Date().getTime()
+    let readingTime = 0
+
+    const xDom = 30
+    const readings = new Array(xDom).fill(0)
+
+    socket.on('display', (...args) => {
+      const now = new Date()
+      const time = now.getTime()
+
+      const reading = args[0]
+      const readingEl = document.getElementById('reading')
+      const elapsedEl = document.getElementById('elapsed')
+      const containerEl = document.getElementById('container')
+      const readingMarkup = reading
+
+      const newReadingTime = Math.floor(time / 1000)
+
+      if (readingTime != newReadingTime) {
+        readingTime = newReadingTime
+
+        readings.shift()
+        readings.push(reading)
+
+        const width = readingEl.offsetWidth
+        const height = readingEl.offsetHeight
+
+        const data = readings.map((y, x) => ({ x, y }))
+
+        const x = d3
+          .scaleLinear()
+          .domain([0, xDom])
+          .range([0, width])
+
+        var yMax = d3.max(data, (d) => d.y)
+
+        var y = d3
+          .scaleLinear()
+          .domain([
+            0,
+            yMax < 1000 ? 1000 : yMax,
+          ])
+          .range([height, 0])
+
+        var xAxis = d3.axisBottom()
+
+        var yAxis = d3.axisLeft()
+        const area = d3
+          .area()
+          .x((d) => x(d.x))
+          .y0(height)
+          .y1((d) => y(d.y))
+          .curve(d3.curveStep)
+
+        d3.selectAll('#chart > *').remove()
+
+        const svg = d3
+          .select('#chart')
+          .attr('width', width)
+          .attr('height', height)
+          .attr('transform', 'translate(0, 100)')
+          .append('g')
+
+        svg
+          .append('path')
+          .datum(data)
+          .attr('class', 'area')
+          .attr('d', area)
+      }
+
+      readingEl.innerText = `${readingMarkup.toString().split('').join('')} KG`
+
+      containerEl.classList.remove('danger')
+      containerEl.classList.remove('warn')
+      containerEl.classList.remove('zero')
+
+      if (reading <= 500) {
+        elapsedEl.innerText(`started at ${new Date()}`)
+        if (lastReading > 500) {
+          //pause    
+          elapsedEl.innerText(`started at ${new Date()}`)
+        }
+      } else {
+        if (lastReading <= 500) {
+          //start
+          elapsedEl.innerText(`ended at ${new Date()}`)
+        }
+      }
+
+      if (reading === 0) {
+        containerEl.classList.add('zero')
+      } else if (reading < 0) {
+        containerEl.classList.add('danger')
+      } else if (
+        reading <= 500 && reading > 0 ||
+        reading !== lastReading
+      ) {
+        containerEl.classList.add('warn')
+      }
+
+      if (Math.abs(time - lastSnap) >= 1000) {
+        lastReading = reading
+        lastSnap = time
+      }
+    })
+
+  </script>
+
+</body>
+
+</html>
