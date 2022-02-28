@@ -7,7 +7,7 @@
   "scripts": {
     "tsc": "tsc",
     "build": "webpack",
-    "server": "nodemon --watch 'src/**' --ext 'ts, json, gql' --exec 'ts-node src/server'"
+    "start": "nodemon --watch 'src/**' --ext 'ts, json, gql' --exec 'ts-node src/server'"
   },
   "dependencies": {
     "@thiagoelg/node-printer": "^0.5.3",

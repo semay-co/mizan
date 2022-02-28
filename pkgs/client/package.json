@@ -59,7 +59,7 @@
     "workbox-streams": "^5.1.4"
   },
   "scripts": {
-    "client": "react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build"
   },
   "eslintConfig": {
