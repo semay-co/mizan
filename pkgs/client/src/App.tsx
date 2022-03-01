@@ -1,26 +1,3 @@
-import { Redirect, Route } from 'react-router-dom'
-import { IonApp, IonRouterOutlet } from '@ionic/react'
-import { IonReactRouter } from '@ionic/react-router'
-import Home from './pages/Home'
-
-/* Core CSS required for Ionic components to work properly */
-import '@ionic/react/css/core.css'
-
-/* Basic CSS for apps built with Ionic */
-import '@ionic/react/css/normalize.css'
-import '@ionic/react/css/structure.css'
-import '@ionic/react/css/typography.css'
-
-/* Optional CSS utils that can be commented out */
-import '@ionic/react/css/padding.css'
-import '@ionic/react/css/float-elements.css'
-import '@ionic/react/css/text-alignment.css'
-import '@ionic/react/css/text-transformation.css'
-import '@ionic/react/css/flex-utils.css'
-import '@ionic/react/css/display.css'
-
-/* Theme variables */
-import './theme/variables.scss'
 import {
   ApolloProvider,
   ApolloClient,
@@ -32,23 +9,27 @@ import {
 import { onError } from '@apollo/client/link/error'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { getMainDefinition } from '@apollo/client/utilities'
+import { ThemeProvider } from 'styled-components'
+import GlobalStyle from './style/global.style'
+import { dark } from './style/themes/dark/dark.theme'
+import { Dashboard } from './components/dashboard/dashboard.cmp'
 
 const errorLink = onError(({ graphQLErrors }) => {
   graphQLErrors?.map(console.error)
 })
 
+const serverHost = process.env.REACT_APP_SERVER_HOST || 'localhost'
 const serverPort = process.env.REACT_APP_SERVER_PORT || 8998
-console.log('server port:', serverPort)
 
 const httpLink = from([
   errorLink,
   new HttpLink({
-    uri: `http://localhost:${serverPort}/`,
+    uri: `http://${serverHost}:${serverPort}/`,
   }),
 ])
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:${serverPort}/graphql`,
+  uri: `ws://${serverHost}:${serverPort}/graphql`,
   options: {
     reconnect: true,
   },
@@ -85,18 +66,10 @@ const client = new ApolloClient({
 
 const App = () => (
   <ApolloProvider client={client}>
-    <IonApp>
-      <IonReactRouter>
-        <IonRouterOutlet>
-          <Route exact path='/'>
-            <Home />
-          </Route>
-          <Route exact path='/home'>
-            <Redirect to='/' />
-          </Route>
-        </IonRouterOutlet>
-      </IonReactRouter>
-    </IonApp>
+    <ThemeProvider theme={dark}>
+      <GlobalStyle />
+      <Dashboard />
+    </ThemeProvider>
   </ApolloProvider>
 )
 
