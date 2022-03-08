@@ -6,6 +6,7 @@ import { PAGE_TYPES } from '../../../../src/model/print.model'
 import { asVehicle } from '../../lib/vehicle.lib'
 import { asCustomer } from '../../lib/customer.lib'
 import { sendSms } from '../../sms/sms'
+import { sendSms as sendSmsHarvilon } from '../../sms/sms.harvilon'
 import dotenv from 'dotenv-flow'
 
 dotenv.config()
@@ -177,14 +178,61 @@ export const createRecord = async (parent: any, args: any) => {
     }
 }
 
-export const update = async (parent: any, args: any) => {
-  const id = args.id
+export const updateRecord = async (parent: any, args: any) => {
   const record = (await DB.records.get(args.id)) as any
 
-  const update = {
+
+  const isFree = args.isFree !== undefined ? {
+    isFree: args.isFree
+  } : {}
+
+  const isMistake = args.isMistake !== undefined ? {
+    isMistake: args.isMistake
+  } : {}
+
+  const isUnpaid = args.isUnpaid !== undefined ? {
+    isUnpaid: args.isUnpaid
+  } : {}
+
+  const updated = {
     ...record,
     updatedAt: new Date().getTime(),
+    ...isFree,
+    ...isMistake,
+    ...isUnpaid,
   }
+}
+
+export const deleteCustomer = async (parent: any, args: any) => {
+  const record = (await DB.records.get(args.recordId)) as any
+
+  const customer =
+    args.customerType === 'seller'
+      ? {
+          sellerId: undefined,
+        }
+      : {
+          buyerId: undefined,
+        }
+
+  const dataCache = {
+    ...(record.dataCache || {}),
+    ...(args.customerType === 'seller'
+      ? {
+          seller: undefined,
+        }
+      : {
+          buyer: undefined,
+        }),
+  }
+
+  const doc = {
+    ...record,
+    ...customer,
+    ...dataCache,
+  }
+
+  return await DB.records.put(doc)
 }
 
 export const addCustomer = async (parent: any, args: any) => {
@@ -323,12 +371,15 @@ export const sendConfirmationSms = async (parent: any, args: any) => {
     netWeight: Math.abs(doc.weights[0]?.weight - doc.weights[1]?.weight),
   }
 
-  const numbers = []
+  const numbers: any[] = []
 
-  record.buyer && numbers.push(record.buyer?.phoneNumber?.number)
-  record.seller && numbers.push(record.seller?.phoneNumber?.number)
+  if ((!args.to || args.to === 'all' || args.to === 'buyer') && record.buyer)  {
+    numbers.push(record.buyer?.phoneNumber?.number)
+  }
+  if ((!args.to || args.to === 'all' || args.to === 'seller') && record.seller)  {
+    numbers.push(record.seller?.phoneNumber?.number)
+  }
 
-  console.log(numbers)
 
   const msgLines = [`1st Wt: ${record.weights[0].weight}KG`]
 
@@ -351,9 +402,8 @@ export const sendConfirmationSms = async (parent: any, args: any) => {
   msgLines.push(`Serial: ${record.serial.toUpperCase()}`)
   msgLines.push(`-- ${smsSignature}`)
 
-  console.log(msgLines)
-
   sendSms(numbers.join(';'), msgLines.join('  \n'))
+  // sendSmsHarvilon(numbers.join(';'), msgLines.join('  \n'))
 }
 
 export const printRecord = async (parent: any, args: any) => {

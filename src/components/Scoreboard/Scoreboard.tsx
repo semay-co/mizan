@@ -3,10 +3,8 @@ import './Scoreboard.scss'
 import { updateReading } from '../../state/actions/scoreboard.action'
 import { updateUIState } from '../../state/actions/ui.action'
 import { deleteRecordDraft } from '../../state/actions/record.action'
-import React, { useEffect, useRef } from 'react'
-import { useSubscription } from '@apollo/client'
+import { useEffect } from 'react'
 import classNames from 'classnames'
-import { SUBSCRIBE_READING } from '../../gql/subscriptions'
 import { IonFabButton, IonIcon, IonInput } from '@ionic/react'
 import { create, speedometer } from 'ionicons/icons'
 import $ from 'jquery'
@@ -17,14 +15,17 @@ const endpoint =
   process.env.REACT_APP_INDICATOR_ENDPOINT || 'http://192.168.8.100:6969'
 
 const Scoreboard = (props: any) => {
-  const sub = useSubscription(SUBSCRIBE_READING)
+  // const now = useRef(0)
 
-  const now = useRef(0)
-  // props.updateReading({
-  //   receivedAt: new Date().getTime(),
-  //   weight: 0,
-  //   status: STATUS_CODES.ok,
-  // })
+  // useCallback(() => {
+  //   const interval = setInterval(() => {
+  //     now.current = new Date().getTime()
+  //   }, 1000)
+
+  //   return () => {
+  //     clearInterval(interval)
+  //   }
+  // }, [])
 
   useEffect(() => {
     const socket = io(endpoint)
@@ -32,46 +33,24 @@ const Scoreboard = (props: any) => {
     if (!props.ui.manualInput) {
       socket.on('reading', (data) => {
         const now = new Date().getTime()
+        const weight = +data || 0
 
-        console.log('data', { data, now })
-        props.updateReading({
+        const update = {
           receivedAt: now,
-          weight: +data || 0,
+          weight,
           manual: false,
           status: STATUS_CODES.ok,
-        })
+        }
+
+        if (props.reading?.weight !== weight) {
+          props.updateReading(update)
+        }
       })
-    } else if (sub.error) {
-      props.updateReading({
-        receivedAt: new Date().getTime(),
-        weight: 0,
-        manual: false,
-        status: STATUS_CODES.error,
-      })
-    } else if (sub.loading && !props.ui.manualInput) {
-      props.updateReading({
-        receivedAt: new Date().getTime(),
-        weight: 0,
-        manual: false,
-        status: STATUS_CODES.loading,
-      })
-    } else if (sub.data && !props.ui.manualInput) {
-      // +sub.data.reading?.weight !== +props.reading?.weight &&
-      //   props.updateReading({
-      //     receivedAt: new Date().getTime(),
-      //     weight: +sub.data.reading,
-      //     status: STATUS_CODES.ok,
-      //   })
     }
-
-    setInterval(() => {
-      now.current = new Date().getTime()
-    }, 1000)
-
     return () => {
       socket.off('reading')
     }
-  }, [sub.data, sub.error, sub.loading, props])
+  }, [props])
 
   // isNaN(+props.reading?.weight) &&
   //   props.updateUIState({
@@ -110,9 +89,8 @@ const Scoreboard = (props: any) => {
       <div
         className={classNames({
           scoreboard: true,
-          error:
-            props.reading?.status === STATUS_CODES.error ||
-            Math.abs(now.current - props.reading?.receivedAt) > 2000,
+          error: props.reading?.status === STATUS_CODES.error,
+          // ||Math.abs(now.current - props.reading?.receivedAt) > 2000,
           warn: props.reading?.status === STATUS_CODES.loading,
         })}
       >

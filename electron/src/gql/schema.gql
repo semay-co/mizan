@@ -37,8 +37,15 @@ type Mutation {
     customerId: String!
     customerType: String!
   ): Record
+  deleteCustomer(
+    recordId: String!
+    customerType: String!
+  ): Record
   printRecord(id: String!): String
-  sendConfirmationSms(recordId: String!): String
+  sendConfirmationSms(
+    recordId: String!
+    to: String!
+  ): String
   createVehicle(
     type: Int!
     plateNumber: String!
@@ -52,6 +59,12 @@ type Mutation {
     plateCode: Int
     plateRegion: String
   ): Vehicle
+  updateRecord(
+    id: String!
+    isFree: Boolean
+    isUnpaid: Boolean
+    isMistake: Boolean
+  )
 }
 
 type User {

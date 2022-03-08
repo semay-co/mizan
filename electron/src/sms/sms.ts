@@ -17,7 +17,7 @@ const startBrowser = async () => {
 export const sendSms = async (numbers: string, text: string) => {
   if (numbers) {
     const { browser, page } = await startBrowser()
-    const baseUrl = 'http://192.168.8.1'
+    const baseUrl = 'http://192.168.4.1'
 
     await page.setViewport({ width: 1265, height: 613 })
 

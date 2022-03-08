@@ -24,6 +24,8 @@ import {
   print,
   send,
   refreshOutline,
+  trashOutline,
+  cashOutline,
 } from 'ionicons/icons'
 import moment from 'moment'
 import LicensePlate from '../LicensePlate/LicensePlate'
@@ -38,6 +40,7 @@ import {
   ADD_CUSTOMER,
   ADD_SECOND_WEIGHT,
   CREATE_RECORD,
+  DELETE_CUSTOMER,
   SEND_CONFIRMATION_SMS,
 } from '../../gql/mutations/record.mutations'
 import { VEHICLE_TYPES } from '../../model/vehicle.model'
@@ -55,6 +58,7 @@ const RecordItem = (props: any) => {
 
   const [addSecondWeightMutation] = useMutation(ADD_SECOND_WEIGHT)
   const [addCustomerMutation] = useMutation(ADD_CUSTOMER)
+  const [deleteCustomerMutation] = useMutation(DELETE_CUSTOMER)
 
   const [showPrintingToast, setPrinting] = useState(false)
   const [isResultPaid, setResultPaid] = useState(false)
@@ -63,20 +67,20 @@ const RecordItem = (props: any) => {
     onHide: () => void
   }> = ({ onHide }) => (
     <IonList>
-      {/* {record.seller || record.buyer ? ( */}
+      {record.seller || record.buyer ? (
       <IonItem
         button
         onClick={() => {
-          onSendSMS()
+          onSendSms()
           onHide()
         }}
       >
         <IonIcon icon={send} />
         <IonLabel>Send SMS</IonLabel>
       </IonItem>
-      {/* ) : (
+      ) : (
         <></>
-      )} */}
+      )}
       <IonItem
         button
         onClick={() => {
@@ -148,7 +152,12 @@ const RecordItem = (props: any) => {
         id: record.id,
       },
     })
-      .then(() => {})
+      .then(() => {
+
+        setTimeout(() => {
+          window.location.reload()
+        }, 2000)
+      })
       .catch(console.error)
 
     // sendConfirmationSms({
@@ -158,12 +167,21 @@ const RecordItem = (props: any) => {
     // }).catch(console.error)
   }
 
-  const onSendSMS = () => {
+  const onSendSms = (to: 'all' | 'buyer' | 'seller' = 'all') => {
     sendConfirmationSms({
       variables: {
         recordId: record.id,
+        to,
       },
     }).catch(console.error)
+  }
+
+  const onSetAsMistake = () => {
+    alert('mistake')
+  }
+
+  const onSetAsUnpaid = () => {
+    alert('unpaid')
   }
 
   const recordReading = () => {
@@ -260,6 +278,18 @@ const RecordItem = (props: any) => {
     resetCustomerForm()
   }
 
+  const onDeleteCustomer = (customerType: string) => {
+    deleteCustomerMutation({
+      variables: {
+        recordId: record.id,
+        customerType,
+      },
+      update: () => {
+        recordQuery.refetch()
+      }
+    })
+  }
+
   const resetCustomerForm = () => {
     props.updateUIState({
       addCustomerForm: undefined,
@@ -311,6 +341,17 @@ const RecordItem = (props: any) => {
                         <IonChip>{record.buyer.phoneNumber?.number}</IonChip>
                       </div>
                     </IonLabel>
+
+                    <IonButton 
+                    color='danger'
+                    onClick={() => onDeleteCustomer('buyer') }>
+                      <IonIcon icon={trashOutline} />
+                    </IonButton>
+                    <div>
+                      <IonButton onClick={() => onSendSms('buyer')} >
+                        <IonIcon icon={send} />
+                      </IonButton>
+                    </div>
                   </IonItem>
                 ) : (
                   <>
@@ -331,6 +372,18 @@ const RecordItem = (props: any) => {
                         <IonChip>{record.seller.phoneNumber?.number}</IonChip>
                       </div>
                     </IonLabel>
+
+                    <IonButton 
+                      color='danger'
+                      onClick={() => onDeleteCustomer('seller') }>
+                      <IonIcon icon={trashOutline} />
+                    </IonButton>
+
+                    <div>
+                      <IonButton onClick={() => onSendSms('buyer')} >
+                        <IonIcon icon={send} />
+                      </IonButton>
+                    </div>
                   </IonItem>
                 ) : (
                   <IonItem button onClick={() => addCustomer('seller')}>
@@ -555,14 +608,26 @@ const RecordItem = (props: any) => {
                       props.type !== 'result' ||
                       isResultPaid) && (
                       <div className='right-button'>
-                        {/* {record.seller || record.buyer ? ( */}
-                        <IonButton onClick={onSendSMS}>
+                        <IonButton 
+                          color='warn' 
+                          onClick={() => onSetAsUnpaid()}>
+                          <IonIcon icon={cashOutline} />
+                          Unpaid
+                        </IonButton>
+                        <IonButton 
+                          color='warn' 
+                          onClick={() => onSetAsMistake()}>
+                          <IonIcon icon={alertCircleOutline} />
+                          Mistake
+                        </IonButton>
+                        {record.seller || record.buyer ? (
+                        <IonButton onClick={() => onSendSms()}>
                           <IonIcon icon={send} />
                           Send SMS
                         </IonButton>
-                        {/* ) : (
+                         ) : (
                           <></>
-                        )} */}
+                        )} 
                         <IonButton onClick={onPrint}>
                           <IonIcon icon={print} />
                           Print

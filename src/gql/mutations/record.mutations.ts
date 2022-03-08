@@ -87,6 +87,20 @@ export const ADD_CUSTOMER = gql`
   }
 `
 
+export const DELETE_CUSTOMER = gql`
+  mutation DeleteCustomer(
+    $recordId: String!
+    $customerType: String!
+  ) {
+    deleteCustomer(
+      recordId: $recordId
+      customerType: $customerType
+    ) {
+      id
+    }
+  }
+`
+
 export const PRINT_RECORD = gql`
   mutation PrintRecord($id: String!) {
     printRecord(id: $id)
@@ -94,7 +108,10 @@ export const PRINT_RECORD = gql`
 `
 
 export const SEND_CONFIRMATION_SMS = gql`
-  mutation SendConfirmationSms($recordId: String!) {
-    sendConfirmationSms(recordId: $recordId)
+  mutation SendConfirmationSms(
+    $recordId: String!
+    $to: String!
+  ) {
+    sendConfirmationSms(recordId: $recordId, to: $to)
   }
 `

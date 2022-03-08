@@ -11,6 +11,7 @@ import {
   sendConfirmationSms,
   addSecondWeight,
   addCustomer,
+  deleteCustomer,
 } from './record.resolvers'
 
 export enum events {
@@ -95,6 +96,7 @@ const resolvers = {
     createCustomer,
     addSecondWeight,
     addCustomer,
+    deleteCustomer,
     printRecord,
     sendConfirmationSms,
   },
