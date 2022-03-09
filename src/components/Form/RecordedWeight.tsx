@@ -7,7 +7,6 @@ import {
 } from '@ionic/react'
 import { connect } from 'react-redux'
 import { closeCircleOutline, refreshOutline } from 'ionicons/icons'
-import React from 'react'
 import {
   updateRecordDraft,
   deleteRecordDraft,
@@ -32,7 +31,7 @@ const RecordedWeight = (props: any) => {
       className={classNames(
         'current-weight-card',
         'entity-card',
-        isLoaded() && isUpdated() ? 'green-card' : 'red-card'
+        isLoaded() && isUpdated() ? 'green-card' : 'red-card',
       )}
     >
       <IonCardHeader>

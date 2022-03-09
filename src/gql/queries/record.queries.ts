@@ -55,6 +55,9 @@ export const FETCH_RECORDS = gql`
             number
           }
         }
+        isFree
+        isMistake
+        isUnpaid
       }
       count
     }

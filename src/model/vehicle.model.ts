@@ -35,3 +35,11 @@ export const VEHICLE_TYPES = [
   'SINO TRUCK',
   'TRAILER TRUCK',
 ]
+
+export const VEHICLE_TYPES_FORMAL = [
+  'PICK UP',
+  'LIGHT TRUCK',
+  'MIDIUM TRUCK',
+  'HEAVY TRUCK',
+  'HEAVY TRUCK + TRAILER',
+]

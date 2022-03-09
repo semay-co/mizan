@@ -53,6 +53,57 @@ export const CREATE_RECORD = gql`
     }
   }
 `
+
+export const UPDATE_RECORD = gql`
+  mutation UpdateRecord(
+    $id: String!
+    $isFree: Boolean
+    $isMistake: Boolean
+    $isUnpaid: Boolean
+  ) {
+    updateRecord(
+      id: $id
+      isFree: $isFree
+      isMistake: $isMistake
+      isUnpaid: $isUnpaid
+    ) {
+      id
+      serial
+      createdAt
+      updatedAt
+      vehicle {
+        id
+        type
+        licensePlate {
+          code
+          plate
+          region {
+            code
+          }
+        }
+      }
+      buyer {
+        id
+        name {
+          display
+        }
+        phoneNumber {
+          number
+        }
+      }
+      seller {
+        id
+        name {
+          display
+        }
+        phoneNumber {
+          number
+        }
+      }
+    }
+  }
+`
+
 export const ADD_SECOND_WEIGHT = gql`
   mutation AddSecondWeight(
     $recordId: String!

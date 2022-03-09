@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { VEHICLE_TYPES } from '../../../src/model/vehicle.model'
+import { VEHICLE_TYPES, VEHICLE_TYPES_FORMAL } from '../../../src/model/vehicle.model'
 import { PAGE_TYPES } from '../../../src/model/print.model'
 import dotenv from 'dotenv-flow'
 
@@ -473,7 +473,7 @@ const grid = (
           ? `<div class="row">
 						<h3>Vehicle Type</h3>
 						<div class="row-field">
-							${VEHICLE_TYPES[record.vehicle.type]}
+							${VEHICLE_TYPES_FORMAL[record.vehicle.type]}
 						</div>
 					</div>`
           : type === PAGE_TYPES.ATTACHMENT

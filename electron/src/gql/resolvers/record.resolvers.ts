@@ -181,7 +181,6 @@ export const createRecord = async (parent: any, args: any) => {
 export const updateRecord = async (parent: any, args: any) => {
   const record = (await DB.records.get(args.id)) as any
 
-
   const isFree = args.isFree !== undefined ? {
     isFree: args.isFree
   } : {}
@@ -194,13 +193,23 @@ export const updateRecord = async (parent: any, args: any) => {
     isUnpaid: args.isUnpaid
   } : {}
 
-  const updated = {
+  const update = {
     ...record,
     updatedAt: new Date().getTime(),
     ...isFree,
     ...isMistake,
     ...isUnpaid,
   }
+
+  await DB.records.put(update) as any
+  const updated = await DB.records.get(args.id) as any
+
+  if (updated)
+    return {
+      ...updated,
+      ...update.dataCache,
+      id: args.id
+    }
 }
 
 export const deleteCustomer = async (parent: any, args: any) => {
@@ -305,6 +314,7 @@ export const addSecondWeight = async (parent: any, args: any) => {
 }
 
 export const record = async (parent: any, args: any) => {
+
   const doc = await DB.records
     .get(args.id)
     .then((record: any) => record as any)

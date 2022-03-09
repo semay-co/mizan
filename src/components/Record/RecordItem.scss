@@ -29,6 +29,14 @@
     ion-item {
       --background: none;
       --border-color: transparent;
+
+      &.success {
+        color: --ion-color-success;
+      }
+
+      &.warning {
+        color: red!important;
+      }
     }
 
     .customer-row {

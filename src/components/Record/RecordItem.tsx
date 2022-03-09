@@ -8,6 +8,7 @@ import {
   IonChip,
   IonIcon,
   IonItem,
+  IonItemDivider,
   IonLabel,
   IonList,
   IonToast,
@@ -26,6 +27,7 @@ import {
   refreshOutline,
   trashOutline,
   cashOutline,
+  checkmarkOutline,
 } from 'ionicons/icons'
 import moment from 'moment'
 import LicensePlate from '../LicensePlate/LicensePlate'
@@ -42,6 +44,7 @@ import {
   CREATE_RECORD,
   DELETE_CUSTOMER,
   SEND_CONFIRMATION_SMS,
+  UPDATE_RECORD,
 } from '../../gql/mutations/record.mutations'
 import { VEHICLE_TYPES } from '../../model/vehicle.model'
 import { PRINT_RECORD } from '../../gql/mutations/record.mutations'
@@ -56,6 +59,10 @@ const RecordItem = (props: any) => {
   const [sendConfirmationSms] = useMutation(SEND_CONFIRMATION_SMS)
   const [runCreateRecord] = useMutation(CREATE_RECORD)
 
+  const [setAsUnpaid] = useMutation(UPDATE_RECORD)
+  const [setAsFree] = useMutation(UPDATE_RECORD)
+  const [setAsMistake] = useMutation(UPDATE_RECORD)
+
   const [addSecondWeightMutation] = useMutation(ADD_SECOND_WEIGHT)
   const [addCustomerMutation] = useMutation(ADD_CUSTOMER)
   const [deleteCustomerMutation] = useMutation(DELETE_CUSTOMER)
@@ -67,6 +74,33 @@ const RecordItem = (props: any) => {
     onHide: () => void
   }> = ({ onHide }) => (
     <IonList>
+      <IonItem 
+        button
+        className={record.isMistake ? 'success' : 'warning'}
+        onClick={() => {
+          onSetAsMistake(!record.isMistake)
+          dismissPopover()
+        }}>
+        <IonIcon icon={alertCircleOutline} />
+        <IonLabel>
+          {record.isMistake ? 'Not Mistake' : 'Mistake'}
+        </IonLabel>
+      </IonItem>
+      <IonItem 
+        button
+        className={record.isUnpaid ? 'success' : 'warning'}
+        onClick={() => {
+          onSetAsUnpaid(!record.isUnpaid)
+          dismissPopover()
+        }}>
+        <IonIcon icon={cashOutline} />
+        <IonLabel>
+          {record.isUnpaid ? 'Paid' : 'Unpaid'}
+        </IonLabel>
+      </IonItem>
+
+      <IonItemDivider />
+
       {record.seller || record.buyer ? (
       <IonItem
         button
@@ -91,9 +125,6 @@ const RecordItem = (props: any) => {
         <IonIcon icon={print} />
         <IonLabel>Print</IonLabel>
       </IonItem>
-      <IonItem lines='none' detail={false} button onClick={onHide}>
-        Close
-      </IonItem>
     </IonList>
   )
 
@@ -106,7 +137,7 @@ const RecordItem = (props: any) => {
       id: props.record?.id,
     },
     skip: !props.record?.id,
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'no-cache',
   })
 
   const formatDate = (date: number) =>
@@ -126,7 +157,6 @@ const RecordItem = (props: any) => {
   }
 
   const onSaveSecondWeight = () => {
-    console.log(weightDraft())
     addSecondWeightMutation({
       variables: {
         recordId: record.id,
@@ -155,7 +185,7 @@ const RecordItem = (props: any) => {
       .then(() => {
 
         setTimeout(() => {
-          window.location.reload()
+          // window.location.reload()
         }, 2000)
       })
       .catch(console.error)
@@ -176,12 +206,28 @@ const RecordItem = (props: any) => {
     }).catch(console.error)
   }
 
-  const onSetAsMistake = () => {
-    alert('mistake')
+  const onSetAsMistake = (isMistake = true) => {
+    setAsMistake({
+      variables: {
+        id: record.id,
+        isMistake
+      },
+      update: () => {
+        recordQuery.refetch()
+      }
+    })
   }
 
-  const onSetAsUnpaid = () => {
-    alert('unpaid')
+  const onSetAsUnpaid = (isUnpaid = true) => {
+    setAsUnpaid({
+      variables: {
+        id: record.id,
+        isUnpaid
+      },
+      update: () => {
+        recordQuery.refetch()
+      }
+    })
   }
 
   const recordReading = () => {
@@ -201,15 +247,15 @@ const RecordItem = (props: any) => {
   const getPrice = (type: number) => {
     switch (type) {
       case 0:
-        return 80
+        return 80 // pickup
       case 1:
-        return 100
+        return 100 // light truck
       case 2:
-        return 150
+        return 150 // midium truck
       case 3:
-        return 200
+        return 200 // heavy truck
       case 4:
-        return 250
+        return 250 // heavy truck + trailer
       default:
         return 0
     }
@@ -304,8 +350,14 @@ const RecordItem = (props: any) => {
     <>
       {record && (
         <>
-          <IonCard className='record-card'>
-            {/* <pre>{JSON.stringify(record)}</pre> */}
+          <IonCard className={
+            classNames(
+              'record-card',
+              record.isMistake ? 'error-card' : '',
+              record.isFree ? 'green-card' : '',
+              record.isUnpaid ? 'warning-card' : '',
+            )
+          }>
             <div className='card-left-content'>
               <IonList>
                 {record?.serial && (
@@ -340,18 +392,19 @@ const RecordItem = (props: any) => {
                         <div className='name'>{record.buyer.name?.display}</div>
                         <IonChip>{record.buyer.phoneNumber?.number}</IonChip>
                       </div>
-                    </IonLabel>
 
-                    <IonButton 
-                    color='danger'
-                    onClick={() => onDeleteCustomer('buyer') }>
-                      <IonIcon icon={trashOutline} />
-                    </IonButton>
-                    <div>
-                      <IonButton onClick={() => onSendSms('buyer')} >
-                        <IonIcon icon={send} />
-                      </IonButton>
-                    </div>
+                      <div>
+                        <IonButton 
+                        fill='outline'
+                        color='danger'
+                        onClick={() => onDeleteCustomer('buyer') }>
+                          <IonIcon icon={trashOutline} />
+                        </IonButton>
+                          <IonButton fill='outline' onClick={() => onSendSms('buyer')} >
+                          <IonIcon icon={send} />
+                        </IonButton>
+                      </div>
+                    </IonLabel>
                   </IonItem>
                 ) : (
                   <>
@@ -370,20 +423,23 @@ const RecordItem = (props: any) => {
                           {record.seller.name?.display}
                         </div>
                         <IonChip>{record.seller.phoneNumber?.number}</IonChip>
-                      </div>
-                    </IonLabel>
-
-                    <IonButton 
-                      color='danger'
-                      onClick={() => onDeleteCustomer('seller') }>
-                      <IonIcon icon={trashOutline} />
-                    </IonButton>
 
                     <div>
-                      <IonButton onClick={() => onSendSms('buyer')} >
+                      <IonButton 
+                        fill='outline'
+                        color='danger'
+                        onClick={() => onDeleteCustomer('seller') }>
+                        <IonIcon icon={trashOutline} />
+                      </IonButton>
+
+                      <IonButton 
+                        fill='outline'
+                        onClick={() => onSendSms('buyer')} >
                         <IonIcon icon={send} />
                       </IonButton>
                     </div>
+                      </div>
+                    </IonLabel>
                   </IonItem>
                 ) : (
                   <IonItem button onClick={() => addCustomer('seller')}>
@@ -440,23 +496,42 @@ const RecordItem = (props: any) => {
               {props.type === 'result' && !record?.weights[1] ? (
                 <IonCard
                   className='price-card'
-                  color={isResultPaid ? 'success' : 'warning'}
+                  color={(record.isPaid !== true && record.isPaid !== false)  ? 'warning' : 'success'}
                 >
                   <h1>{getPrice(record.vehicle.type)} BIRR</h1>
 
-                  {!isResultPaid && (
+                  <pre>isPaid: {'isPaid' in record}</pre>
+
+                  {!(record.isPaid !== true && record.isPaid !== false) && (
                     <IonCardContent>
                       <IonButton
                         onClick={() => {
-                          setResultPaid(true)
+                          onSetAsUnpaid(false)
                         }}
-                        expand='block'
+                        color='success'
+                        fill='solid'
+                        slot='start'
+                      >
+
+                        <IonIcon icon={checkmarkOutline} />
+                        <IonLabel>
+                          Paid
+                        </IonLabel>
+                      </IonButton>
+                      <IonButton
+                        onClick={() => {
+                          onSetAsUnpaid(true)
+                        }}
                         color='light'
-                        size='large'
+                        fill='outline'
                         slot='end'
                       >
-                        Paid
+                        <IonIcon icon={closeOutline} />
+                        <IonLabel>
+                          Unpaid
+                        </IonLabel>
                       </IonButton>
+
                     </IonCardContent>
                   )}
                 </IonCard>
@@ -559,6 +634,7 @@ const RecordItem = (props: any) => {
                           <div className='weight-measure'>{getNetWeight()}</div>
                         </div>
                       )}
+
                     </>
                   )}
                 </>
@@ -608,18 +684,6 @@ const RecordItem = (props: any) => {
                       props.type !== 'result' ||
                       isResultPaid) && (
                       <div className='right-button'>
-                        <IonButton 
-                          color='warn' 
-                          onClick={() => onSetAsUnpaid()}>
-                          <IonIcon icon={cashOutline} />
-                          Unpaid
-                        </IonButton>
-                        <IonButton 
-                          color='warn' 
-                          onClick={() => onSetAsMistake()}>
-                          <IonIcon icon={alertCircleOutline} />
-                          Mistake
-                        </IonButton>
                         {record.seller || record.buyer ? (
                         <IonButton onClick={() => onSendSms()}>
                           <IonIcon icon={send} />
@@ -634,6 +698,14 @@ const RecordItem = (props: any) => {
                         </IonButton>
                       </div>
                     )}
+                    {
+                      record.isUnpaid  &&
+                      (<IonCard color='warning'>
+                        <IonCardContent>
+                          UNPAID
+                        </IonCardContent>
+                      </IonCard>)
+                    }
                   <div className='right-button'>
                     <IonButton
                       size='large'
@@ -650,6 +722,8 @@ const RecordItem = (props: any) => {
               )}
             </div>
           </IonCard>
+       
+ 
           {props.ui.addCustomerForm &&
             props.ui.addCustomerForm.recordId === record.id && (
               <IonCard className='add-customer-card'>

@@ -7,6 +7,7 @@ import {
   record,
   records,
   createRecord,
+  updateRecord,
   printRecord,
   sendConfirmationSms,
   addSecondWeight,
@@ -92,6 +93,7 @@ const resolvers = {
   },
   Mutation: {
     createRecord,
+    updateRecord,
     createVehicle,
     createCustomer,
     addSecondWeight,

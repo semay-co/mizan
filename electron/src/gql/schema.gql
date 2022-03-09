@@ -64,7 +64,7 @@ type Mutation {
     isFree: Boolean
     isUnpaid: Boolean
     isMistake: Boolean
-  )
+  ): Record
 }
 
 type User {
@@ -135,6 +135,9 @@ type Record {
   product: Product
   serial: String
   weights: [Weight]
+  isFree: Boolean
+  isUnpaid: Boolean
+  isMistake: Boolean
 }
 
 type RecordResult {
