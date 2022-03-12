@@ -32,23 +32,25 @@ import {
 import { onError } from '@apollo/client/link/error'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { getMainDefinition } from '@apollo/client/utilities'
+import Display from './components/Display'
 
 const errorLink = onError(({ graphQLErrors }) => {
   graphQLErrors?.map(console.error)
 })
 
+const serverHost = process.env.REACT_APP_SERVER_HOST || '192.168.8.101'
 const serverPort = process.env.REACT_APP_SERVER_PORT || 8989
 console.log(serverPort)
 
 const httpLink = from([
   errorLink,
   new HttpLink({
-    uri: `http://localhost:${serverPort}/`,
+    uri: `http://${serverHost}:${serverPort}/`,
   }),
 ])
 
 const wsLink = new WebSocketLink({
-  uri: `ws://localhost:${serverPort}/graphql`,
+  uri: `ws://${serverHost}:${serverPort}/graphql`,
   options: {
     reconnect: true,
   },
@@ -93,6 +95,9 @@ const App = () => (
           </Route>
           <Route exact path='/'>
             <Redirect to='/home' />
+          </Route>
+          <Route exact path='/display'>
+            <Display />
           </Route>
         </IonRouterOutlet>
       </IonReactRouter>

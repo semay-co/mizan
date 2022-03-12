@@ -9,7 +9,8 @@ const startBrowser = async () => {
     executablePath: process.env.CHROMIUM_PATH || undefined,
   })
 
-  const page = await browser.newPage()
+  const context = await browser.createIncognitoBrowserContext()
+  const page = await context.newPage()
 
   return { browser, page }
 }
@@ -32,10 +33,12 @@ export const sendSms = async (numbers: string, text: string) => {
         //   waitUntil: 'networkidle2'
         // })
 
-        page.close()
+        // page.close()
+
+        // await page.waitForNavigation({
+        //   waitUntil: 'domcontentloaded'
 
         return Promise.all([
-          await goToLoginPage(),
           await page.waitForSelector('#txtUser'),
           await page
             .type('#txtUser', 'admin')
@@ -53,7 +56,9 @@ export const sendSms = async (numbers: string, text: string) => {
 
     const send = async () => {
       Promise.all([
+        await goToLoginPage(),
         await login(),
+        await page.waitForTimeout(500),
         await page.goto(`${baseUrl}/index.html#sms`),
         await page.waitForSelector('#mainContainer'),
         await page.waitForSelector('.type_items'),
@@ -62,9 +67,8 @@ export const sendSms = async (numbers: string, text: string) => {
         await page.click('#smslist-new-sms'),
         await page.waitForSelector('#chat-input'),
         await page.waitForSelector('#chosen-search-field-input'),
-        await page.type('#chosen-search-field-input', '   '),
+        await page.waitForTimeout(3000),
         await page.type('#chosen-search-field-input', numbers),
-        await page.keyboard.press("Tab"),
         await page.type('#chat-input', text),
         await page.click('#btn-send'),
         // await page.evaluate(() => {
@@ -80,10 +84,9 @@ export const sendSms = async (numbers: string, text: string) => {
         //   // @ts-ignore
         //   EMUI.smsSendAndSaveController.sendMessage()
         // }),
-        await setTimeout(() => {
-          browser.close()
-        }, 20000),
-      ]) //.then(() => browser.close())
+        await page.waitForTimeout(2000),
+        browser.close()
+      ]) 
     }
 
     await page

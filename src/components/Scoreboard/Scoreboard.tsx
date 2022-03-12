@@ -12,7 +12,7 @@ import { STATUS_CODES } from '../../model/scoreboard.model'
 import io from 'socket.io-client'
 
 const endpoint =
-  process.env.REACT_APP_INDICATOR_ENDPOINT || 'http://192.168.8.100:6969'
+  process.env.REACT_APP_INDICATOR_ENDPOINT || 'http://192.168.8.101:6969'
 
 const Scoreboard = (props: any) => {
   // const now = useRef(0)
@@ -132,7 +132,7 @@ const Scoreboard = (props: any) => {
             ) : props.reading?.status === STATUS_CODES.ok ? (
               <>
                 <span className='reading'>
-                  {props.reading?.weight.toLocaleString()}
+                  {props.reading?.weight}
                 </span>
                 <span
                   className={classNames(

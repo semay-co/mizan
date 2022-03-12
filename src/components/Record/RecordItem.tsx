@@ -68,53 +68,53 @@ const RecordItem = (props: any) => {
   const [deleteCustomerMutation] = useMutation(DELETE_CUSTOMER)
 
   const [showPrintingToast, setPrinting] = useState(false)
-  const [isResultPaid, setResultPaid] = useState(false)
+  const [paymentConfirmed, setPaymentConfirmed] = useState(false)
 
   const PopoverList: React.FC<{
     onHide: () => void
   }> = ({ onHide }) => (
     <IonList>
-      <IonItem 
+      <IonItem
         button
         className={record.isMistake ? 'success' : 'warning'}
         onClick={() => {
           onSetAsMistake(!record.isMistake)
           dismissPopover()
-        }}>
+        }}
+      >
         <IonIcon icon={alertCircleOutline} />
-        <IonLabel>
-          {record.isMistake ? 'Not Mistake' : 'Mistake'}
-        </IonLabel>
+        <IonLabel>{record.isMistake ? 'Not Mistake' : 'Mistake'}</IonLabel>
       </IonItem>
-      <IonItem 
+      <IonItem
         button
         className={record.isUnpaid ? 'success' : 'warning'}
         onClick={() => {
           onSetAsUnpaid(!record.isUnpaid)
           dismissPopover()
-        }}>
+        }}
+      >
         <IonIcon icon={cashOutline} />
-        <IonLabel>
-          {record.isUnpaid ? 'Paid' : 'Unpaid'}
-        </IonLabel>
+        <IonLabel>{record.isUnpaid ? 'Paid' : 'Unpaid'}</IonLabel>
       </IonItem>
 
       <IonItemDivider />
 
-      {record.seller || record.buyer ? (
-      <IonItem
-        button
-        onClick={() => {
-          onSendSms()
-          onHide()
-        }}
-      >
-        <IonIcon icon={send} />
-        <IonLabel>Send SMS</IonLabel>
-      </IonItem>
-      ) : (
-        <></>
-      )}
+      {
+        // record.seller || record.buyer ? (
+        <IonItem
+          button
+          onClick={() => {
+            onSendSms()
+            onHide()
+          }}
+        >
+          <IonIcon icon={send} />
+          <IonLabel>Send SMS</IonLabel>
+        </IonItem>
+        // ) : (
+        //   <></>
+        // )
+      }
       <IonItem
         button
         onClick={() => {
@@ -148,7 +148,7 @@ const RecordItem = (props: any) => {
     const secondWeight = record.weights[1]?.weight || weightDraft()?.weight
 
     return secondWeight
-      ? Math.abs(firstWeight - secondWeight).toLocaleString() + ' KG'
+      ? Math.abs(firstWeight - secondWeight) + ' KG'
       : '...'
   }
 
@@ -183,10 +183,9 @@ const RecordItem = (props: any) => {
       },
     })
       .then(() => {
-
         setTimeout(() => {
-          // window.location.reload()
-        }, 2000)
+          window.location.reload()
+        }, 600)
       })
       .catch(console.error)
 
@@ -210,11 +209,11 @@ const RecordItem = (props: any) => {
     setAsMistake({
       variables: {
         id: record.id,
-        isMistake
+        isMistake,
       },
       update: () => {
         recordQuery.refetch()
-      }
+      },
     })
   }
 
@@ -222,11 +221,11 @@ const RecordItem = (props: any) => {
     setAsUnpaid({
       variables: {
         id: record.id,
-        isUnpaid
+        isUnpaid,
       },
       update: () => {
         recordQuery.refetch()
-      }
+      },
     })
   }
 
@@ -262,6 +261,9 @@ const RecordItem = (props: any) => {
   }
 
   const makeNewRecord = (weight: number, weightTime: string) => {
+    props.deleteRecordDraft()
+    props.updateRecordDraft(undefined)
+
     runCreateRecord({
       variables: {
         weight,
@@ -284,7 +286,6 @@ const RecordItem = (props: any) => {
       },
     }).then((record) => {
       props.updateRecordResult(record.data.createRecord.id)
-      props.deleteRecordDraft()
 
       if (props.result) {
         // recordQuery.refetch()
@@ -332,7 +333,7 @@ const RecordItem = (props: any) => {
       },
       update: () => {
         recordQuery.refetch()
-      }
+      },
     })
   }
 
@@ -350,14 +351,14 @@ const RecordItem = (props: any) => {
     <>
       {record && (
         <>
-          <IonCard className={
-            classNames(
+          <IonCard
+            className={classNames(
               'record-card',
               record.isMistake ? 'error-card' : '',
               record.isFree ? 'green-card' : '',
-              record.isUnpaid ? 'warning-card' : '',
-            )
-          }>
+              record.isUnpaid ? 'warning-card' : ''
+            )}
+          >
             <div className='card-left-content'>
               <IonList>
                 {record?.serial && (
@@ -384,6 +385,41 @@ const RecordItem = (props: any) => {
                     </IonChip>
                   </IonLabel>
                 </IonItem>
+                {record?.seller ? (
+                  <IonItem className='customer-row'>
+                    <IonLabel>
+                      <h2>Seller</h2>
+                      <div>
+                        <div className='name'>
+                          {record.seller.name?.display}
+                        </div>
+                        <IonChip>{record.seller.phoneNumber?.number}</IonChip>
+
+                        <div>
+                          <IonButton
+                            fill='outline'
+                            color='danger'
+                            onClick={() => onDeleteCustomer('seller')}
+                          >
+                            <IonIcon icon={trashOutline} />
+                          </IonButton>
+
+                          <IonButton
+                            fill='outline'
+                            onClick={() => onSendSms('buyer')}
+                          >
+                            <IonIcon icon={send} />
+                          </IonButton>
+                        </div>
+                      </div>
+                    </IonLabel>
+                  </IonItem>
+                ) : (
+                  <IonItem button onClick={() => addCustomer('seller')}>
+                    <IonIcon icon={personAddOutline} />
+                    <IonLabel>Add Seller</IonLabel>
+                  </IonItem>
+                )}
                 {record?.buyer ? (
                   <IonItem className='customer-row'>
                     <IonLabel>
@@ -394,13 +430,17 @@ const RecordItem = (props: any) => {
                       </div>
 
                       <div>
-                        <IonButton 
-                        fill='outline'
-                        color='danger'
-                        onClick={() => onDeleteCustomer('buyer') }>
+                        <IonButton
+                          fill='outline'
+                          color='danger'
+                          onClick={() => onDeleteCustomer('buyer')}
+                        >
                           <IonIcon icon={trashOutline} />
                         </IonButton>
-                          <IonButton fill='outline' onClick={() => onSendSms('buyer')} >
+                        <IonButton
+                          fill='outline'
+                          onClick={() => onSendSms('buyer')}
+                        >
                           <IonIcon icon={send} />
                         </IonButton>
                       </div>
@@ -414,39 +454,7 @@ const RecordItem = (props: any) => {
                     </IonItem>
                   </>
                 )}
-                {record?.seller ? (
-                  <IonItem className='customer-row'>
-                    <IonLabel>
-                      <h2>Seller</h2>
-                      <div>
-                        <div className='name'>
-                          {record.seller.name?.display}
-                        </div>
-                        <IonChip>{record.seller.phoneNumber?.number}</IonChip>
 
-                    <div>
-                      <IonButton 
-                        fill='outline'
-                        color='danger'
-                        onClick={() => onDeleteCustomer('seller') }>
-                        <IonIcon icon={trashOutline} />
-                      </IonButton>
-
-                      <IonButton 
-                        fill='outline'
-                        onClick={() => onSendSms('buyer')} >
-                        <IonIcon icon={send} />
-                      </IonButton>
-                    </div>
-                      </div>
-                    </IonLabel>
-                  </IonItem>
-                ) : (
-                  <IonItem button onClick={() => addCustomer('seller')}>
-                    <IonIcon icon={personAddOutline} />
-                    <IonLabel>Add Seller</IonLabel>
-                  </IonItem>
-                )}
               </IonList>
             </div>
 
@@ -463,7 +471,7 @@ const RecordItem = (props: any) => {
                     record?.weights[0]?.manual && 'manual-input'
                   )}
                 >
-                  {record?.weights[0]?.weight.toLocaleString()} KG
+                  {record?.weights[0]?.weight} KG
                   {record?.weights[0]?.manual && (
                     <IonChip color='secondary'>
                       <IonIcon icon={create} />
@@ -496,44 +504,43 @@ const RecordItem = (props: any) => {
               {props.type === 'result' && !record?.weights[1] ? (
                 <IonCard
                   className='price-card'
-                  color={(record.isPaid !== true && record.isPaid !== false)  ? 'warning' : 'success'}
+                  color={
+                    record.isPaid !== true && record.isPaid !== false
+                      ? 'warning'
+                      : 'success'
+                  }
                 >
-                  <h1>{getPrice(record.vehicle.type)} BIRR</h1>
+                  <h1><IonIcon icon={cashOutline} /> {getPrice(record.vehicle.type)} BIRR</h1>
 
-                  <pre>isPaid: {'isPaid' in record}</pre>
-
-                  {!(record.isPaid !== true && record.isPaid !== false) && (
+                  {/* {!(record.isPaid !== true && record.isPaid !== false) && ( */}
                     <IonCardContent>
                       <IonButton
                         onClick={() => {
+                          onSetAsUnpaid(true)
+                          setPaymentConfirmed(true)
+                        }}
+                        color='danger'
+                        fill='outline'
+                        slot='end'
+                      >
+                        <IonIcon icon={closeOutline} />
+                        <IonLabel>Unpaid</IonLabel>
+                      </IonButton>
+
+                      <IonButton
+                        onClick={() => {
                           onSetAsUnpaid(false)
+                          setPaymentConfirmed(true)
                         }}
                         color='success'
                         fill='solid'
                         slot='start'
                       >
-
                         <IonIcon icon={checkmarkOutline} />
-                        <IonLabel>
-                          Paid
-                        </IonLabel>
+                        <IonLabel>Paid</IonLabel>
                       </IonButton>
-                      <IonButton
-                        onClick={() => {
-                          onSetAsUnpaid(true)
-                        }}
-                        color='light'
-                        fill='outline'
-                        slot='end'
-                      >
-                        <IonIcon icon={closeOutline} />
-                        <IonLabel>
-                          Unpaid
-                        </IonLabel>
-                      </IonButton>
-
                     </IonCardContent>
-                  )}
+                  {/* )} */}
                 </IonCard>
               ) : (
                 <>
@@ -554,7 +561,7 @@ const RecordItem = (props: any) => {
                                 record?.weights[1]?.manual && 'manual-input'
                               )}
                             >
-                              {record.weights[1].weight.toLocaleString()} KG
+                              {record.weights[1].weight} KG
                               {record?.weights[1]?.manual && (
                                 <IonChip color='secondary'>
                                   <IonIcon icon={create} />
@@ -596,7 +603,7 @@ const RecordItem = (props: any) => {
                                       : 'red-draft'
                                   )}
                                 >
-                                  {weightDraft().weight.toLocaleString()} KG
+                                  {weightDraft().weight} KG
                                   {!isSynced() && (
                                     <IonButton
                                       className='update-button'
@@ -634,7 +641,6 @@ const RecordItem = (props: any) => {
                           <div className='weight-measure'>{getNetWeight()}</div>
                         </div>
                       )}
-
                     </>
                   )}
                 </>
@@ -682,48 +688,44 @@ const RecordItem = (props: any) => {
                     !record?.weights[1] &&
                     (record.weights[1] ||
                       props.type !== 'result' ||
-                      isResultPaid) && (
+                      paymentConfirmed) && (
                       <div className='right-button'>
                         {record.seller || record.buyer ? (
-                        <IonButton onClick={() => onSendSms()}>
-                          <IonIcon icon={send} />
-                          Send SMS
-                        </IonButton>
-                         ) : (
+                          <IonButton onClick={() => onSendSms()}>
+                            <IonIcon icon={send} />
+                            Send SMS
+                          </IonButton>
+                        ) : (
                           <></>
-                        )} 
+                        )}
                         <IonButton onClick={onPrint}>
                           <IonIcon icon={print} />
                           Print
                         </IonButton>
                       </div>
                     )}
-                    {
-                      record.isUnpaid  &&
-                      (<IonCard color='warning'>
-                        <IonCardContent>
-                          UNPAID
-                        </IonCardContent>
-                      </IonCard>)
-                    }
-                  <div className='right-button'>
-                    <IonButton
-                      size='large'
-                      onClick={(e) =>
-                        presentPopover({
-                          event: e.nativeEvent,
-                        })
-                      }
-                    >
-                      <IonIcon icon={menuOutline} />
-                    </IonButton>
-                  </div>
+                  {record.isUnpaid && (
+                    <IonCard color='warning'>
+                      <IonCardContent>UNPAID</IonCardContent>
+                    </IonCard>
+                  )}
+                    <div className='right-button'>
+                      <IonButton
+                        size='large'
+                        onClick={(e) =>
+                          presentPopover({
+                            event: e.nativeEvent,
+                          })
+                        }
+                      >
+                        <IonIcon icon={menuOutline} />
+                      </IonButton>
+                    </div>
                 </>
               )}
             </div>
           </IonCard>
-       
- 
+
           {props.ui.addCustomerForm &&
             props.ui.addCustomerForm.recordId === record.id && (
               <IonCard className='add-customer-card'>

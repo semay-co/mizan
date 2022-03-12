@@ -49,7 +49,7 @@ const LicensePlateForm = (props: any) => {
       },
     })
 
-    props.updateRecordQuery(props.draft?.licensePlate.plate)
+    props.updateRecordQuery(props.draft?.licensePlate?.plate)
 
     props.updateUIState({
       page: 0,

@@ -34,7 +34,7 @@ export const records = async (parent: any, args: any) => {
   //   : records
 
   const filteredByVehicle = _.filter(
-    (record: any) => !args.vehicleId || record.vehicleId === args.vehicleId
+    (record: any) => !args.vehicleId || record?.vehicleId === args.vehicleId
   )(filtered)
 
   const filteredByQuery = _.filter((record: any) => {
@@ -54,32 +54,57 @@ export const records = async (parent: any, args: any) => {
   const sorted = _.sort(sortByCreated, filteredByQuery)
   const limited = sorted.slice(start, end)
 
-  const records = limited.map((row) => {
+
+  const payload = limited.map(async (row) => {
     const doc = row.doc as any
 
-    const seller = doc.sellerId
+    const recacheCustomers = true
+
+    if (recacheCustomers) {
+      const buyer = doc.buyerId && (await DB.customers.get(doc.buyerId).then(asCustomer))
+
+      const seller = doc.sellerId && (await DB.customers.get(doc.sellerId).then(asCustomer))
+
+      const dataCache = {
+        ...(doc.dataCache || {}),
+        seller,
+        buyer,
+      }
+
+      DB.records.put({
+        ...doc,
+        dataCache,
+      })
+    }
+
+    const seller = doc.sellerId && doc.dataCache?.seller
       ? {
-          seller: doc.dataCache?.seller,
+          seller: asCustomer(doc.dataCache?.seller),
         }
       : {}
 
-    const buyer = doc.buyerId
+    const buyer = doc.buyerId && doc.dataCache?.buyer
       ? {
-          buyer: doc.dataCache?.buyer,
+          buyer: asCustomer(doc.dataCache?.buyer),
         }
       : {}
+
+    
+    const vehicle = {
+      vehicle: doc.dataCache?.vehicle,
+    }
 
     return {
       ...doc,
       id: row.id,
-      vehicle: doc.dataCache.vehicle,
-      ...seller,
-      ...buyer,
+      ...vehicle,
+      // ...buyer,
+      // ...seller,
     }
   })
 
   return {
-    payload: records,
+    payload,
     count: sorted.length,
   }
 }
@@ -181,17 +206,26 @@ export const createRecord = async (parent: any, args: any) => {
 export const updateRecord = async (parent: any, args: any) => {
   const record = (await DB.records.get(args.id)) as any
 
-  const isFree = args.isFree !== undefined ? {
-    isFree: args.isFree
-  } : {}
+  const isFree =
+    args.isFree !== undefined
+      ? {
+          isFree: args.isFree,
+        }
+      : {}
 
-  const isMistake = args.isMistake !== undefined ? {
-    isMistake: args.isMistake
-  } : {}
+  const isMistake =
+    args.isMistake !== undefined
+      ? {
+          isMistake: args.isMistake,
+        }
+      : {}
 
-  const isUnpaid = args.isUnpaid !== undefined ? {
-    isUnpaid: args.isUnpaid
-  } : {}
+  const isUnpaid =
+    args.isUnpaid !== undefined
+      ? {
+          isUnpaid: args.isUnpaid,
+        }
+      : {}
 
   const update = {
     ...record,
@@ -201,14 +235,14 @@ export const updateRecord = async (parent: any, args: any) => {
     ...isUnpaid,
   }
 
-  await DB.records.put(update) as any
-  const updated = await DB.records.get(args.id) as any
+  ;(await DB.records.put(update)) as any
+  const updated = (await DB.records.get(args.id)) as any
 
   if (updated)
     return {
       ...updated,
       ...update.dataCache,
-      id: args.id
+      id: args.id,
     }
 }
 
@@ -256,23 +290,25 @@ export const addCustomer = async (parent: any, args: any) => {
           buyerId: args.customerId,
         }
 
-  const customerDoc = await DB.customers.get(args.customerId)
+  const customerDoc = await DB.customers.get(args.customerId).then(asCustomer)
+
+  const customerCache = args.customerType === 'seller'
+    ? {
+        seller: customerDoc,
+      }
+    : {
+        buyer: customerDoc,
+      }
 
   const dataCache = {
     ...(record.dataCache || {}),
-    ...(args.customerType === 'seller'
-      ? {
-          seller: customerDoc,
-        }
-      : {
-          buyer: customerDoc,
-        }),
+    ...customerCache,
   }
 
   const doc = {
     ...record,
     ...customer,
-    ...dataCache,
+    dataCache,
   }
 
   return await DB.records.put(doc)
@@ -314,7 +350,6 @@ export const addSecondWeight = async (parent: any, args: any) => {
 }
 
 export const record = async (parent: any, args: any) => {
-
   const doc = await DB.records
     .get(args.id)
     .then((record: any) => record as any)
@@ -345,7 +380,6 @@ export const record = async (parent: any, args: any) => {
 }
 
 export const sendConfirmationSms = async (parent: any, args: any) => {
-  console.log('sending...', args)
 
   const doc = await DB.records
     .get(args.recordId)
@@ -383,13 +417,15 @@ export const sendConfirmationSms = async (parent: any, args: any) => {
 
   const numbers: any[] = []
 
-  if ((!args.to || args.to === 'all' || args.to === 'buyer') && record.buyer)  {
+  if ((!args.to || args.to === 'all' || args.to === 'buyer') && record.buyer) {
     numbers.push(record.buyer?.phoneNumber?.number)
   }
-  if ((!args.to || args.to === 'all' || args.to === 'seller') && record.seller)  {
+  if (
+    (!args.to || args.to === 'all' || args.to === 'seller') &&
+    record.seller
+  ) {
     numbers.push(record.seller?.phoneNumber?.number)
   }
-
 
   const msgLines = [`1st Wt: ${record.weights[0].weight}KG`]
 

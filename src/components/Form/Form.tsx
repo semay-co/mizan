@@ -53,7 +53,10 @@ const Form = (props: any) => {
 
   const clearForm = () => {
     props.deleteRecordDraft()
+    props.updateRecordDraft(undefined)
     props.updateRecordResult(undefined)
+
+    clearSelectedVehicle()
 
     props.updateUIState({
       page: 0,
