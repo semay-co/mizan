@@ -18,7 +18,7 @@ const errorLink = onError(({ graphQLErrors }) => {
   graphQLErrors?.map(console.error)
 })
 
-const serverHost = process.env.REACT_APP_SERVER_HOST || 'localhost'
+const serverHost = process.env.REACT_APP_SERVER_HOST || '192.168.8.101'
 const serverPort = process.env.REACT_APP_SERVER_PORT || 8998
 
 const httpLink = from([
