@@ -6,6 +6,7 @@ import { PAGE_TYPES } from '../../model/print.model'
 import { asVehicle } from '../../lib/vehicle.lib'
 import { asCustomer } from '../../lib/customer.lib'
 import { sendSms } from '../../sms/sms'
+import { sendSms as sendSmsHarvilon } from '../../sms/sms.harvilon'
 import dotenv from 'dotenv-flow'
 
 dotenv.config()
@@ -356,7 +357,13 @@ export const sendConfirmationSms = async (parent: any, args: any) => {
 
   console.log(msgLines)
 
-  sendSms(numbers.join(';'), msgLines.join('  \n'))
+  const gateway = process.env.SMS_GATEWAY || 'Huawei'
+
+  if (gateway === 'Harvilon') {
+	  sendSmsHarvilon(numbers.join(';'), msgLines.join('  \n'))
+  } else {
+	  sendSms(numbers.join(';'), msgLines.join('  \n'))
+  }
 }
 
 export const printRecord = async (parent: any, args: any) => {
