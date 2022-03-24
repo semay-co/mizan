@@ -370,6 +370,15 @@ const RecordItem = (props: any) => {
                     </IonLabel>
                   </IonItem>
                 )}
+
+                <IonItem>
+                  <IonLabel>
+                    <span className='record-date'>
+                      {moment(+record?.createdAt).format('MMM DD, YYYY')} <br />
+                      {moment(+record?.createdAt).format('h:mm a')} <br />
+                    </span>
+                  </IonLabel>
+                </IonItem>
                 <IonItem>
                   <LicensePlate
                     code={record?.vehicle?.licensePlate?.code}
@@ -461,7 +470,7 @@ const RecordItem = (props: any) => {
             <div className='card-right-content'>
               <div className='weight-entry first-weight'>
                 <h3>First Weight</h3>
-                <span className='record-date'>
+                <span className='capture-date'>
                   {formatDate(+record?.weights[0]?.createdAt)}
                 </span>
 
@@ -552,7 +561,7 @@ const RecordItem = (props: any) => {
                         <h3>Second Weight</h3>
                         {record?.weights[1] ? (
                           <>
-                            <span className='record-date'>
+                            <span className='capture-date'>
                               {formatDate(+record.weights[1]?.createdAt)}
                             </span>
                             <div
@@ -592,7 +601,7 @@ const RecordItem = (props: any) => {
                           <>
                             {weightDraft() ? (
                               <>
-                                <span className='record-date'>
+                                <span className='capture-date'>
                                   {formatDate(+weightDraft().receivedAt)}
                                 </span>
                                 <div
@@ -631,7 +640,7 @@ const RecordItem = (props: any) => {
                       {(weightDraft() || record.weights[1]) && (
                         <div className='weight-entry net-weight'>
                           <h3>Net Weight</h3>
-                          <span className='record-date'>
+                          <span className='capture-date'>
                             {record?.weights[0] &&
                               moment(
                                 +record.weights[1]?.createdAt ||

@@ -10,6 +10,15 @@
   grid-template-rows: auto auto;
   grid-template-columns: auto 1fr;
 
+  .record-date {
+    text-transform: uppercase;
+    opacity: 0.8;
+    font-size: 1.2rem;
+    margin-bottom: .5rem;
+    justify-self: end;
+    text-align: right;
+  }
+
   .card-left-content {
     background-color: #00000033;
     padding: 1rem;
@@ -69,7 +78,7 @@
       display: grid;
       justify-content: start;
 
-      .record-date,
+      .capture-date,
       .record-pending {
         text-transform: uppercase;
         opacity: 0.6;

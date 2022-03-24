@@ -26,6 +26,7 @@ import classNames from 'classnames'
 import CustomerForm from './CustomerForm'
 import SelectedCustomerCard from './SelectedCustomerCard'
 import { updateUIState } from '../../state/actions/ui.action'
+import { v4 as uuid } from 'uuid'
 
 const Form = (props: any) => {
   const [runCreateRecord] = useMutation(CREATE_RECORD)
@@ -101,10 +102,18 @@ const Form = (props: any) => {
   ) => {
     clearForm()
 
+    const captureUuid = uuid()
+
+    fetch(`http://192.168.8.101:9999/capture?uuid=${captureUuid}`, {
+      mode: 'cors',
+      method: 'POST'
+    }).catch(console.error)
+
     if (props.reading) {
       props.updateRecordDraft({
         ...props.draft,
         reading: props.reading,
+        captureUuid,
         licensePlate: {
           plate: props.draft?.licensePlate?.plate || '',
           code: props.draft?.licensePlate?.code || 3,
@@ -129,6 +138,7 @@ const Form = (props: any) => {
       runCreateRecord({
         variables: {
           weight: draft.reading.weight,
+          // captureUuid: draft.captureUuid, 
           manual: draft.reading.manual || false,
           vehicleId: draft.vehicleId,
           sellerId: draft.sellerId || undefined,
