@@ -147,9 +147,7 @@ const RecordItem = (props: any) => {
     const firstWeight = record.weights[0].weight
     const secondWeight = record.weights[1]?.weight || weightDraft()?.weight
 
-    return secondWeight
-      ? Math.abs(firstWeight - secondWeight) + ' KG'
-      : '...'
+    return secondWeight ? Math.abs(firstWeight - secondWeight) + ' KG' : '...'
   }
 
   const weightDraft = () => {
@@ -463,7 +461,6 @@ const RecordItem = (props: any) => {
                     </IonItem>
                   </>
                 )}
-
               </IonList>
             </div>
 
@@ -491,7 +488,7 @@ const RecordItem = (props: any) => {
 
                 {record?.weights[1] &&
                   moment(+record.weights[0].createdAt).isAfter(
-                    moment().subtract(2, 'days')
+                    moment().subtract(3, 'days')
                   ) && (
                     <IonButton
                       onClick={() =>
@@ -519,36 +516,39 @@ const RecordItem = (props: any) => {
                       : 'success'
                   }
                 >
-                  <h1><IonIcon icon={cashOutline} /> {getPrice(record.vehicle.type)} BIRR</h1>
+                  <h1>
+                    <IonIcon icon={cashOutline} />{' '}
+                    {getPrice(record.vehicle.type)} BIRR
+                  </h1>
 
                   {/* {!(record.isPaid !== true && record.isPaid !== false) && ( */}
-                    <IonCardContent>
-                      <IonButton
-                        onClick={() => {
-                          onSetAsUnpaid(true)
-                          setPaymentConfirmed(true)
-                        }}
-                        color='danger'
-                        fill='outline'
-                        slot='end'
-                      >
-                        <IonIcon icon={closeOutline} />
-                        <IonLabel>Unpaid</IonLabel>
-                      </IonButton>
+                  <IonCardContent>
+                    <IonButton
+                      onClick={() => {
+                        onSetAsUnpaid(true)
+                        setPaymentConfirmed(true)
+                      }}
+                      color='danger'
+                      fill='outline'
+                      slot='end'
+                    >
+                      <IonIcon icon={closeOutline} />
+                      <IonLabel>Unpaid</IonLabel>
+                    </IonButton>
 
-                      <IonButton
-                        onClick={() => {
-                          onSetAsUnpaid(false)
-                          setPaymentConfirmed(true)
-                        }}
-                        color='success'
-                        fill='solid'
-                        slot='start'
-                      >
-                        <IonIcon icon={checkmarkOutline} />
-                        <IonLabel>Paid</IonLabel>
-                      </IonButton>
-                    </IonCardContent>
+                    <IonButton
+                      onClick={() => {
+                        onSetAsUnpaid(false)
+                        setPaymentConfirmed(true)
+                      }}
+                      color='success'
+                      fill='solid'
+                      slot='start'
+                    >
+                      <IonIcon icon={checkmarkOutline} />
+                      <IonLabel>Paid</IonLabel>
+                    </IonButton>
+                  </IonCardContent>
                   {/* )} */}
                 </IonCard>
               ) : (
@@ -579,7 +579,7 @@ const RecordItem = (props: any) => {
                               )}
                             </div>
                             {moment(+record.weights[1].createdAt).isAfter(
-                              moment().subtract(2, 'days')
+                              moment().subtract(3, 'days')
                             ) && (
                               <IonButton
                                 onClick={() =>
@@ -662,12 +662,12 @@ const RecordItem = (props: any) => {
                     'danger-button': !isLoaded() || !isSynced(),
                     'warn-button': moment(
                       +record.weights[0].createdAt
-                    ).isBefore(moment().subtract(2, 'days')),
+                    ).isBefore(moment().subtract(3, 'days')),
                   })}
                 >
                   {!record?.weights[1] &&
                     moment(+record?.weights[0].createdAt).isBefore(
-                      moment().subtract(2, 'days')
+                      moment().subtract(3, 'days')
                     ) && (
                       <>
                         <IonButton
@@ -693,43 +693,37 @@ const RecordItem = (props: any) => {
                 </div>
               ) : (
                 <>
-                  {props.type === 'result' &&
-                    !record?.weights[1] &&
-                    (record.weights[1] ||
-                      props.type !== 'result' ||
-                      paymentConfirmed) && (
-                      <div className='right-button'>
-                        {record.seller || record.buyer ? (
-                          <IonButton onClick={() => onSendSms()}>
-                            <IonIcon icon={send} />
-                            Send SMS
-                          </IonButton>
-                        ) : (
-                          <></>
-                        )}
-                        <IonButton onClick={onPrint}>
-                          <IonIcon icon={print} />
-                          Print
-                        </IonButton>
-                      </div>
+                  <div className='right-button'>
+                    {record.seller || record.buyer ? (
+                      <IonButton onClick={() => onSendSms()}>
+                        <IonIcon icon={send} />
+                        Send SMS
+                      </IonButton>
+                    ) : (
+                      <></>
                     )}
+                    <IonButton onClick={onPrint}>
+                      <IonIcon icon={print} />
+                      Print
+                    </IonButton>
+                  </div>
                   {record.isUnpaid && (
                     <IonCard color='warning'>
                       <IonCardContent>UNPAID</IonCardContent>
                     </IonCard>
                   )}
-                    <div className='right-button'>
-                      <IonButton
-                        size='large'
-                        onClick={(e) =>
-                          presentPopover({
-                            event: e.nativeEvent,
-                          })
-                        }
-                      >
-                        <IonIcon icon={menuOutline} />
-                      </IonButton>
-                    </div>
+                  <div className='right-button'>
+                    <IonButton
+                      size='large'
+                      onClick={(e) =>
+                        presentPopover({
+                          event: e.nativeEvent,
+                        })
+                      }
+                    >
+                      <IonIcon icon={menuOutline} />
+                    </IonButton>
+                  </div>
                 </>
               )}
             </div>

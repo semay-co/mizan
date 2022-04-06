@@ -259,7 +259,7 @@ export const styles = `
 			}
 
 			.row .row-field {
-				border-bottom: 1px dashed #555;
+				border-bottom: 1px dotted #555;
 				padding: 10px;;
 				text-transform: uppercase;
 				text-align: end;
@@ -457,8 +457,8 @@ const grid = (
 			</div>
 
 			${
-        type === PAGE_TYPES.ATTACHMENT
-          ? `<div class="row">
+        type === PAGE_TYPES.ATTACHMENT ? `
+				<div class="row">
 
 					<h3>
 						Type: ${VEHICLE_TYPES_FORMAL[record.vehicle.type]}
@@ -468,69 +468,63 @@ const grid = (
           : ''
       }
 
-			${
-        record.weights[1]
-          ? `<div class="row">
-						<h3>Vehicle Type</h3>
-						<div class="row-field">
+			${record.weights[1] ? `
+				<div class="row">
+					<h3>Vehicle Info</h3>
+					<div class="row-field">
+						<div>
+							<b>Size</b>
+						</div>
+						<div>
 							${VEHICLE_TYPES_FORMAL[record.vehicle.type]}
 						</div>
-					</div>`
-          : type === PAGE_TYPES.ATTACHMENT
-          ? `<div class="row">
-				<h3>First Weight</h3>
-
-				<div class="weight-date">
-					${moment(+record.weights[0].createdAt).format('LLL')}
-				</div>
-				<div class="weight-measure highlight-weight">
-					${record.weights[0].weight} KG
-				</div>
-			</div>
-		`
-          : ''
-      }
-					${
-            !compact && record.seller
-              ? `
-				<div class="row">
-					<h3>Seller</h3>
+					</div>
 					<div class="row-field">
 						<div>
-						Name: 
-						${record.seller.name.display}
 						</div>
 						<div>
-						Phone: 
-						${record.seller.phoneNumber.number}
 						</div>
 					</div>
-				</div>
-			`
-              : ''
-          }
-			${
-        !compact && record.buyer
-          ? `
-
+				</div>` 
+				: type === PAGE_TYPES.ATTACHMENT ? `
 				<div class="row">
+					<h3>First Weight</h3>
 
-					<h3>Buyer</h3>
-					<div class="row-field">
-						<div>
-						Name: 
-						${record.buyer.name.display}
-						</div>
-						<div>
-						Phone: 
-						${record.buyer.phoneNumber.number}
-						</div>
+					<div class="weight-date">
+						${moment(+record.weights[0].createdAt).format('LLL')}
 					</div>
-				
-				</div>
-			`
-          : ''
+					<div class="weight-measure highlight-weight">
+						${record.weights[0].weight} KG
+					</div>
+				</div>` : ''
       }
+			${!compact && (record.seller || record.buyer) ? `
+				<div class="row">
+					<h3>Client Info</h3>
+
+					${record.seller ? `
+						<div class="row-field">
+							<div>
+								<b>Seller</b>
+							</div>
+							<div>
+								${record.seller.name.display}
+							</div>
+						</div>` : ''
+					}
+					${record.buyer ? `
+						<div class="row-field">
+							<div>
+								<b>Buyer</b>
+							</div>
+							<div>
+								${record.buyer.name.display}
+							</div>
+						</div>` : ''
+					}
+				</div>` : ''
+			}
+
 		</div>
 		<div class="right-content">
 			${
@@ -616,7 +610,7 @@ const grid = (
 					<h3>Net Weight</h3>
 					<div class="weight-date ${
             moment(+record.weights[0].createdAt).isBefore(
-              moment(+record.weights[1].createdAt).subtract(2, 'days')
+              moment(+record.weights[1].createdAt).subtract(3, 'days')
             ) ||
             moment(+record.weights[0].createdAt).isAfter(
               moment(+record.weights[1].createdAt).add(10, 'minutes')

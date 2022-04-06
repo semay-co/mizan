@@ -13,14 +13,13 @@ export const print = (record: any, stamp: string = 'Original') => {
   return html_to_pdf
     .generatePdf(file, options)
     .then((pdfBuffer: any) => {
-      console.log(printer.getPrinters())
+      // console.log(printer.getPrinters())
 
       return printer.printDirect({
         name: 'psst',
         data: pdfBuffer,
         type: 'PDF',
         success: (job: any) => {
-          console.log('job id:', job)
           return JSON.stringify(job)
         },
         error: (error: any) => {

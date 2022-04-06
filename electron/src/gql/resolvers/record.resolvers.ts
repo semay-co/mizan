@@ -337,7 +337,6 @@ export const addSecondWeight = async (parent: any, args: any) => {
   }
 
   await DB.records.put(doc)
-
   const vehicle = await DB.vehicles
     .get(doc.vehicleId)
     .then((vehicle: any) => vehicle as any)
@@ -462,40 +461,58 @@ export const sendConfirmationSms = async (parent: any, args: any) => {
 
 export const printRecord = async (parent: any, args: any) => {
   const doc = await DB.records
-    .get(args.id)
-    .then((record: any) => record as any)
-    .then((record: any) => ({
-      id: record._id,
-      ...record,
-    }))
+      .get(args.id)
+      .then((record: any) => record as any)
+      .then((record: any) => ({
+        id: record._id,
+        ...record,
+      }))
 
-  const vehicleSpread = doc.vehicleId
-    ? {
-        vehicle: await DB.vehicles.get(doc.vehicleId).then(asVehicle),
-      }
-    : {}
+    const { vehicleId, sellerId, buyerId } = doc
 
-  const sellerSpread = doc.sellerId
-    ? {
-        seller: await DB.customers.get(doc.sellerId).then(asCustomer),
-      }
-    : {}
+    // const vehicleRecords = await records(null, {vehicleId})
 
-  const buyerSpread = doc.buyerId
-    ? {
-        buyer: await DB.customers.get(doc.buyerId).then(asCustomer),
-      }
-    : {}
+    // const vehicleWeights = vehicleRecords?.payload.map((record: any) => 
+    //   record.weights?.map((w: any) => w.weight)
+    // ).reduce((a, c) => {
+    //   c.forEach((el: any) => {
+    //     a.push(parseInt(el))
+    //   })
 
-  const record = {
-    ...doc,
-    ...vehicleSpread,
-    ...sellerSpread,
-    ...buyerSpread,
-    netWeight: Math.abs(doc.weights[0]?.weight - doc.weights[1]?.weight),
-  }
+    //   return a
+    // }, [])
 
-  return record.weights?.length > 1
-    ? print(record, PAGE_TYPES.ORIGINAL) && print(record, PAGE_TYPES.COPY)
-    : print(record, PAGE_TYPES.PENDING)
+    // console.log(vehicleWeights)
+
+    // const lowest = _.min(vehicleWeights)
+
+    // console.log('lowest:', lowest)
+
+    const vehicleSpread = vehicleId
+      ? {
+          vehicle: await DB.vehicles.get(vehicleId).then(asVehicle),
+        } : {}
+
+    const sellerSpread = sellerId
+      ? {
+          seller: await DB.customers.get(sellerId).then(asCustomer),
+        } : {}
+
+    const buyerSpread = buyerId
+      ? {
+          buyer: await DB.customers.get(buyerId).then(asCustomer),
+        } : {}
+
+    const record = {
+      ...doc,
+      ...vehicleSpread,
+      ...sellerSpread,
+      ...buyerSpread,
+      // lowest,
+      netWeight: Math.abs(doc.weights[0]?.weight - doc.weights[1]?.weight),
+    }
+
+    return record.weights?.length > 1
+      ? print(record, PAGE_TYPES.ORIGINAL) && print(record, PAGE_TYPES.COPY)
+      : print(record, PAGE_TYPES.PENDING)
 }
