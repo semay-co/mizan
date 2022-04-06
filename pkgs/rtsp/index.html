@@ -1,36 +1,33 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-	<meta charset=utf-8 />
-	<title>Mizan CAM</title>
-
-	<style>
-		video {
-			width: calc(100vw - 30px);
-			height: calc(100vh - 30px);
-		}
-	</style>
-
-	<link href="https://vjs.zencdn.net/7.2.3/video-js.css" rel="stylesheet">
 </head>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
 <body>
-	<video id='video' class="video-js vjs-default-skin" controls>
-		<source src="http://192.168.8.101:8000/streams/4/video.m3u8" type="application/x-mpegURL">
-	</video>
-
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/video.js/5.10.2/video.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-hls/3.0.2/videojs-contrib-hls.js"></script>
-
-
+	<!-- Use this if you only support Safari!!
+    <div id="player">
+        <video id="video" autoplay="true" controls="controls">
+            <source src="http://192.1xx.x.1xx:8080/playlist.m3u8" />
+            Your browser does not support HTML5 streaming!
+        </video>
+    </div>
+-->
+	<video id="video" autoplay="true" controls="controls" type='application/x-mpegURL'></video>
 	<script>
-		(function () {
-			var ply = videojs("video")
-			ply.play()
-		}())
-	</script>
+		if (Hls.isSupported()) {
+			var video = document.getElementById('video')
 
+			var hls = new Hls()
+			// bind them together
+			hls.attachMedia(video)
+			hls.on(Hls.Events.MEDIA_ATTACHED, () => {
+				hls.loadSource('streams/4/index.m3u8')
+
+				hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+					console.log('event', event)
+					console.log('data', data)
+				})
+			})
+		}
+	</script>
 </body>
 
 </html>

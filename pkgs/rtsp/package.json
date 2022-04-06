@@ -4,14 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index"
+    "start": "node index",
+    "api": "node api"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.3",
+    "ffmpeg": "^0.0.4",
     "node-rtsp-stream": "^0.0.9",
-    "rtsp-relay": "^1.6.1"
+    "rtsp-relay": "^1.6.1",
+    "shelljs": "^0.8.5"
   }
 }

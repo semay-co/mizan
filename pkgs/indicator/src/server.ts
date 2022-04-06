@@ -28,3 +28,12 @@ indicator((reading: any, display: any) => {
 server.listen(port, () => {
 	console.log(`server started at port ${port}`)
 })
+
+const kill = () => {
+	console.log('kill command')
+  io.disconnectSockets()
+  process.exit(-1)
+}
+
+process.on('SIGHUP', () => kill())
+process.on('SIGTERM', () => kill())

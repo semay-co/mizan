@@ -41,17 +41,17 @@ body {
 }
 
 #reading {
-	color: #000000;
+	color: #00ff88;
 	font-family: DotMatrixTwo;
 	text-align: center;
 	font-size: 150px;
-    z-index: 100;
-    position: relative;
+  z-index: 100;
+  position: relative;
 }
 
 #container {
-    position: relative;
-    background: #00ff88;
+  position: relative;
+  background: #000000;
 }
 
 #container.danger #reading {
@@ -63,7 +63,7 @@ body {
 }
 
 #container.warn #reading {
-	color: #000;
+  color: #000000;
 }
 
 #container.warn {
@@ -107,8 +107,8 @@ body {
 }
 
 #chart {
-    position: absolute;
-    z-index: 1;
+  position: absolute;
+  z-index: 1;
 }
 
 .area {
@@ -116,6 +116,6 @@ body {
 }
 
 #container.zero .area {
-	fill: #00ff8855;
+	fill: #00ff88aa;
 }
 

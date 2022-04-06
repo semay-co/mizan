@@ -1,5 +1,6 @@
 import SerialPort from 'serialport'
 import { Gpio } from 'onoff'
+import * as _ from 'ramda'
 
 const relay = Gpio.accessible ? new Gpio(23, 'out') : null
 
@@ -8,6 +9,7 @@ process.on('SIGINT', _ => {
 })
 
 let trail: any[] = []
+let candidates: any[] = []
 
 const indicator = (onResult: (reading: any, display: any) => any) => {
 
@@ -38,18 +40,15 @@ const indicator = (onResult: (reading: any, display: any) => any) => {
 			const reading = snap
 				? snap.split('=').join('').split('').reverse().join('')
 				: ''.slice(0, 6)
+
 			const parsed = parseInt(`${sign}${reading}`, 10)
+
 			const signed = isNaN(parsed) ? -10 : parsed
 
-			trail = trail.length < 10 ? trail : trail.slice(1)
-
-			trail.push(signed)
-
-			const stable = trail.reduce((c, a) => a + c) / 10 
 			if (+signed === 0) {
 				relay?.writeSync(0)
 			} else {
-                if (+signed < 0) {
+				if (+signed < 0) {
 					const mil = now.getMilliseconds()
 					console.log(+signed)
 
@@ -63,21 +62,49 @@ const indicator = (onResult: (reading: any, display: any) => any) => {
 				}
 			}
 
+			const change = Math.abs(+last - +signed)
+			const l = trail.length
+
+			const tl = 200
+
+			if (l >= tl) {
+				trail.shift()
+			}
+
+			if (change >= 15) {
+				trail = []
+				candidates = []
+			} 
+
+			trail.push(signed)
+
+			const stable = l
+				? Math.round(
+					(trail.reduce((a, c) => a + c, 0) / l) / 5
+				) * 5
+				: signed
+
+			console.log('stable:', stable)
+
 			if (
 				+signed < 100000 && 
 				(last !== signed || lastTime < now.getTime() - 1000)  && 
 				!isNaN(+signed) && 
 				lastTime < now.getTime() - 250
 			) {
-				const change = Math.abs(+last - +signed)
+				const stable = signed
+
+				const outdated = change === 0 && lastTime >= now.getTime() - 1000
+
+				const smallChange = change !== 0 && 
+					change < 15 && 
+					lastTime >= now.getTime() - 5000
+
 				if (
-					!(
-						change !== 0 && 
-						change < 20 && 
-						lastTime > now.getTime() - 3000
-					)
+					outdated || !smallChange
 				) {
-					onResult(signed, signed)
+					onResult(stable, stable)
+
 					last = signed
 					lastTime = now.getTime()
 				}

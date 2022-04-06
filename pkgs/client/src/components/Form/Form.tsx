@@ -27,6 +27,7 @@ import classNames from 'classnames'
 import CustomerForm from './CustomerForm'
 import SelectedCustomerCard from './SelectedCustomerCard'
 import { updateUIState } from '../../state/actions/ui.action'
+import { v4 as uuid } from 'uuid'
 
 const Form = (props: any) => {
   const [runCreateRecord] = useMutation(CREATE_RECORD)

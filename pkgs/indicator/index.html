@@ -5,6 +5,7 @@
   <title>Mizan Indicator</title>
   <script src='/socket.io/socket.io.js'></script>
   <script src='d3.min.js'></script>
+  <script src='lodash.min.js'></script>
   <script src='moment.min.js'></script>
 
   <link rel="stylesheet" href="main.css">
@@ -16,6 +17,7 @@
   <div id="container">
     <svg id="chart"></svg>
     <h1 id="reading">WAITING</h1>
+    <div id="stablized"></div>
     <h2 id="elapsed"></h2>
   </div>
 
@@ -42,7 +44,7 @@
     let readingTime = 0
 
     const xDom = 30
-    const readings = new Array(xDom).fill(0)
+    const readings = new Array(xDom).fill({})
 
     socket.on('display', (...args) => {
       const now = new Date()
@@ -51,6 +53,7 @@
       const reading = args[0]
       const readingEl = document.getElementById('reading')
       const elapsedEl = document.getElementById('elapsed')
+      const stablizedEl = document.getElementById('stablized')
       const containerEl = document.getElementById('container')
       const readingMarkup = reading
 
@@ -58,9 +61,6 @@
 
       if (readingTime != newReadingTime) {
         readingTime = newReadingTime
-
-        readings.shift()
-        readings.push(reading)
 
         const width = readingEl.offsetWidth
         const height = readingEl.offsetHeight
@@ -145,7 +145,6 @@
     })
 
   </script>
-
 </body>
 
 </html>
