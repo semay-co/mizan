@@ -41,6 +41,11 @@ type Mutation {
     recordId: String!
     customerType: String!
   ): Record
+  updateCustomer(
+    id: String!
+    name: String
+    phoneNumber: String
+  ): Customer
   printRecord(id: String!): String
   sendConfirmationSms(
     recordId: String!

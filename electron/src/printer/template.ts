@@ -290,13 +290,16 @@ export const styles = `
 			}
 
 			.outdated-record {
-				font-size: 18px;
+				font-size: 20px;
 				border: 1px dashed #333;
 				color: #333;
-				padding: 3px 5px;
+				padding: 5px 8px;
 				box-shadow: 100px 100px #00000033 inset;
-				font-weight: bold;
 				border-radius: 5px;
+			}
+
+			.outdated-record p {
+				font-size: 20px;
 			}
 
 			.weight-measure {
@@ -618,7 +621,12 @@ const grid = (
               ? 'outdated-record'
               : ''
           }">
-						${moment(+record.weights[1].createdAt).from(+record.weights[0].createdAt)}
+						${moment(+record.weights[1].createdAt).diff(+record.weights[0].createdAt, 'days') >= 3 ? 
+							`IN <b>${moment(+record.weights[1].createdAt).diff(+record.weights[0].createdAt, 'days')}</b> DAYS </br></br>
+
+						<b>ማሳሰብያ:</b> በሁለቱ ክብደቶች መካከል ያለው የቀናት ቁጥር ሲጨምር የውጤቱ ልዩነት ሊሰፋ ይችላል።` :
+						moment(+record.weights[1].createdAt).from(+record.weights[0].createdAt)
+					}
 					</div>
 
 					<div class="highlight-weight weight-measure">

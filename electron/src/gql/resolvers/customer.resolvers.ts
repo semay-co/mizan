@@ -76,3 +76,25 @@ export const customer = async (parent: any, args: any) => {
 
   return asCustomer(customer)
 }
+
+export const updateCustomer = async (parent: any, args: any) => {
+  const customer = (await DB.customers.get(args.id)) as any
+
+  const name = args.name ? {
+    name: args.name
+  } : {}
+
+  const phoneNumber = args.phoneNumber ? {
+    phoneNumber: args.phoneNumber
+  } : {}
+
+  const doc = {
+    ...customer,
+    ...name,
+    ...phoneNumber
+  }
+
+  await DB.customers.put(doc)
+
+  return (await DB.customers.get(args.id)) as any
+}
