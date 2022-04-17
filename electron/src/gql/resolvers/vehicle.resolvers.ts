@@ -2,6 +2,8 @@ import DB from '../../db'
 import { v4 as uuid } from 'uuid'
 import { asVehicle } from '../../lib/vehicle.lib'
 
+const {log, info, error} = console
+
 export const createVehicle = async (parent: any, args: any) => {
   // const vehicles = await DB.vehicles.find({
   //   selector: {
@@ -45,9 +47,9 @@ export const createVehicle = async (parent: any, args: any) => {
         licensePlateRegion: args.plateRegion,
         docType: 'vehicle',
       })
-      .catch(console.error)
+      .catch(error)
 
-    console.log(query)
+    log(query)
 
     if (query) {
       return await DB.vehicles.get(query.id).then(asVehicle)
@@ -56,9 +58,37 @@ export const createVehicle = async (parent: any, args: any) => {
 }
 
 export const updateVehicle = async (parent: any, args: any) => {
-  const vehicle = args.vehicleId
+  const { id, plateNumber, plateCode, plateRegion, type } = args
 
-  console.log(vehicle)
+  const vehicleDoc = (await DB.vehicles.get(id)) as any
+
+  const number = plateNumber ? {
+    licensePlateNumber: plateNumber
+  } : {}
+
+  const code = plateCode ? {
+    licensePlateCode: plateCode
+  } : {}
+
+  const region = plateRegion ? {
+    licensePlateRegion: plateRegion
+  } : {}
+
+  const vehicleType = !isNaN(type) ? {
+    type
+  } : {}
+
+  const update = {
+    ...vehicleDoc,
+    ...number,
+    ...code,
+    ...region,
+    ...vehicleType,
+  }
+
+  DB.vehicles.put( update)
+
+  return asVehicle(update)
 }
 
 export const vehicles = async (parent: any, args: any) => {

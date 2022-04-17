@@ -89,9 +89,9 @@ const Scoreboard = (props: any) => {
       <div
         className={classNames({
           scoreboard: true,
-          error: props.reading?.status === STATUS_CODES.error,
+          error: props.reading?.status === STATUS_CODES.error || props.reading?.weight !== 0 && (props.reading?.weight < 0 || props.reading?.weight <= 40),
           // ||Math.abs(now.current - props.reading?.receivedAt) > 2000,
-          warn: props.reading?.status === STATUS_CODES.loading,
+          warn: props.reading?.status === STATUS_CODES.loading || (props.reading?.weight > 40 && props.reading?.weight < 100),
         })}
       >
         <div className='scoreboard-wrap'>
