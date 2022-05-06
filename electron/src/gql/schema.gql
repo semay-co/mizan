@@ -24,6 +24,7 @@ type Mutation {
     vehicleId: String!
     sellerId: String
     buyerId: String
+    elapsed: Int
   ): Record
   createCustomer(phoneNumber: String!, name: String!): Customer
   addSecondWeight(
@@ -148,6 +149,7 @@ type Record {
 type RecordResult {
   payload: [Record]
   count: Int
+  elapsed: Int
 }
 
 type Subscription {

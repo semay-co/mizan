@@ -388,7 +388,7 @@ export const styles = `
 			.cut-line {
 				padding: .5rem;
 				background: #ffffff;
-				border-top: 1px dashed #00000099;
+				border-top: 2px dashed #000000;
 				border-bottom: 1px dashed #00000099;
 				z-index: 1000;
 				position: relative;

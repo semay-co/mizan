@@ -6,7 +6,6 @@ import { PAGE_TYPES } from '../../../../src/model/print.model'
 import { asVehicle } from '../../lib/vehicle.lib'
 import { asCustomer } from '../../lib/customer.lib'
 import { sendSms } from '../../sms/sms'
-import { sendSms as sendSmsHarvilon } from '../../sms/sms.harvilon'
 import dotenv from 'dotenv-flow'
 
 dotenv.config()
@@ -22,6 +21,8 @@ const sortByCreated = _.descend(
 )
 
 export const records = async (parent: any, args: any) => {
+  const startTime = new Date().getTime()
+
   const result = await DB.records.allDocs({
     include_docs: true,
   })
@@ -104,22 +105,25 @@ export const records = async (parent: any, args: any) => {
 
     return {
       ...doc,
-      id: row.id,
       ...vehicle,
       ...buyer,
       ...seller,
+      id: row.id,
     }
   })
 
 
+  const elapsed = new Date().getTime() - startTime
 
   return {
     payload,
     count: sorted.length,
+    elapsed,
   }
 }
 
 export const createRecord = async (parent: any, args: any) => {
+  const startTime = new Date().getTime()
   const docs = await DB.records.allDocs({
     include_docs: true,
   })
@@ -203,13 +207,16 @@ export const createRecord = async (parent: any, args: any) => {
 
   const record = (await DB.records.get(save.id)) as any
 
+  const elapsed = new Date().getTime() - startTime
+
   if (record)
     return {
       ...record,
-      id: record._id,
       ...vehicle,
       ...seller,
       ...buyer,
+      id: record._id,
+      elapsed,
     }
 }
 
