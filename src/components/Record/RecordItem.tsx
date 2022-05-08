@@ -28,6 +28,7 @@ import {
   trashOutline,
   cashOutline,
   checkmarkOutline,
+  flashOutline,
 } from 'ionicons/icons'
 import moment from 'moment'
 import LicensePlate from '../LicensePlate/LicensePlate'
@@ -52,6 +53,7 @@ import classNames from 'classnames'
 import { FETCH_RECORD, FETCH_RECORDS } from '../../gql/queries/record.queries'
 import { updateUIState } from '../../state/actions/ui.action'
 import CustomerForm from '../Form/CustomerForm'
+import { getPrice } from '../../lib/price'
 
 const RecordItem = (props: any) => {
   const record = props.record
@@ -154,7 +156,7 @@ const RecordItem = (props: any) => {
     return props.draft?.reading || props.secondWeightDraft
   }
 
-  const onSaveSecondWeight = () => {
+  const onSaveSecondWeight = (quickFinish: Boolean = false) => {
     addSecondWeightMutation({
       variables: {
         recordId: record.id,
@@ -165,7 +167,14 @@ const RecordItem = (props: any) => {
       update: () => {
         recordQuery.refetch()
       },
+    }).then(() => {
+      if (quickFinish) {
+        onPrint()
+        onSendSms()
+      }
     })
+
+    localStorage.setItem('displayFirstWeight', (record?.weights?.[0].weight || 0).toString())
 
     props.updateRecordResult(record.id)
 
@@ -183,7 +192,7 @@ const RecordItem = (props: any) => {
       .then(() => {
         setTimeout(() => {
           window.location.reload()
-        }, 600)
+        }, 2000)
       })
       .catch(console.error)
 
@@ -228,6 +237,7 @@ const RecordItem = (props: any) => {
   }
 
   const recordReading = () => {
+    localStorage.setItem('displayValue', props.reading ? props.reading?.weight.toString() : '')
     if (props.reading) {
       props.updateRecordDraft({
         ...props.draft,
@@ -241,26 +251,13 @@ const RecordItem = (props: any) => {
     }
   }
 
-  const getPrice = (type: number) => {
-    switch (type) {
-      case 0:
-        return 80 // pickup
-      case 1:
-        return 100 // light truck
-      case 2:
-        return 150 // midium truck
-      case 3:
-        return 200 // heavy truck
-      case 4:
-        return 250 // heavy truck + trailer
-      default:
-        return 0
-    }
-  }
 
   const makeNewRecord = (weight: number, weightTime: string) => {
     props.deleteRecordDraft()
     props.updateRecordDraft(undefined)
+
+    localStorage.setItem('displayFirstWeight', '')
+    localStorage.setItem('displayVehicle', JSON.stringify(record.vehicle))
 
     runCreateRecord({
       variables: {
@@ -682,14 +679,23 @@ const RecordItem = (props: any) => {
                         </IonButton>
                       </>
                     )}
-                  <IonButton
-                    onClick={onSaveSecondWeight}
-                    size='large'
-                    expand='block'
-                  >
-                    Use Second Weight
-                    <IonIcon icon={chevronForward} />
-                  </IonButton>
+                    <div className='use-second-buttons'>
+                      <IonButton
+                        onClick={() => onSaveSecondWeight()}
+                        size='large'
+                        expand='block'
+                      >
+                        Use Second Weight
+                        <IonIcon icon={chevronForward} />
+                      </IonButton>
+                      <IonButton
+                        onClick={() => onSaveSecondWeight(true)}
+                        size='large'
+                        expand='block'
+                      >
+                        <IonIcon icon={flashOutline} />
+                      </IonButton>
+                  </div>
                 </div>
               ) : (
                 <>

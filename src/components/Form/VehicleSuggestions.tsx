@@ -38,6 +38,7 @@ const VehicleSuggestions = (props: any) => {
 
   const onSelectPlate = (vehicle: any) => {
     selectedVehicleRecords.refetch()
+    localStorage.setItem('displayVehicle', JSON.stringify(vehicle))
 
     props.updateRecordDraft({
       ...props.draft,

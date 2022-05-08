@@ -527,6 +527,13 @@ const grid = (
 					}
 				</div>` : ''
 			}
+			${!compact && (record.remarks) ? `
+				<div class="row">
+					<h3>Remarks</h3>
+
+					<b>${record.remarks.split('\n').join('</br><b>').split(':').join(':</b></br>')}
+				</div>
+			` : ''}
 
 		</div>
 		<div class="right-content">

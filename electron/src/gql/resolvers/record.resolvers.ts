@@ -20,6 +20,22 @@ const sortByCreated = _.descend(
   _.compose(_.prop('createdAt') as any, _.prop('doc') as any)
 )
 
+const getRecords = async (...args: any[]) => {
+
+  const [query, vehicleId] = args
+  
+  const vehicle = vehicleId ? {
+    vehicleId
+  } : {}
+
+
+  return DB.records.find({
+    selector: {
+      ...vehicle      
+    }
+  })
+}
+
 export const records = async (parent: any, args: any) => {
   const startTime = new Date().getTime()
 
@@ -223,6 +239,13 @@ export const createRecord = async (parent: any, args: any) => {
 export const updateRecord = async (parent: any, args: any) => {
   const record = (await DB.records.get(args.id)) as any
 
+  const remarks = 
+    args.remarks !== undefined
+      ? {
+        remarks: args.remarks,
+      } 
+      : {}
+
   const isFree =
     args.isFree !== undefined
       ? {
@@ -248,6 +271,7 @@ export const updateRecord = async (parent: any, args: any) => {
     ...record,
     updatedAt: new Date().getTime(),
     ...isFree,
+    ...remarks,
     ...isMistake,
     ...isUnpaid,
   }

@@ -102,8 +102,7 @@ http://ionicframework.com/docs/theming/ */
 }
 
 .md {
-  // --ion-font-family: 'Roboto Mono', monospace;
-  --ion-font-family: monospace;
+  --ion-font-family: 'Roboto Mono', monospace;
 }
 
 @font-face {
@@ -136,6 +135,17 @@ http://ionicframework.com/docs/theming/ */
   font-style: italic;
   font-family: 'Roboto Mono';
   src: url('/assets/fonts/RobotoMono/RobotoMono-Italic-VariableFont_wght.ttf');
+}
+
+@font-face {
+  font-weight: bold;
+  font-family: 'Nokia Pure Headline';
+  src: url('/assets/fonts/NokiaPureHeadline.ttf');
+}
+
+@font-face {
+  font-family: 'D-Din';
+  src: url('/assets/fonts/D-Din/D-DIN.otf');
 }
 
 ion-button {

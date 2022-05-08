@@ -28,10 +28,6 @@ const LicensePlateForm = (props: any) => {
     fetchPolicy: 'network-only',
   })
 
-  useEffect(() => {
-    return () => vehicles.data
-  }, [vehicles.data])
-
   const onPlateNumberChange = (ev: any) => {
     const plate = ev.detail?.value
       .split(/[^a-zA-Z0-9]/)

@@ -72,6 +72,11 @@
     margin-bottom: 1rem;
     grid-area: right;
 
+    .use-second-buttons {
+      display: grid;
+      grid-auto-flow: column;
+    }
+
     .weight-entry {
       border-bottom: 1px dashed #ffffff33;
       padding: 1rem 0.5rem;

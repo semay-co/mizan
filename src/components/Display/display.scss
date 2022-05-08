@@ -1,31 +1,96 @@
 @import '../../theme/variables.scss';
 
 $indicator-green: #00ff80;
-$indicator-background: #030610;
+$indicator-background: transparent;
 $indicator-error: #ff3869;
 $indicator-warn: #ffd534;
 
-.scoreboard-wrap {
+.display-wrap {
   display: grid;
-  grid-auto-flow: column;
-  justify-content: space-between;
-  width: 100%;
+  grid-auto-flow: row;
+  justify-content: center;
   align-items: center;
+  height: 100%;
+  user-select: none;
+  font-family: 'D-DIN';
+
+  h1 {
+    font-size: 8rem;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+  }
 }
 
-.scoreboard,
-.scoreboard ion-input {
+.time,
+.bottom-msg {
+  text-align: center;
+  font-size: 5rem;
+  color: #fff;
+}
+
+.time {
+  font-family: 'Roboto Mono', monospace;
+}
+
+.bottom-msg {
+  font-family: 'Nokia Pure Headline';
+  font-size: 4rem;
+}
+
+.display-license-plate {
+  justify-self: center;
+  transform: scale(2.5);
+  padding: 1rem;
+}
+
+.display-first-weight,
+.display-result {
+  color: #fff;
+  font-weight: bold;
+  font-size: 8rem;
+  text-align: center;
+  padding: 2rem;
+}
+
+@keyframes golden {
+  0% {
+    color: gold;
+  }
+
+  20% {
+    color: gold;
+  }
+
+  50% {
+    color: white;
+  }
+
+  80% {
+    color: gold;
+  }
+
+  100% {
+    color: gold;
+  }
+}
+
+.display-result {
+  color: gold;
+  animation: golden 1s infinite;
+}
+
+.display,
+.display ion-input {
   color: $indicator-green;
-  padding: 2rem 4rem;
+  padding: 0rem 4rem;
   font-weight: bold;
   display: grid;
-  grid-auto-flow: column;
-  justify-content: stretch;
   background-color: $indicator-background;
   font-family: 'DotMatrixTwo';
   text-shadow: 2px 3px 10px transparentize($indicator-green, $amount: 0.7);
-  font-size: 4rem;
-  text-align: end;
+  font-size: 15rem;
+  text-align: center;
   --padding-top: 0;
   --padding-bottom: 0;
 
@@ -55,40 +120,10 @@ $indicator-warn: #ffd534;
   }
 }
 
-.scoreboard {
-  ion-input {
-    input[type='number']::-webkit-inner-spin-button,
-    input[type='number']::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+.display {
 
-    padding: 0;
-    color: var(--ion-color-primary);
-    font-size: 4.2rem;
-  }
-
-  .unit.manual-input-unit {
-    background-color: var(--ion-color-secondary);
-  }
-
-  .scoreboard-text {
+  .display-text {
     display: grid;
     grid-auto-flow: column;
-  }
-}
-
-.status-bar {
-  text-align: end;
-  // border-bottom: 3px solid;
-  opacity: 0.6;
-  background-color: $indicator-background;
-
-  &.error {
-    border-color: $indicator-error;
-  }
-
-  &.warn {
-    border-color: $indicator-warn;
   }
 }

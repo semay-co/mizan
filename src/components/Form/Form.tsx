@@ -10,6 +10,8 @@ import {
 import {
   addOutline,
   closeOutline,
+  flashOutline,
+  printOutline,
   reloadOutline,
   speedometerOutline,
 } from 'ionicons/icons'
@@ -18,7 +20,11 @@ import { useMutation, useQuery } from '@apollo/client'
 import { FETCH_RECORD, FETCH_RECORDS } from '../../gql/queries/record.queries'
 import $ from 'jquery'
 import RecordItem from '../Record/RecordItem'
-import { CREATE_RECORD } from '../../gql/mutations/record.mutations'
+import {
+  CREATE_RECORD,
+  PRINT_RECORD,
+  SEND_CONFIRMATION_SMS,
+} from '../../gql/mutations/record.mutations'
 import RecordedWeight from './RecordedWeight'
 import LicensePlateForm from './LicensePlateForm'
 import SelectedVehicleCard from './SelectedVehicleCard'
@@ -29,6 +35,9 @@ import { updateUIState } from '../../state/actions/ui.action'
 import { v4 as uuid } from 'uuid'
 
 const Form = (props: any) => {
+  const [printRecord] = useMutation(PRINT_RECORD)
+
+  const [sendConfirmationSms] = useMutation(SEND_CONFIRMATION_SMS)
   const [runCreateRecord] = useMutation(CREATE_RECORD)
   const recordQuery = useQuery(FETCH_RECORD, {
     variables: {
@@ -52,12 +61,18 @@ const Form = (props: any) => {
     fetchPolicy: 'network-only',
   })
 
+  const setDisplayValue = (value: string) => {
+    localStorage.setItem('displayValue', value)
+  }
+
   const clearForm = () => {
     props.deleteRecordDraft()
     props.updateRecordDraft(undefined)
     props.updateRecordResult(undefined)
 
     clearSelectedVehicle()
+    // setDisplayValue('')
+    // localStorage.setItem('displayVehicle', '{}')
 
     props.updateUIState({
       page: 0,
@@ -74,6 +89,7 @@ const Form = (props: any) => {
     props.updateUIState({
       page: 0,
     })
+
   }
 
   const clearSelectedBuyer = () => {
@@ -101,19 +117,20 @@ const Form = (props: any) => {
     skipSeller: boolean = false
   ) => {
     clearForm()
+    setDisplayValue(props.reading ? props.reading?.weight.toString() : '')
 
     const captureUuid = uuid()
 
-    fetch(`http://192.168.8.101:9999/capture?uuid=${captureUuid}`, {
-      mode: 'cors',
-      method: 'POST'
-    }).catch(console.error)
+    // fetch(`http://192.168.8.101:9999/capture?uuid=${captureUuid}`, {
+    //   mode: 'cors',
+    //   method: 'POST',
+    // }).catch(console.error)
 
     if (props.reading) {
       props.updateRecordDraft({
         ...props.draft,
         reading: props.reading,
-        captureUuid,
+        // captureUuid,
         licensePlate: {
           plate: props.draft?.licensePlate?.plate || '',
           code: props.draft?.licensePlate?.code || 3,
@@ -131,14 +148,16 @@ const Form = (props: any) => {
     }
   }
 
-  const createRecord = () => {
+  const createRecord = async (quickFinish: Boolean = false) => {
     const draft = props.draft
 
+    localStorage.setItem('displayPayment', '1')
+
     if (draft && !isNaN(draft.reading?.weight) && draft.licensePlate?.plate) {
-      runCreateRecord({
+      return runCreateRecord({
         variables: {
           weight: draft.reading.weight,
-          // captureUuid: draft.captureUuid, 
+          // captureUuid: draft.captureUuid,
           manual: draft.reading.manual || false,
           vehicleId: draft.vehicleId,
           sellerId: draft.sellerId || undefined,
@@ -156,8 +175,15 @@ const Form = (props: any) => {
           })
         },
       }).then((record) => {
-        props.updateRecordResult(record.data.createRecord.id)
+        const id = record.data.createRecord.id
+
+        props.updateRecordResult(id)
         props.deleteRecordDraft()
+
+        if (quickFinish) {
+          onPrint(id)
+          onSendSms(id)
+        }
 
         if (props.result) {
           recordQuery.refetch()
@@ -166,7 +192,39 @@ const Form = (props: any) => {
       })
     } else {
       alert('Record information incomplete')
+      return false
     }
+  }
+
+  const onSendSms = (id: string, to: 'all' | 'buyer' | 'seller' = 'all') => {
+    sendConfirmationSms({
+      variables: {
+        recordId: id,
+        to,
+      },
+    }).catch(console.error)
+  }
+
+
+
+  const onPrint = (id: string) => {
+    printRecord({
+      variables: {
+        id,
+      },
+    })
+      .then(() => {
+        setTimeout(() => {
+          window.location.reload()
+        }, 600)
+      })
+      .catch(console.error)
+
+    // sendConfirmationSms({
+    //   variables: {
+    //     recordId: record.id,
+    //   },
+    // }).catch(console.error)
   }
 
   const addParty = (type: string) => {
@@ -237,7 +295,11 @@ const Form = (props: any) => {
               className='big-record-button'
               color='primary'
               button={true}
-              onClick={() => recordReading(true, true)}
+              onClick={() => {
+                recordReading(true, true)
+                localStorage.setItem('displayVehicle', '{}')
+                localStorage.setItem('displayFirstWeight', '')
+              }}
             >
               <IonIcon icon={speedometerOutline}></IonIcon>
               New Measurement
@@ -367,14 +429,23 @@ const Form = (props: any) => {
                     ) : (
                       !isLoaded() && <IonText>Weight is too small</IonText>
                     )}
-                    <IonButton
-                      className='create-button'
-                      size='large'
-                      onClick={createRecord}
-                    >
-                      <IonIcon icon={addOutline} />
-                      Create New Record
-                    </IonButton>
+                    <div>
+                      <IonButton
+                        className='create-button'
+                        size='large'
+                        onClick={() => createRecord()}
+                      >
+                        <IonIcon icon={addOutline} />
+                        Create Record
+                      </IonButton>
+                      <IonButton
+                        className='create-button'
+                        size='large'
+                        onClick={() => createRecord(true)}
+                      >
+                        <IonIcon icon={flashOutline} />
+                      </IonButton>
+                    </div>
                   </IonCard>
                 </>
               )}

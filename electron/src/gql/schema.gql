@@ -67,6 +67,7 @@ type Mutation {
   ): Vehicle
   updateRecord(
     id: String!
+    remarks: String
     isFree: Boolean
     isUnpaid: Boolean
     isMistake: Boolean
@@ -141,6 +142,7 @@ type Record {
   product: Product
   serial: String
   weights: [Weight]
+  remarks: String
   isFree: Boolean
   isUnpaid: Boolean
   isMistake: Boolean

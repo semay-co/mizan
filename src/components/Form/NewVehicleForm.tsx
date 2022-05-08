@@ -52,6 +52,14 @@ const NewVehicleForm = (props: any) => {
       })
         .then((plate) => {
           const vehicleId = plate.data.createVehicle.id
+
+          localStorage.setItem('displayVehicle', JSON.stringify({
+            id: vehicleId,
+            LicensePlate: {
+              ...draft.licensePlate
+            }
+          }))
+
           props.updateRecordDraft({
             ...props.draft,
             vehicleId,

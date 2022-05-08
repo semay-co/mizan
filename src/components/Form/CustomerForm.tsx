@@ -31,10 +31,6 @@ const CustomerForm = (props: any) => {
     fetchPolicy: 'network-only',
   })
 
-  useEffect(() => {
-    return () => customers.data
-  }, [customers.data])
-
   const onNameChange = (ev: any) => {
     const name = ev.detail?.value.trim()
     const draft =
