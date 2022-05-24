@@ -16,8 +16,6 @@ import {
   IonSearchbar,
 } from '@ionic/react'
 import {
-  calendarClearOutline,
-  hourglassOutline,
   chevronBack,
   chevronForward,
 } from 'ionicons/icons'
@@ -25,7 +23,7 @@ import { FETCH_RECORDS } from '../../gql/queries/record.queries'
 import * as _ from 'ramda'
 
 const RecordList = (props: any) => {
-  // TODO: use ramda or redux
+  
   const recordsQuery = useQuery(FETCH_RECORDS, {
     variables: {
       query: props.recordQuery,
@@ -36,6 +34,8 @@ const RecordList = (props: any) => {
       ),
       limit: props.ui.limit || 20,
       page: props.ui.page || 0,
+      fromTime: props.ui.fromTime,
+      toTime: props.ui.toTime
     },
     fetchPolicy: 'network-only',
   })
@@ -62,6 +62,13 @@ const RecordList = (props: any) => {
     // recordsQuery.refetch()
   }
 
+  const setRange = (fromTime: '3days' | 'start', toTime: 'now') => {
+    props.updateUIState({
+      fromTime,
+      toTime
+    })
+  }
+
   const nextPage = () => {
     const current = +(props.ui.page || 0)
 
@@ -86,28 +93,24 @@ const RecordList = (props: any) => {
           placeholder='Find Record'
           onIonChange={onQueryChange}
         />
+
         <IonCardContent>
-          <IonButton
-            onClick={() => toggleFilter('pending')}
-            size='small'
-            color='primary'
+          <IonButton 
             shape='round'
-            fill={
-              props.ui.recordFilters?.includes('pending') ? 'solid' : 'outline'
-            }
-          >
-            <IonIcon icon={hourglassOutline} />
-            Pending
-          </IonButton>
-          <IonButton shape='round' fill='clear'>
-            <IonIcon icon={calendarClearOutline} />
-          </IonButton>
+            color='secondary'
+            fill={props.ui.fromTime === '3days' || !props.ui.fromTime ? 'solid' : 'outline'}
+            onClick={() => setRange('3days', 'now')}>3 Days</IonButton>
+          <IonButton 
+            shape='round'
+            color='secondary'
+            fill={props.ui.fromTime === 'start' ? 'solid' : 'outline'}
+            onClick={() => setRange('start', 'now')}>All Records</IonButton>
         </IonCardContent>
       </IonCard>
 
       <div className='results-list'>
         {recordsQuery.loading && (
-          <IonCard className='info-card'>
+          <IonCard className='info-card loading-card'>
             <h3>LOADING...</h3>
           </IonCard>
         )}
@@ -116,7 +119,7 @@ const RecordList = (props: any) => {
           !recordsQuery.data?.records?.payload ||
           recordsQuery.data?.records?.payload?.length === 0) && (
           <IonCard className='info-card'>
-            <h3>NO RECORDS FOUND</h3>
+            <h3>NO RECORDS</h3>
           </IonCard>
         )}
 
@@ -130,19 +133,22 @@ const RecordList = (props: any) => {
         <IonButton onClick={prevPage} disabled={props.ui.page < 1}>
           <IonIcon icon={chevronBack}></IonIcon>
         </IonButton>
-        Page {+(props.ui.page || 0) + 1} of{' '}
-        {Math.ceil(recordsQuery.data?.records?.count / (props.ui.limit || 20))}
-        <IonButton
-          onClick={nextPage}
-          disabled={
-            props.ui.page >=
-            Math.floor(
-              recordsQuery.data?.records?.count / (props.ui.limit || 20)
-            )
-          }
-        >
-          <IonIcon icon={chevronForward}></IonIcon>
-        </IonButton>
+        {recordsQuery.data?.records?.count ?
+        <>
+          Page {+(props.ui.page || 0) + 1} of{' '}
+          {Math.ceil(recordsQuery.data?.records?.count / (props.ui.limit || 20))}
+          <IonButton
+            onClick={nextPage}
+            disabled={
+              props.ui.page >=
+              Math.floor(
+                recordsQuery.data?.records?.count / (props.ui.limit || 20)
+              )
+            }
+          >
+            <IonIcon icon={chevronForward}></IonIcon>
+          </IonButton>
+        </> : ''}
       </div>
     </div>
   )

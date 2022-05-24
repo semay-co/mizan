@@ -5,6 +5,8 @@ export const FETCH_RECORDS = gql`
     $query: String
     $limit: Int
     $page: Int
+    $fromTime: String
+    $toTime: String
     $vehicleId: String
     $serial: String
     $filters: [String]
@@ -13,6 +15,8 @@ export const FETCH_RECORDS = gql`
       query: $query
       limit: $limit
       page: $page
+      fromTime: $fromTime
+      toTime: $toTime
       vehicleId: $vehicleId
       serial: $serial
       filters: $filters

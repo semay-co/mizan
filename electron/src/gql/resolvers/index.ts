@@ -13,6 +13,7 @@ import {
   addSecondWeight,
   addCustomer,
   deleteCustomer,
+  test,
 } from './record.resolvers'
 
 export enum events {
@@ -93,6 +94,7 @@ const resolvers = {
   },
   Mutation: {
     createRecord,
+    test,
     updateRecord,
     createVehicle,
     updateVehicle,

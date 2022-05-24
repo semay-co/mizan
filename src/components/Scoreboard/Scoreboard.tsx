@@ -30,8 +30,6 @@ const Scoreboard = (props: any) => {
     console.log('scoreboard useEffect')
     const socket = io(endpoint)
 
-    const beep = new Audio('/assets/audio/beep-1.wav')
-
     const weight = props.reading?.weight 
 
     const interval = setInterval(() => {
@@ -46,7 +44,7 @@ const Scoreboard = (props: any) => {
           ? odd : even
           : ''
 
-      document.title = `${color}${weight} KG`
+      document.title = `${weight ? color + weight : 0} KG`
     }, 1000)
 
 

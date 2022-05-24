@@ -20,48 +20,76 @@ const sortByCreated = _.descend(
   _.compose(_.prop('createdAt') as any, _.prop('doc') as any)
 )
 
-const getRecords = async (...args: any[]) => {
+const getRecords = async (createdAt = { $gt: new Date().getTime() - 1000 * 60 * 60 * 24 * 3}) => {
 
-  const [query, vehicleId] = args
-  
-  const vehicle = vehicleId ? {
-    vehicleId
-  } : {}
-
-
-  return DB.records.find({
+  const result = await DB.records.find({
     selector: {
-      ...vehicle      
-    }
+      createdAt
+    },
+    sort: [{createdAt: 'desc'}]
   })
+
+  return result
 }
 
 export const records = async (parent: any, args: any) => {
   const startTime = new Date().getTime()
+  console.time('records')
 
-  const result = await DB.records.allDocs({
-    include_docs: true,
-  })
+  // const result = await DB.records.allDocs({
+  //   include_docs: true,
+  // })
 
-  const rows = _.filter((row: any) => row.doc.docType === 'record')(result.rows)
+  const now = new Date().getTime()
 
-  const filtered = rows
+  const fromTime = args.fromTime === 'start' ? {
+    $gt: 0
+  } : {
+    $gt: now - 1000 * 60 * 60 * 24 * 3
+  }
+
+  const toTime = args.toTime ? {
+    $lte: args.toTime
+  } : {
+    $lte: now
+  }
+
+  const createdAt = {
+    ...fromTime,
+    ...toTime,
+  }
+
+  const result = await getRecords(createdAt)
+
+  const rows = _.filter((row: any) => {
+    return row.docType === 'record' && (!args.vehicleId || row.vehicleId === args.vehicleId) && 
+    (args.query
+      ? row.serial.toLowerCase().includes(args.query.toLowerCase()) ||
+          row.dataCache?.vehicle?.licensePlate?.plate
+            ?.toLowerCase()
+            .includes(args.query.toLowerCase())
+      : true)
+  })(result.docs)
+
+  // const filtered = rows
   // filters && filters.includes('pending')
   //   ? _.filter((record: any) => record.weights.length <= 1)(records)
   //   : records
 
-  const filteredByVehicle = _.filter(
-    (record: any) => !args.vehicleId || record?.vehicleId === args.vehicleId
-  )(filtered)
+  // const filteredByVehicle = _.filter(
+  //   (record: any) => 
+  //   !args.vehicleId || record?.vehicleId === args.vehicleId
+  // )(filtered)
 
-  const filteredByQuery = _.filter((record: any) => {
-    return args.query
-      ? record.doc.serial.toLowerCase().includes(args.query.toLowerCase()) ||
-          record.doc.dataCache?.vehicle?.licensePlate?.plate
-            ?.toLowerCase()
-            .includes(args.query.toLowerCase())
-      : true
-  })(filteredByVehicle)
+  // const filteredByQuery = _.filter((record: any) => {
+  //   return args.query
+  //     ? record.serial.toLowerCase().includes(args.query.toLowerCase()) ||
+  //         record.dataCache?.vehicle?.licensePlate?.plate
+  //           ?.toLowerCase()
+  //           .includes(args.query.toLowerCase())
+  //     : true
+  // // })(filteredByVehicle)
+  // })(rows)
 
   const page = args.page || 0
   const limit = args.limit || 20
@@ -69,11 +97,11 @@ export const records = async (parent: any, args: any) => {
   const start = page * limit
   const end = start + limit
 
-  const sorted = _.sort(sortByCreated, filteredByQuery)
+  const sorted = _.sort(sortByCreated, rows)
   const limited = sorted.slice(start, end)
 
   const payload = limited.map(async (row) => {
-    const doc = row.doc as any
+    const doc = row as any
 
     // const recacheCustomers = true
 
@@ -124,12 +152,13 @@ export const records = async (parent: any, args: any) => {
       ...vehicle,
       ...buyer,
       ...seller,
-      id: row.id,
+      id: row._id,
     }
   })
 
-
   const elapsed = new Date().getTime() - startTime
+
+  console.timeEnd('records')
 
   return {
     payload,
@@ -138,8 +167,8 @@ export const records = async (parent: any, args: any) => {
   }
 }
 
-export const createRecord = async (parent: any, args: any) => {
-  const startTime = new Date().getTime()
+const recalculateHighestSerial = async () => {
+
   const docs = await DB.records.allDocs({
     include_docs: true,
   })
@@ -154,21 +183,74 @@ export const createRecord = async (parent: any, args: any) => {
 
   const highest = _.reduce(_.max)(0, serials) || serialStart
 
+  return highest
+}
+
+const getCurrentSerial = async (updateCount: boolean = false) => {
+
+  const recordState = (await DB.meta.get('recordState')) as any
+
+  const current = recordState.currentSerial
+
+  if (updateCount) {
+
+    await DB.meta.put({
+      ...recordState,
+      currentSerial: current + 1
+    })
+  }
+
+  return current
+}
+
+export const test = async (parent: any, args: any) => {
+  const {vehicleId, query} = JSON.parse(args.data)
+
+  const res = await DB.records.find({
+    selector: {
+      $gt: {
+        createdAt: new Date().getTime()  - 1000 * 60 * 60 * 24 * 3
+      }
+    }  
+  })
+}
+
+export const createRecord = async (parent: any, args: any) => {
+  console.time('createRecord')
+  const startTime = new Date().getTime()
+  // const docs = await DB.records.allDocs({
+  //   include_docs: true,
+  // })
+
+  // const records = _.filter((row: any) => row.doc.docType === 'record')(
+  //   docs.rows
+  // ) as any
+
+  // const serials = _.map((row: any) => base36.base36decode(row.doc.serial) || 0)(
+  //   records
+  // )
+
+  // const highest = _.reduce(_.max)(0, serials) || serialStart
+
+  const highest = await getCurrentSerial(true)
+  console.timeLog('createRecord', 'create record: get serial')
+
   const now = new Date().getTime()
-  const saveRecord = (
+
+  const saveRecord = async (
     vehicleId: string,
     sellerId: string,
     buyerId: string,
     dataCache: any
   ) => {
-    const creation = DB.records.put({
+    const creation = await DB.records.put({
       _id: uuid(),
       docType: 'record',
       createdAt: now,
       serial: base36.base36encode((highest as number) + 1),
       weights: [
         {
-          createdAt: args.weightTime || new Date().getTime(),
+          createdAt: args.weightTime || now,
           weight: args.weight,
           manual: args.manual || false,
         },
@@ -179,13 +261,15 @@ export const createRecord = async (parent: any, args: any) => {
       dataCache,
     })
 
-    return creation.then((doc: any) => doc)
+    return creation
   }
 
   const vehicleDoc = await DB.vehicles.get(args.vehicleId).then(asVehicle)
   const vehicle = args.vehicleId && {
     vehicle: vehicleDoc,
   }
+
+  console.timeLog('createRecord', 'create record: get vehicle doc')
 
   const sellerDoc =
     args.sellerId && (await DB.customers.get(args.sellerId).then(asCustomer))
@@ -197,6 +281,8 @@ export const createRecord = async (parent: any, args: any) => {
         }
       : {}
 
+  console.timeLog('createRecord', 'create record: get seller doc')
+
   const buyerDoc =
     args.buyerId && (await DB.customers.get(args.buyerId).then(asCustomer))
 
@@ -206,6 +292,8 @@ export const createRecord = async (parent: any, args: any) => {
           buyer: buyerDoc,
         }
       : {}
+
+  console.timeLog('createRecord', 'create record: get buyer doc')
 
   const dataCache = {
     updatedAt: now,
@@ -221,9 +309,15 @@ export const createRecord = async (parent: any, args: any) => {
     dataCache
   )
 
+  console.timeLog('createRecord', 'create record: save record')
+
   const record = (await DB.records.get(save.id)) as any
+  console.timeLog('createRecord', 'create record: get created record')
+
 
   const elapsed = new Date().getTime() - startTime
+  console.timeLog('createRecord', 'create record: finished')
+  console.timeEnd('createRecord')
 
   if (record)
     return {
@@ -239,11 +333,11 @@ export const createRecord = async (parent: any, args: any) => {
 export const updateRecord = async (parent: any, args: any) => {
   const record = (await DB.records.get(args.id)) as any
 
-  const remarks = 
+  const remarks =
     args.remarks !== undefined
       ? {
-        remarks: args.remarks,
-      } 
+          remarks: args.remarks,
+        }
       : {}
 
   const isFree =
@@ -358,12 +452,13 @@ export const addCustomer = async (parent: any, args: any) => {
 
 export const addSecondWeight = async (parent: any, args: any) => {
   const record = (await DB.records.get(args.recordId)) as any
+  const now = new Date().getTime()
 
   const doc = {
     ...record,
-    updatedAt: new Date().getTime(),
+    updatedAt: now,
     weights: _.append({
-      createdAt: args.createdAt || new Date().getTime(),
+      createdAt: args.createdAt || now,
       weight: args.weight,
       manual: args.manual || false,
     })(record.weights),
@@ -493,59 +588,69 @@ export const sendConfirmationSms = async (parent: any, args: any) => {
 }
 
 export const printRecord = async (parent: any, args: any) => {
+  console.time('printRecord')
+
   const doc = await DB.records
-      .get(args.id)
-      .then((record: any) => record as any)
-      .then((record: any) => ({
-        id: record._id,
-        ...record,
-      }))
+    .get(args.id)
+    .then((record: any) => record as any)
+    .then((record: any) => ({
+      id: record._id,
+      ...record,
+    }))
+  console.timeLog('printRecord', 'print record: fetch record')
 
-    const { vehicleId, sellerId, buyerId } = doc
+  const { vehicleId, sellerId, buyerId } = doc
 
-    // const vehicleRecords = await records(null, {vehicleId})
+  // const vehicleRecords = await records(null, {vehicleId})
 
-    // const vehicleWeights = vehicleRecords?.payload.map((record: any) => 
-    //   record.weights?.map((w: any) => w.weight)
-    // ).reduce((a, c) => {
-    //   c.forEach((el: any) => {
-    //     a.push(parseInt(el))
-    //   })
+  // const vehicleWeights = vehicleRecords?.payload.map((record: any) =>
+  //   record.weights?.map((w: any) => w.weight)
+  // ).reduce((a, c) => {
+  //   c.forEach((el: any) => {
+  //     a.push(parseInt(el))
+  //   })
 
-    //   return a
-    // }, [])
+  //   return a
+  // }, [])
 
-    // console.log(vehicleWeights)
+  // console.log(vehicleWeights)
 
-    // const lowest = _.min(vehicleWeights)
+  // const lowest = _.min(vehicleWeights)
 
-    // console.log('lowest:', lowest)
+  // console.log('lowest:', lowest)
 
-    const vehicleSpread = vehicleId
-      ? {
-          vehicle: await DB.vehicles.get(vehicleId).then(asVehicle),
-        } : {}
+  const vehicleSpread = vehicleId
+    ? {
+        vehicle: await DB.vehicles.get(vehicleId).then(asVehicle),
+      }
+    : {}
 
-    const sellerSpread = sellerId
-      ? {
-          seller: await DB.customers.get(sellerId).then(asCustomer),
-        } : {}
+  const sellerSpread = sellerId
+    ? {
+        seller: await DB.customers.get(sellerId).then(asCustomer),
+      }
+    : {}
 
-    const buyerSpread = buyerId
-      ? {
-          buyer: await DB.customers.get(buyerId).then(asCustomer),
-        } : {}
+  const buyerSpread = buyerId
+    ? {
+        buyer: await DB.customers.get(buyerId).then(asCustomer),
+      }
+    : {}
 
-    const record = {
-      ...doc,
-      ...vehicleSpread,
-      ...sellerSpread,
-      ...buyerSpread,
-      // lowest,
-      netWeight: Math.abs(doc.weights[0]?.weight - doc.weights[1]?.weight),
-    }
+  console.timeLog('printRecord', 'print record: fetch items')
 
-    return record.weights?.length > 1
-      ? print(record, PAGE_TYPES.ORIGINAL) && print(record, PAGE_TYPES.COPY)
-      : print(record, PAGE_TYPES.PENDING)
+  const record = {
+    ...doc,
+    ...vehicleSpread,
+    ...sellerSpread,
+    ...buyerSpread,
+    // lowest,
+    netWeight: Math.abs(doc.weights[0]?.weight - doc.weights[1]?.weight),
+  }
+
+  console.timeEnd('printRecord')
+
+  return record.weights?.length > 1
+    ? print(record, PAGE_TYPES.ORIGINAL) && print(record, PAGE_TYPES.COPY)
+    : print(record, PAGE_TYPES.PENDING)
 }

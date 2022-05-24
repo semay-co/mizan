@@ -11,7 +11,6 @@ import {
   addOutline,
   closeOutline,
   flashOutline,
-  printOutline,
   reloadOutline,
   speedometerOutline,
 } from 'ionicons/icons'
@@ -33,12 +32,23 @@ import CustomerForm from './CustomerForm'
 import SelectedCustomerCard from './SelectedCustomerCard'
 import { updateUIState } from '../../state/actions/ui.action'
 import { v4 as uuid } from 'uuid'
+import { useEffect } from 'react'
 
 const Form = (props: any) => {
   const [printRecord] = useMutation(PRINT_RECORD)
 
   const [sendConfirmationSms] = useMutation(SEND_CONFIRMATION_SMS)
   const [runCreateRecord] = useMutation(CREATE_RECORD)
+
+  useEffect(() => {
+
+    props.updateRecordDraft({
+      reading: {
+        weight: 0,
+      },
+    })
+  }, [])
+
   const recordQuery = useQuery(FETCH_RECORD, {
     variables: {
       id: props.result,
@@ -71,8 +81,6 @@ const Form = (props: any) => {
     props.updateRecordResult(undefined)
 
     clearSelectedVehicle()
-    // setDisplayValue('')
-    // localStorage.setItem('displayVehicle', '{}')
 
     props.updateUIState({
       page: 0,
@@ -113,8 +121,8 @@ const Form = (props: any) => {
   const isLoaded = () => props.draft?.reading?.weight >= 1000
 
   const recordReading = (
-    skipBuyer: boolean = false,
-    skipSeller: boolean = false
+    skipBuyer: boolean = true,
+    skipSeller: boolean = true
   ) => {
     clearForm()
     setDisplayValue(props.reading ? props.reading?.weight.toString() : '')
@@ -204,8 +212,6 @@ const Form = (props: any) => {
       },
     }).catch(console.error)
   }
-
-
 
   const onPrint = (id: string) => {
     printRecord({
@@ -302,7 +308,7 @@ const Form = (props: any) => {
               }}
             >
               <IonIcon icon={speedometerOutline}></IonIcon>
-              New Measurement
+              New Session
             </IonCard>
 
             {recordQuery.data ? (

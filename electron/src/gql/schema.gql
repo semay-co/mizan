@@ -8,6 +8,8 @@ type Query {
     serial: String
     licensePlate: String
     filters: [String]
+    fromTime: String
+    toTime: String
   ): RecordResult
   record(id: String!): Record
   vehicles(query: String, limit: Int): [Vehicle]
@@ -26,6 +28,9 @@ type Mutation {
     buyerId: String
     elapsed: Int
   ): Record
+  test(
+    data: String
+  ): String
   createCustomer(phoneNumber: String!, name: String!): Customer
   addSecondWeight(
     recordId: String!

@@ -102,17 +102,19 @@ const Display = (props: any) => {
             displayFirstWeight ? <><b>◁ </b> { displayFirstWeight } KG</>: ''
           }
         </div>
-        <div className='display'>{
+        <div className={`display ${
+            +displayValue && Math.abs(+displayValue - +props.reading?.weight) >= 30 ? 'error' : ''
+        }`}>{
         
           (isNaN(+displayValue) ? 
             props.reading?.weight
-            : Math.abs(+displayValue - +props.reading?.weight) >= 50 ? props.reading?.weight : displayValue || props.reading?.weight || '0').toString().split('0').join('O')
+            : Math.abs(+displayValue - +props.reading?.weight) >= 30 ? props.reading?.weight : displayValue || props.reading?.weight || '0').toString().split('0').join('O')
           } KG
         </div>
           {
             displayFirstWeight && displayValue ? 
             <div className='display-result'>
-              ▶ {Math.abs(+displayFirstWeight - +displayValue) + ' KG' } 
+              <span className='blink'>▶</span> {Math.abs(+displayFirstWeight - +displayValue) + ' KG' } 
             </div>
           : ''
           }

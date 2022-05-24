@@ -9,7 +9,6 @@ import {
   IonList,
 } from '@ionic/react'
 import { connect } from 'react-redux'
-import React from 'react'
 import {
   updateRecordDraft,
   deleteRecordDraft,
@@ -19,9 +18,21 @@ import { addOutline } from 'ionicons/icons'
 import { useMutation } from '@apollo/client'
 import { CREATE_VEHICLE } from '../../gql/mutations/vehicle.mutations'
 import LicensePlate from '../LicensePlate/LicensePlate'
+import { useEffect } from 'react'
+
 
 const NewVehicleForm = (props: any) => {
   const [runCreateVehicle] = useMutation(CREATE_VEHICLE)
+
+  // useEffect(() => {
+  //   props.updateRecordDraft({
+  //     ...props.draft,
+  //     licensePlate: {
+  //       code: 3,
+  //       region: 'AA'
+  //     }
+  //   })
+  // }, [])
 
   const selectVehicleType = (type: number) => {
     props.updateRecordDraft({
@@ -34,6 +45,8 @@ const NewVehicleForm = (props: any) => {
 
   const createVehicle = () => {
     const draft = props.draft
+
+    localStorage.setItem('displayVehicle', JSON.stringify(draft.licensePlate))
 
     if (
       draft &&
@@ -53,12 +66,15 @@ const NewVehicleForm = (props: any) => {
         .then((plate) => {
           const vehicleId = plate.data.createVehicle.id
 
-          localStorage.setItem('displayVehicle', JSON.stringify({
-            id: vehicleId,
-            LicensePlate: {
-              ...draft.licensePlate
-            }
-          }))
+          localStorage.setItem(
+            'displayVehicle',
+            JSON.stringify({
+              id: vehicleId,
+              LicensePlate: {
+                ...draft.licensePlate,
+              },
+            })
+          )
 
           props.updateRecordDraft({
             ...props.draft,

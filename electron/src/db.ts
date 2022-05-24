@@ -40,13 +40,43 @@ const DB = {
 
 DB.records.createIndex({
   index: {
-    fields: ['createdAt', 'vehicleId'],
+    fields: ['createdAt'],
+  },
+})
+
+DB.records.createIndex({
+  index: {
+    fields: ['vehicleId'],
+  },
+})
+
+DB.records.createIndex({
+  index: {
+    fields: ['vehicleId', 'createdAt'],
   },
 })
 
 DB.vehicles.createIndex({
   index: {
-    fields: ['createdAt', 'plateNumber', 'plateCode', 'plateRegion'],
+    fields: ['createdAt'],
+  },
+})
+
+DB.vehicles.createIndex({
+  index: {
+    fields: ['plateNumber'],
+  },
+})
+
+DB.customers.createIndex({
+  index: {
+    fields: ['createdAt'],
+  },
+})
+
+DB.customers.createIndex({
+  index: {
+    fields: ['phoneNumber'],
   },
 })
 

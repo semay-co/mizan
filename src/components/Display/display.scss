@@ -2,7 +2,7 @@
 
 $indicator-green: #00ff80;
 $indicator-background: transparent;
-$indicator-error: #ff3869;
+$indicator-error: #ff2a5f;
 $indicator-warn: #ffd534;
 
 .display-wrap {
@@ -13,6 +13,8 @@ $indicator-warn: #ffd534;
   height: 100%;
   user-select: none;
   font-family: 'D-DIN';
+  width: 100vw;
+  justify-content: stretch;
 
   h1 {
     font-size: 8rem;
@@ -75,28 +77,48 @@ $indicator-warn: #ffd534;
   }
 }
 
+@keyframes blink {
+  0% {
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  60% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.blink {
+  animation: blink 1s infinite;
+}
+
 .display-result {
   color: gold;
   animation: golden 1s infinite;
 }
 
-.display,
-.display ion-input {
+.display {
   color: $indicator-green;
   padding: 0rem 4rem;
+  width: 100%;
   font-weight: bold;
   display: grid;
-  background-color: $indicator-background;
   font-family: 'DotMatrixTwo';
-  text-shadow: 2px 3px 10px transparentize($indicator-green, $amount: 0.7);
   font-size: 15rem;
   text-align: center;
   --padding-top: 0;
   --padding-bottom: 0;
 
   &.error {
-    color: $indicator-error;
-    text-shadow: 2px 3px 10px transparentize($indicator-error, $amount: 0.7);
+    background: $indicator-error;
+    color: #ffffff;
   }
 
   &.warn {

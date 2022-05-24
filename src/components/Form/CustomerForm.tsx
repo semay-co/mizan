@@ -125,7 +125,7 @@ const CustomerForm = (props: any) => {
             <IonInput
               onIonChange={onPhoneNumberChange}
               type='tel'
-              debounce={500}
+              debounce={1000}
               maxlength={8}
               size={8}
               required
@@ -144,7 +144,7 @@ const CustomerForm = (props: any) => {
             <IonInput
               onIonChange={onNameChange}
               type='text'
-              debounce={500}
+              debounce={1000}
               maxlength={20}
               placeholder='Enter Name'
               clearInput

@@ -20,6 +20,18 @@ import { FETCH_VEHICLES } from '../../gql/queries/vehicle.queries'
 import { updateUIState } from '../../state/actions/ui.action'
 
 const LicensePlateForm = (props: any) => {
+
+  useEffect(() => {
+    props.updateRecordDraft({
+      ...props.draft,
+      licensePlate: {
+        ...props.draft?.licensePlate,
+        code: 3,
+        region: 'AA'
+      }
+    })
+  }, [])
+
   const vehicles = useQuery(FETCH_VEHICLES, {
     variables: {
       query: props.draft?.licensePlate?.plate,
@@ -87,7 +99,7 @@ const LicensePlateForm = (props: any) => {
           <IonInput
             id='license-plate-input'
             onIonChange={onPlateNumberChange}
-            debounce={500}
+            debounce={1000}
             maxlength={6}
             size={6}
             required
