@@ -12,7 +12,7 @@ import { getMainDefinition } from '@apollo/client/utilities'
 import { ThemeProvider } from 'styled-components'
 import GlobalStyle from './style/global.style'
 import { dark } from './style/themes/dark/dark.theme'
-import { Dashboard } from './components/dashboard/dashboard.cmp'
+import Home from './pages/Home'
 
 const errorLink = onError(({ graphQLErrors }) => {
   graphQLErrors?.map(console.error)
@@ -27,6 +27,7 @@ const httpLink = from([
     uri: `http://${serverHost}:${serverPort}/`,
   }),
 ])
+
 
 const wsLink = new WebSocketLink({
   uri: `ws://${serverHost}:${serverPort}/graphql`,
@@ -68,7 +69,7 @@ const App = () => (
   <ApolloProvider client={client}>
     <ThemeProvider theme={dark}>
       <GlobalStyle />
-      <Dashboard />
+      <Home />
     </ThemeProvider>
   </ApolloProvider>
 )

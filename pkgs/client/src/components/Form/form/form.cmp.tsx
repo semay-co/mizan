@@ -1,33 +1,32 @@
 import { IonButton, IonCard, IonIcon, IonText } from '@ionic/react'
 import { connect } from 'react-redux'
 import './Form.scss'
-import { updateReading } from '../../state/actions/scoreboard.action'
+import { updateReading } from '../../../state/actions/scoreboard.action'
 import {
   updateRecordDraft,
   deleteRecordDraft,
   updateRecordResult,
-} from '../../state/actions/record.action'
+} from '../../../state/actions/record.action'
 import {
   addOutline,
   closeOutline,
   reloadOutline,
   speedometerOutline,
 } from 'ionicons/icons'
-import { VEHICLE_TYPES } from '../../model/vehicle.model'
+import { VEHICLE_TYPES } from '../../../model/vehicle.model'
 import { useMutation, useQuery } from '@apollo/client'
-import { FETCH_RECORD, FETCH_RECORDS } from '../../gql/queries/record.queries'
+import { FETCH_RECORD, FETCH_RECORDS } from '../../../gql/queries/record.queries'
 import $ from 'jquery'
-import React from 'react'
-import RecordItem from '../Record/RecordItem'
-import { CREATE_RECORD } from '../../gql/mutations/record.mutations'
-import RecordedWeight from './RecordedWeight'
-import LicensePlateForm from './LicensePlateForm'
-import SelectedVehicleCard from './SelectedVehicleCard'
+import RecordItem from '../../Record/RecordItem'
+import { CREATE_RECORD } from '../../../gql/mutations/record.mutations'
+import RecordedWeight from '../RecordedWeight'
+import LicensePlateForm from '../LicensePlateForm'
+import SelectedVehicleCard from '../SelectedVehicleCard'
 import classNames from 'classnames'
-import CustomerForm from './CustomerForm'
-import SelectedCustomerCard from './SelectedCustomerCard'
-import { updateUIState } from '../../state/actions/ui.action'
-import { v4 as uuid } from 'uuid'
+import CustomerForm from '../CustomerForm'
+import SelectedCustomerCard from '../SelectedCustomerCard'
+import { updateUIState } from '../../../state/actions/ui.action'
+import Styled from './form.style'
 
 const Form = (props: any) => {
   const [runCreateRecord] = useMutation(CREATE_RECORD)
@@ -195,7 +194,7 @@ const Form = (props: any) => {
   }
 
   return (
-    <div>
+    <Styled>
       {/* {props.draft &&
         props.draft.vehicleId &&
         selectedVehicleRecords.data?.records &&
@@ -223,13 +222,13 @@ const Form = (props: any) => {
         {!props.draft ? (
           <>
             <IonCard
-              className='big-record-button'
+              className='capture-button'
               color='primary'
               button={true}
               onClick={() => recordReading(true, true)}
             >
               <IonIcon icon={speedometerOutline}></IonIcon>
-              New Measurement
+              Capture
             </IonCard>
 
             {recordQuery.data ? (
@@ -370,7 +369,7 @@ const Form = (props: any) => {
           </>
         )}
       </div>
-    </div>
+    </Styled>
   )
 }
 
