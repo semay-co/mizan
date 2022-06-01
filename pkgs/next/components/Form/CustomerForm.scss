@@ -1,0 +1,26 @@
+ion-label {
+  margin-left: 1rem;
+}
+
+.phone-input,
+.name-input {
+  text-transform: uppercase;
+  padding: 1rem;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+
+  ion-text,
+  ion-input {
+    --padding-start: 2px;
+  }
+}
+
+.card-footer {
+  display: grid;
+
+  .justify-right {
+    justify-self: right;
+  }
+}

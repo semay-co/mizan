@@ -1,0 +1,18 @@
+$red-card: #ff496155;
+$green-card: #2fdf75bb;
+
+.entity-card.red-card {
+  background: $red-card;
+}
+
+.entity-card.green-card {
+  background: $green-card;
+
+  ion-card-header {
+    color: var(--ion-color-light);
+  }
+
+  .current-weight-measure {
+    color: var(--ion-color-light);
+  }
+}

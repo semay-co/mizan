@@ -1,0 +1,32 @@
+.left-col {
+  .results-list {
+    overflow-y: scroll;
+    height: 90vh;
+  }
+}
+
+.search-card {
+  margin-bottom: 1.5rem;
+}
+
+ion-searchbar {
+  text-transform: uppercase;
+}
+
+.info-card {
+  padding: 2rem;
+
+  h3 {
+    text-align: center;
+    font-size: 1.2rem;
+    letter-spacing: 4px;
+  }
+}
+
+.pagination {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: space-between;
+  align-content: center;
+  align-items: center;
+}

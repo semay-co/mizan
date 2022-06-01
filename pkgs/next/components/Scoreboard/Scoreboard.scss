@@ -1,0 +1,94 @@
+@import '../../style/variables.scss';
+
+$indicator-green: #00ff80;
+$indicator-background: #030610;
+$indicator-error: #ff3869;
+$indicator-warn: #ffd534;
+
+.scoreboard-wrap {
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+
+.scoreboard,
+.scoreboard ion-input {
+  color: $indicator-green;
+  padding: 2rem 4rem;
+  font-weight: bold;
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: stretch;
+  background-color: $indicator-background;
+  font-family: 'DotMatrixTwo';
+  text-shadow: 2px 3px 10px transparentize($indicator-green, $amount: 0.7);
+  font-size: 4rem;
+  text-align: end;
+  --padding-top: 0;
+  --padding-bottom: 0;
+
+  &.error {
+    color: $indicator-error;
+    text-shadow: 2px 3px 10px transparentize($indicator-error, $amount: 0.7);
+  }
+
+  &.warn {
+    color: $indicator-warn;
+    text-shadow: 2px 3px 10px transparentize($indicator-warn, $amount: 0.7);
+  }
+
+  .reading {
+    margin-right: 0.5rem;
+
+    &.reading-status {
+      text-transform: lowercase;
+    }
+  }
+
+  .unit {
+    background-color: $indicator-green;
+    color: $indicator-background;
+    padding: 0 0.3rem;
+    border-radius: 0.4rem;
+  }
+}
+
+.scoreboard {
+  ion-input {
+    input[type='number']::-webkit-inner-spin-button,
+    input[type='number']::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    padding: 0;
+    color: var(--ion-color-primary);
+    font-size: 4.2rem;
+  }
+
+  .unit.manual-input-unit {
+    background-color: var(--ion-color-secondary);
+  }
+
+  .scoreboard-text {
+    display: grid;
+    grid-auto-flow: column;
+  }
+}
+
+.status-bar {
+  text-align: end;
+  // border-bottom: 3px solid;
+  opacity: 0.6;
+  background-color: $indicator-background;
+
+  &.error {
+    border-color: $indicator-error;
+  }
+
+  &.warn {
+    border-color: $indicator-warn;
+  }
+}

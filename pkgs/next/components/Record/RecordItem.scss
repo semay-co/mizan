@@ -1,0 +1,188 @@
+@import '../../style/variables.scss';
+
+.record-card {
+  color: #ffffff;
+  display: grid;
+  grid-template-areas:
+    'left right'
+    'bottom bottom';
+  column-gap: 1rem;
+  grid-template-rows: auto auto;
+  grid-template-columns: auto 1fr;
+
+  .card-left-content {
+    background-color: #00000033;
+    padding: 1rem;
+    grid-area: left;
+
+    h2 {
+      color: #ffffff88;
+      text-transform: uppercase;
+      margin-left: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    ion-list {
+      background: #ffffff00;
+    }
+
+    ion-item {
+      --background: none;
+      --border-color: transparent;
+    }
+
+    .customer-row {
+      text-transform: uppercase;
+
+      .name {
+        margin: 1rem;
+      }
+    }
+
+    .serial-row {
+      h2 {
+        span {
+          letter-spacing: 3px;
+          font-size: 2rem;
+          color: #fff;
+          text-shadow: 3px 3px 0 #000;
+        }
+      }
+    }
+  }
+
+  .card-right-content {
+    margin-bottom: 1rem;
+    grid-area: right;
+
+    .weight-entry {
+      border-bottom: 1px dashed #ffffff33;
+      padding: 1rem 0.5rem;
+      display: grid;
+      justify-content: start;
+
+      .record-date,
+      .record-pending {
+        text-transform: uppercase;
+        opacity: 0.6;
+        font-size: 1rem;
+      }
+
+      h3 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+        font-size: 1.3rem;
+        text-transform: uppercase;
+        letter-spacing: 0.3rem;
+        justify-self: start;
+      }
+
+      .record-pending-button,
+      .use-record-button,
+      .weight-measure {
+        margin: 1.5rem 0 0.5rem;
+        justify-self: start;
+      }
+
+      .weight-measure {
+        justify-self: start;
+        display: grid;
+        grid-auto-flow: column;
+        font-size: 1.6rem;
+        align-items: center;
+        align-content: center;
+        gap: 1rem;
+
+        &.manual-input {
+          color: var(--ion-color-secondary);
+
+          ion-chip {
+            text-transform: uppercase;
+
+            ion-label {
+              margin: 0;
+            }
+          }
+        }
+
+        ion-button.update-button {
+          margin: 0;
+
+          button {
+            padding: 0;
+          }
+        }
+
+        &.green-draft {
+          color: var(--ion-color-success);
+        }
+
+        &.red-draft {
+          color: var(--ion-color-danger);
+        }
+      }
+    }
+
+    .right-button {
+      display: grid;
+      justify-content: end;
+      margin-top: 2rem;
+
+      ion-button {
+        --border-radius: 0.3rem 0 0 0.3rem;
+      }
+    }
+
+    .price-card {
+      h1 {
+        padding: 1rem 3rem;
+        text-align: end;
+      }
+    }
+  }
+
+  .bottom-button {
+    display: grid;
+    grid-area: bottom;
+
+    ion-button {
+      --border-radius: 0 0 0.3rem 0.3rem;
+    }
+
+    &.warn-button {
+      ion-button {
+        --color: rgba(0, 0, 0, 0.486);
+        --background: #d4b92049;
+      }
+    }
+
+    &.danger-button {
+      color: #ff496188;
+      background: #ff496122;
+
+      ion-text {
+        color: #ff496188;
+      }
+
+      ion-button {
+        --color: #ff496188;
+        --background: #ff496111;
+      }
+    }
+  }
+
+  ion-button.time-warning {
+    margin-top: 2rem;
+
+    ion-button {
+      --color: #fff;
+      color: red;
+    }
+  }
+}
+
+.add-customer-card {
+  margin-bottom: 4rem;
+  background-color: transparent;
+  border: 1px solid #fff8;
+}

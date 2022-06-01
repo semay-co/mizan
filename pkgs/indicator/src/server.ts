@@ -20,9 +20,10 @@ app.get('/', (req, res) => {
 
 app.use(express.static(__dirname + '/public'))
 
-indicator((reading: any, display: any) => {
+indicator((reading: any, display: any, stable: any) => {
 	io.emit('reading', reading)
 	io.emit('display', display)
+	io.emit('stable', stable)
 })
 
 server.listen(port, () => {
