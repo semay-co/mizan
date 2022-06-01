@@ -167,9 +167,9 @@ const RecordItem = (props: any) => {
       update: () => {
         recordQuery.refetch()
       },
-    }).then(() => {
+    }).then(async () => {
       if (quickFinish) {
-        onPrint()
+        await onPrint()
         onSendSms()
       }
     })
@@ -181,15 +181,14 @@ const RecordItem = (props: any) => {
     props.deleteRecordDraft()
   }
 
-  const onPrint = () => {
+  const onPrint = async () => {
     setPrinting(true)
 
-    printRecord({
+    return await printRecord({
       variables: {
         id: record.id,
       },
-    })
-      .then(() => {
+    }).then(() => {
         setTimeout(() => {
           window.location.reload()
         }, 2000)
@@ -250,7 +249,6 @@ const RecordItem = (props: any) => {
       })
     }
   }
-
 
   const makeNewRecord = (weight: number, weightTime: string) => {
     props.deleteRecordDraft()

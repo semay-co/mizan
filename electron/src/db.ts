@@ -38,6 +38,34 @@ const DB = {
   meta: new PouchDB(`${dbDir}/meta`),
 }
 
+const remoteUrl = 'http://mizan:temppass@137.184.195.126:5984'
+
+const remotes = {
+  records: new PouchDB(`${remoteUrl}/records`),
+  vehicles: new PouchDB(`${remoteUrl}/vehicles`),
+  customers: new PouchDB(`${remoteUrl}/customers`),
+  materials: new PouchDB(`${remoteUrl}/materials`),
+  meta: new PouchDB(`${remoteUrl}/meta`),
+}
+
+DB.records.sync(remotes.records, { live: true, retry: true })
+DB.vehicles.sync(remotes.vehicles, { live: true, retry: true })
+DB.customers.sync(remotes.customers, { live: true, retry: true })
+DB.materials.sync(remotes.materials, { live: true, retry: true })
+DB.meta.sync(remotes.meta, { live: true, retry: true })
+
+DB.records.createIndex({
+  index: {
+    fields: ['serial'],
+  },
+})
+
+DB.records.createIndex({
+  index: {
+    fields: ['shortKey'],
+  },
+})
+
 DB.records.createIndex({
   index: {
     fields: ['createdAt'],

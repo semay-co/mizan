@@ -243,11 +243,32 @@ export const createRecord = async (parent: any, args: any) => {
     buyerId: string,
     dataCache: any
   ) => {
+
+    const recordState = (await DB.meta.get('recordState')) as any
+    const shortKeyStart = recordState.shortKeyStart || 1
+    const shortKeyEnd = recordState.shortKeyEnd || 1
+
+    const nextShortKeyStart = +shortKeyStart >= 999 ? 1 : +shortKeyStart + 1
+    const nextShortKeyEnd = +shortKeyStart >= 999 ? +shortKeyEnd + 1 : +shortKeyEnd
+
+    const recordStateUpdate = {
+      ...recordState,
+      shortKeyStart: nextShortKeyStart,
+      shortKeyEnd: nextShortKeyEnd,
+    }
+
+    await DB.meta.put({
+      ...recordStateUpdate,
+    })
+
+    const shortKey = _.reverse(`${shortKeyStart}-${shortKeyEnd}`)
+
     const creation = await DB.records.put({
       _id: uuid(),
       docType: 'record',
       createdAt: now,
       serial: base36.base36encode((highest as number) + 1),
+      shortKey,
       weights: [
         {
           createdAt: args.weightTime || now,
@@ -575,16 +596,18 @@ export const sendConfirmationSms = async (parent: any, args: any) => {
   const licensePlate = record.vehicle?.licensePlate
 
   msgLines.push(
-    `License Plate: (${licensePlate?.code})${
+    `Plate No.: (${licensePlate?.code})${
       licensePlate?.plate
     }[${licensePlate?.region?.code?.slice(0, 2)}]`
   )
 
   msgLines.push(`Serial: ${record.serial.toUpperCase()}`)
+
+  if (record.shortKey) msgLines.push(`Online Result: http://mizan.me/${record.shortKey.split('-').join('.')}`)
+
   msgLines.push(`-- ${smsSignature}`)
 
   sendSms(numbers.join(';'), msgLines.join('  \n'))
-  // sendSmsHarvilon(numbers.join(';'), msgLines.join('  \n'))
 }
 
 export const printRecord = async (parent: any, args: any) => {

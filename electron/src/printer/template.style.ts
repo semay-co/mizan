@@ -395,4 +395,15 @@ export const style = css`
 		letter-spacing: 2px;
 		background: #ffffff;
 	}
+	
+	.online-result {
+		margin-top: 1rem;
+		font-size: 1.2rem;
+		text-align: end;
+	}
+
+	.online-result .online-result-url {
+		font-weight: bold;
+		letter-spacing: 3px;
+	}
 `

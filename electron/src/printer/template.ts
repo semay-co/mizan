@@ -320,6 +320,16 @@ const grid = (
 					<div class="highlight-weight weight-measure">
 						${record.netWeight} KG
 					</div>
+					${record.shortKey &&
+						`<div class="online-result">
+							<div>የሚዛኑን ውጤት ኦንላይን</div>
+							<div class="online-result-url">
+								mizan.me/${record.shortKey.split('-').join('.')}
+							</div>
+							<div>ላይ ያረጋግጡ።</div>
+
+						</div>`
+					}
 				</div>`
           : ''
       }
