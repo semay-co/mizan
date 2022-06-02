@@ -69,9 +69,7 @@
     "build": "react-scripts build",
     "electron": "ionic build && npx cap copy && npx cap open @capacitor-community/electron",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -103,16 +101,6 @@
   },
   "devDependencies": {
     "@capacitor/cli": "2.4.6",
-    "@storybook/addon-actions": "^6.5.6",
-    "@storybook/addon-essentials": "^6.5.6",
-    "@storybook/addon-interactions": "^6.5.6",
-    "@storybook/addon-links": "^6.5.6",
-    "@storybook/builder-webpack4": "^6.5.6",
-    "@storybook/manager-webpack4": "^6.5.6",
-    "@storybook/node-logger": "^6.5.6",
-    "@storybook/preset-create-react-app": "^3.2.0",
-    "@storybook/react": "^6.5.6",
-    "@storybook/testing-library": "^0.0.11",
     "@types/dotenv-flow": "^3.1.0",
     "@types/react-redux": "^7.1.16",
     "@types/socket.io-client": "^3.0.0",
