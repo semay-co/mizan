@@ -1,0 +1,9 @@
+{
+  "name": "@mizan/main",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ]
+}
