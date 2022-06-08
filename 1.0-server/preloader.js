@@ -1,0 +1,1 @@
+require('@capacitor-community/electron/dist/electron-bridge.js');
