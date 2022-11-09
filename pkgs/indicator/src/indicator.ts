@@ -1,12 +1,39 @@
 import SerialPort from 'serialport'
 import five from 'johnny-five'
 import fs from 'fs'
+import os from 'os'
+import path from 'path'
 import * as _ from 'ramda'
+import PouchDB from 'pouchdb'
+
+const ensureExists = (path: string, mask: number = 777) => {
+  return new Promise((resolve, reject) => {
+    fs.mkdir(path, mask, (err) => {
+      if (err) {
+        if (err.code === 'EEXIST') resolve(null)
+        else reject(err)
+      } else resolve(null)
+    })
+  })
+}
+
+const mizanDir = path.join(os.homedir(), '.mizan')
+const dbDir = path.join(mizanDir, 'db')
+const remoteUrl = 'http://mizanadmin:$implepass2022@159.223.1.144:5984'
+
+const init = async () => {
+  await ensureExists(mizanDir)
+  await ensureExists(dbDir)
+}
+
+init()
+
+const DB = new PouchDB(`${dbDir}/indicators`)
+DB.sync(`${remoteUrl}/indicators`, { live: true, retry: true })
 
 let redOn = false
 let greenOn = false
 
-/*
 fs.exists('/dev/ttyUSB1', (exists) => {
   if (!exists) return 
 
@@ -33,7 +60,6 @@ fs.exists('/dev/ttyUSB1', (exists) => {
     console.log(err)
   }
 })
-*/
 
 const GREEN = 7
 const RED = 8
@@ -56,6 +82,8 @@ const indicator = (
 
   let last = Math.PI
   let lastTime = new Date().getTime()
+  let lastSaveTime = new Date().getTime()
+  let lastSaveVal: number | undefined = undefined
 
   port
     .on('data', (data: any) => {
@@ -98,7 +126,6 @@ const indicator = (
             redOn = mil < 250 || (mil >= 500 && mil < 750)
           } else {
             redOn = now.getSeconds() % 2 === 0
-            greenOn = now.getSeconds() % 2 !== 0
           }
         }
 
@@ -124,25 +151,50 @@ const indicator = (
         // console.log('stable:', stable)
 
         if (
-          +signed < 100000 &&
-          (last !== signed || lastTime < now.getTime() - 1000) &&
           !isNaN(+signed) &&
-          lastTime < now.getTime() - 250
+          +signed < 100000 
         ) {
-          const stable = signed
 
-          const outdated = change === 0 && lastTime >= now.getTime() - 1000
+          if (
+            +change > 0 &&
+            (
+              +change >= 20 ||
+              +signed === 0 || 
+              lastSaveTime < now.getTime() - 500
+            )  &&
+            lastSaveVal !== signed
+          ) {
+            const saveTime = now
 
-          const smallChange =
-            signed > 200 &&
-            change !== 0 &&
-            change < 15 &&
-            lastTime >= now.getTime() - 3000
-          if (outdated || !smallChange) {
-            onResult(signed, signed, stable)
+            DB.put({
+              _id: saveTime.getTime().toString(),
+              value: signed,
+            })
 
-            last = signed
-            lastTime = now.getTime()
+            lastSaveTime = saveTime.getTime()
+            lastSaveVal = signed
+          }
+
+          if (
+            (last !== signed || lastTime < now.getTime() - 1000) &&
+            lastTime < now.getTime() - 250
+          ) {
+            const stable = signed
+
+            const outdated = change === 0 && lastTime >= now.getTime() - 1000
+
+
+            const smallChange =
+              signed > 200 &&
+              change !== 0 &&
+              change < 15 &&
+              lastTime >= now.getTime() - 3000
+            if (outdated || !smallChange) {
+              onResult(signed, signed, stable)
+
+              last = signed
+              lastTime = now.getTime()
+            }
           }
         }
       }

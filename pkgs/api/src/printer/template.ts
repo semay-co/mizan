@@ -8,59 +8,59 @@ dotenv.config()
 const brand = 'Mizan Weighbridge System'
 const company = process.env.COMPANY_NAME || 'Furi Weighbridge Service'
 const address =
-  process.env.COMPANY_ADDRESS || 'Sebeta, Furi - Around Police Club'
+	process.env.COMPANY_ADDRESS || 'Sebeta, Furi - Around Police Club'
 const phone = process.env.PHONE_NUMBERS || '0118 83 8043 | 0968 34 3616 (SMS)'
 
 const getPrice = (type: number) => {
-  switch (type) {
-    case 0:
-      return 80
-    case 1:
-      return 100
-    case 2:
-      return 150
-    case 3:
-      return 200
-    case 4:
-      return 250
-    default:
-      return 0
-  }
+	switch (type) {
+		case 0:
+			return 80
+		case 1:
+			return 100
+		case 2:
+			return 150
+		case 3:
+			return 200
+		case 4:
+			return 250
+		default:
+			return 0
+	}
 }
 
 export const watermarkText = Array(600)
-  .fill(0)
-  .map((_, i: number) => {
-    const tag = i % 2 === 0 ? 'even' : 'odd'
+	.fill(0)
+	.map((_, i: number) => {
+		const tag = i % 2 === 0 ? 'even' : 'odd'
 
-    return `
+		return `
 			<span class="tag-wrap">
 				<span class="${tag}">
 					${brand.toUpperCase()}
 				</span>
 			<span class="tag-wrap">
 			`
-  })
-  .join(' . ')
+	})
+	.join(' . ')
 
 export const leftDetail = `<div class="left-detail">${Array(16)
-  .fill(0)
-  .map((_, i: number) => {
-    return `<span class="
+	.fill(0)
+	.map((_, i: number) => {
+		return `<span class="
 			${i % 5 === 0 && 'fifth'} 
 			${i % 10 === 0 && 'tenth'}
 			${(i === 0 || i === 15) && 'edge'}
 		"></span>`
-  })}</div>`
+	})}</div>`
 
 export const watermark = `<p class="watermark">
 	${watermarkText}
 	</p>`
 
 export const putStamp = (
-  stamp: string = 'Original',
-  position: 'top' | 'bottom' | 'center' = 'center',
-  style: 'compact' | 'large' = 'large'
+	stamp: string = 'Original',
+	position: 'top' | 'bottom' | 'center' = 'center',
+	style: 'compact' | 'large' = 'large'
 ) => `<div class="stamp ${position} ${style}"><span>${stamp}</span></div>`
 
 export const styles = `
@@ -414,7 +414,7 @@ export const styles = `
 `
 
 export const header = (company: string, address: string, phone: string) => {
-  return `<div class="header">
+	return `<div class="header">
     <div class="logo">
       <h1>${company}</h1>
     </div>
@@ -426,18 +426,17 @@ export const header = (company: string, address: string, phone: string) => {
 }
 
 const grid = (
-  record: any,
-  compact: boolean = false,
-  type: string = PAGE_TYPES.ORIGINAL
+	record: any,
+	compact: boolean = false,
+	type: string = PAGE_TYPES.ORIGINAL
 ) => {
-  return `<div class="grid ${compact && 'compact'}">
+	return `<div class="grid ${compact && 'compact'}">
 		<div class="left-content">
 			<div class="row serial-row">
 				<h3>
 					Serial: 
-					<b style="font-size: 18px; padding: 10px; letter-spacing: 3px;">${
-            record.serial
-          }</b> 
+					<b style="font-size: 18px; padding: 10px; letter-spacing: 3px;">${record.serial
+		}</b> 
 				</h3>
 			</div>
 			<div class="row">
@@ -457,28 +456,26 @@ const grid = (
 				</div>
 			</div>
 
-			${
-        type === PAGE_TYPES.ATTACHMENT
-          ? `<div class="row">
+			${type === PAGE_TYPES.ATTACHMENT
+			? `<div class="row">
 
 					<h3>
 						Type: ${VEHICLE_TYPES[record.vehicle.type]}
 					</h3>
 					
 				</div>`
-          : ''
-      }
+			: ''
+		}
 
-			${
-        record.weights[1]
-          ? `<div class="row">
+			${record.weights[1]
+			? `<div class="row">
 						<h3>Vehicle Type</h3>
 						<div class="row-field">
 							${VEHICLE_TYPES[record.vehicle.type]}
 						</div>
 					</div>`
-          : type === PAGE_TYPES.ATTACHMENT
-          ? `<div class="row">
+			: type === PAGE_TYPES.ATTACHMENT
+				? `<div class="row">
 				<h3>First Weight</h3>
 
 				<div class="weight-date">
@@ -489,11 +486,10 @@ const grid = (
 				</div>
 			</div>
 		`
-          : ''
-      }
-					${
-            !compact && record.seller
-              ? `
+				: ''
+		}
+					${!compact && record.seller
+			? `
 				<div class="row">
 					<h3>Seller</h3>
 					<div class="row-field">
@@ -508,11 +504,10 @@ const grid = (
 					</div>
 				</div>
 			`
-              : ''
-          }
-			${
-        !compact && record.buyer
-          ? `
+			: ''
+		}
+			${!compact && record.buyer
+			? `
 
 				<div class="row">
 
@@ -530,13 +525,12 @@ const grid = (
 				
 				</div>
 			`
-          : ''
-      }
+			: ''
+		}
 		</div>
 		<div class="right-content">
-			${
-        record.weights[1] || type === PAGE_TYPES.PENDING
-          ? `<div class="row">
+			${record.weights[1] || type === PAGE_TYPES.PENDING
+			? `<div class="row">
 					<h3>First Weight</h3>
 					<div class="weight-date">
 						${moment(+record.weights[0].createdAt).format('LLLL')}
@@ -547,18 +541,17 @@ const grid = (
 					</div>
 				</div>
 				
-				${
-          type === PAGE_TYPES.PENDING
-            ? `<div class="row">
+				${type === PAGE_TYPES.PENDING
+				? `<div class="row">
 					<h3>Price</h3>
 
 					<div class="highlight-price weight-measure">
 						${getPrice(record.vehicle.type)} BIRR
 					</div>
 				</div>`
-            : ''
-        }`
-          : `<div class="sms-notice">
+				: ''
+			}`
+			: `<div class="sms-notice">
 						የሚዛኑ ውጤት በ<b>SMS</b> እንዲደርሳቹ የአቅራቢ እና የተረካቢ ስልክ ይፃፉ
           </div>
 					<div class="row">
@@ -599,11 +592,10 @@ const grid = (
 					</h3>
 				</div>
 				`
-      }
+		}
 			
-			${
-        record.weights[1]
-          ? `<div class="row">
+			${record.weights[1]
+			? `<div class="row">
 					<h3>Second Weight</h3>
 					<div class="weight-date">
 						${moment(+record.weights[1].createdAt).format('LLLL')}
@@ -615,16 +607,15 @@ const grid = (
 				</div>
 				<div class="row">
 					<h3>Net Weight</h3>
-					<div class="weight-date ${
-            moment(+record.weights[0].createdAt).isBefore(
-              moment(+record.weights[1].createdAt).subtract(2, 'days')
-            ) ||
-            moment(+record.weights[0].createdAt).isAfter(
-              moment(+record.weights[1].createdAt).add(10, 'minutes')
-            )
-              ? 'outdated-record'
-              : ''
-          }">
+					<div class="weight-date ${moment(+record.weights[0].createdAt).isBefore(
+				moment(+record.weights[1].createdAt).subtract(2, 'days')
+			) ||
+				moment(+record.weights[0].createdAt).isAfter(
+					moment(+record.weights[1].createdAt).add(10, 'minutes')
+				)
+				? 'outdated-record'
+				: ''
+			}">
 						${moment(+record.weights[1].createdAt).from(+record.weights[0].createdAt)}
 					</div>
 
@@ -632,8 +623,8 @@ const grid = (
 						${record.netWeight} KG
 					</div>
 				</div>`
-          : ''
-      }
+			: ''
+		}
 
 		</div>
 	</div>`
@@ -646,21 +637,19 @@ const printTime = (time: any) => `
 	`
 
 export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
-  return `
+	return `
 		${leftDetail}
 
 		<div class="container">
 			${watermark}
-			${
-        stamp === PAGE_TYPES.PENDING
-          ? putStamp('FILE', 'top', 'compact')
-          : putStamp(stamp)
-      }
-			${
-        stamp === PAGE_TYPES.PENDING
-          ? putStamp('ATTACHMENT', 'bottom', 'compact')
-          : ''
-      }
+			${stamp === PAGE_TYPES.PENDING
+			? putStamp('FILE', 'top', 'compact')
+			: putStamp(stamp)
+		}
+			${stamp === PAGE_TYPES.PENDING
+			? putStamp('ATTACHMENT', 'bottom', 'compact')
+			: ''
+		}
 			<div class="watermark"></div>
 			${stamp !== PAGE_TYPES.PENDING ? header(company, address, phone) : ''}
 
@@ -669,32 +658,30 @@ export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
 			${grid(record, stamp === PAGE_TYPES.PENDING, stamp)}
 			${stamp === PAGE_TYPES.PENDING ? '<div class="cut-line"></div>' : ''}
 
-			${
-        stamp === PAGE_TYPES.PENDING
-          ? `${header(company, address, phone)} ${printTime(
-              new Date().getTime()
-            )} ${grid(record, true, PAGE_TYPES.ATTACHMENT)}`
-          : `
+			${stamp === PAGE_TYPES.PENDING
+			? `${header(company, address, phone)} ${printTime(
+				new Date().getTime()
+			)} ${grid(record, true, PAGE_TYPES.ATTACHMENT)}`
+			: `
 				<div class="operator">
 					<div class="operator-signature">
 					</div>
 				</div>`
-      }
+		}
 
 			<div class="footer">
-				${
-          stamp === PAGE_TYPES.PENDING
-            ? '<div class="return-notice">ሲመለሱ ይህን ወረቀት ይዘው ይምጡ።</div>'
-            : `<div class="system-info">
+				${stamp === PAGE_TYPES.PENDING
+			? '<div class="return-notice">ሲመለሱ ይህን ወረቀት ይዘው ይምጡ።</div>'
+			: `<div class="system-info">
 		Mizan Weighbridge By Spearforce Systems | +251 961 00 5748
 	</div>`
-        }
+		}
 			</div>
 		</div>`
 }
 
 export const template = (record: any, stamp: string) =>
-  `<html>
+	`<html>
     <head>
       <style>
         ${styles}
