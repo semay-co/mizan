@@ -16,8 +16,8 @@ const base36 = require('base36')
 
 const serialStart = process.env.SERIAL_START || 100000
 
-const sortByCreated = _.descend(
-  _.compose(_.prop('createdAt') as any, _.prop('doc') as any)
+const sortByCreated: any = _.descend(
+  _.compose(_.prop('createdAt') as any, _.prop('doc') as any) as any
 )
 
 const getRecords = async (createdAt = { $gt: new Date().getTime() - 1000 * 60 * 60 * 24 * 3}) => {
@@ -44,8 +44,12 @@ export const records = async (parent: any, args: any) => {
 
   const fromTime = args.fromTime === 'start' ? {
     $gt: 0
+  } : args.fromTime === '1month' ? {
+    $gt: now - 1000 * 60 * 60 * 24 * 31
+  } : args.fromTime === '1week' ? {
+    $gt: now - 1000 * 60 * 60 * 24 * 7
   } : {
-    $gt: now - 1000 * 60 * 60 * 24 * 3
+    $gt: now - 1000 * 60 * 60 * 24 * 15
   }
 
   const toTime = args.toTime ? {

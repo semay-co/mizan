@@ -37,7 +37,7 @@ const RecordList = (props: any) => {
       fromTime: props.ui.fromTime,
       toTime: props.ui.toTime
     },
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'no-cache',
   })
 
   const onQueryChange = (ev: any) => {
@@ -62,7 +62,7 @@ const RecordList = (props: any) => {
     // recordsQuery.refetch()
   }
 
-  const setRange = (fromTime: '3days' | 'start', toTime: 'now') => {
+  const setRange = (fromTime: '3days' | '1week' | '1month' | 'start', toTime: 'now') => {
     props.updateUIState({
       fromTime,
       toTime
@@ -103,6 +103,16 @@ const RecordList = (props: any) => {
           <IonButton 
             shape='round'
             color='secondary'
+            fill={props.ui.fromTime === '1week' ? 'solid' : 'outline'}
+            onClick={() => setRange('1week', 'now')}>1 Week</IonButton>
+          <IonButton 
+            shape='round'
+            color='secondary'
+            fill={props.ui.fromTime === '1month' ? 'solid' : 'outline'}
+            onClick={() => setRange('1month', 'now')}>1 Month</IonButton>
+          <IonButton 
+            shape='round'
+            color='secondary'
             fill={props.ui.fromTime === 'start' ? 'solid' : 'outline'}
             onClick={() => setRange('start', 'now')}>All Records</IonButton>
         </IonCardContent>
@@ -119,15 +129,19 @@ const RecordList = (props: any) => {
           !recordsQuery.data?.records?.payload ||
           recordsQuery.data?.records?.payload?.length === 0) && (
           <IonCard className='info-card'>
-            <h3>NO RECORDS</h3>
+            <h3>{!props.recordQuery?.trim()?.length ? 'Search Something' : 'Nothing Found'}</h3>
           </IonCard>
         )}
 
-        <div className='records-wrap'>
-          {recordsQuery.data?.records.payload?.map((record: any) => (
-            <RecordItem key={record.id} record={record} />
-          ))}
-        </div>
+        {
+          props.recordQuery?.trim()?.length ? 
+          <div className='records-wrap'>
+            {recordsQuery.data?.records.payload?.map((record: any) => (
+              <RecordItem key={record.id} record={record} />
+            ))}
+          </div>
+          : <IonCard className='info-card'>Search Something...</IonCard>
+        }
       </div>
       <div className='pagination'>
         <IonButton onClick={prevPage} disabled={props.ui.page < 1}>

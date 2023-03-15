@@ -1,4 +1,4 @@
-const css = (..._: any[]) => _[0].map((s: string, i: number) => s ? s + _[i+1] : '').join('')
+const css = (..._: any[]) => _[0].map((s: string, i: number) => s ? s + _[i + 1] : '').join('')
 
 const pageHeight = 960
 const pageWidth = 600
@@ -59,7 +59,7 @@ export const style = css`
 		line-height: 25px; 
 		color: #000; 
 		font-size: 10px;
-		transform: rotate(-45deg) scale(1.4) translate(${pageWidth/2}px, 0);
+		transform: rotate(-45deg) scale(1.4) translate(${pageWidth / 2}px, 0);
 		opacity: .2;
 		text-shadow: 1px 1px white, -1px 1px white, 1px -1px white, -1px -1px white;
 	}
@@ -145,6 +145,7 @@ export const style = css`
 	.left-content,
 	.right-content {
 		padding: 20px;
+		/* max-width: 40%; */
 	}
 
 	.left-content {
@@ -225,9 +226,9 @@ export const style = css`
 	}
 
 	.weight-date {
-		font-size: 12px;
+		font-size: 14px;
 		text-transform: uppercase;
-		color: #555;
+		color: #333;
 	}
 
 	.outdated-record {
@@ -405,5 +406,13 @@ export const style = css`
 	.online-result .online-result-url {
 		font-weight: bold;
 		letter-spacing: 3px;
+	}
+
+	.mistake-remark {
+		text-align: right;
+	}
+
+	.remarks-row {
+		max-width: 200px;
 	}
 `

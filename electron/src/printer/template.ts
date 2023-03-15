@@ -8,63 +8,63 @@ dotenv.config()
 
 const company = process.env.COMPANY_NAME || 'Furi Weighbridge Service'
 const address =
-  process.env.COMPANY_ADDRESS || 'Sebeta, Furi - Around Police Club'
+	process.env.COMPANY_ADDRESS || 'Sebeta, Furi - Around Police Club'
 const phone = process.env.PHONE_NUMBERS || '0118 83 8043 | 0968 34 3616 (SMS)'
 
 const getPrice = (type: number) => {
-  switch (type) {
-    case 0:
-      return 80
-    case 1:
-      return 100
-    case 2:
-      return 150
-    case 3:
-      return 200
-    case 4:
-      return 250
-    default:
-      return 0
-  }
+	switch (type) {
+		case 0:
+			return 80
+		case 1:
+			return 100
+		case 2:
+			return 150
+		case 3:
+			return 200
+		case 4:
+			return 250
+		default:
+			return 0
+	}
 }
 
 export const watermarkText = Array(600)
-  .fill(0)
-  .map((_, i: number) => {
-    const tag = i % 2 === 0 ? 'even' : 'odd'
+	.fill(0)
+	.map((_, i: number) => {
+		const tag = i % 2 === 0 ? 'even' : 'odd'
 
-    return `
+		return `
 			<span class="tag-wrap">
 				<span class="${tag}">
 					${company.toUpperCase()}
 				</span>
 			<span class="tag-wrap">
 			`
-  })
-  .join(' . ')
+	})
+	.join(' . ')
 
 export const leftDetail = `<div class="left-detail">${Array(16)
-  .fill(0)
-  .map((_, i: number) => {
-    return `<span class="
+	.fill(0)
+	.map((_, i: number) => {
+		return `<span class="
 			${i % 5 === 0 && 'fifth'} 
 			${i % 10 === 0 && 'tenth'}
 			${(i === 0 || i === 15) && 'edge'}
 		"></span>`
-  })}</div>`
+	})}</div>`
 
 export const watermark = `<p class="watermark">
 	${watermarkText}
 	</p>`
 
 export const putStamp = (
-  stamp: string = 'Original',
-  position: 'top' | 'bottom' | 'center' = 'center',
-  style: 'compact' | 'large' = 'large'
+	stamp: string = 'Original',
+	position: 'top' | 'bottom' | 'center' = 'center',
+	style: 'compact' | 'large' = 'large'
 ) => `<div class="stamp ${position} ${style}"><span>${stamp}</span></div>`
 
 export const header = (company: string, address: string, phone: string) => {
-  return `<div class="header">
+	return `<div class="header">
     <div class="logo">
       <h1>${company}</h1>
     </div>
@@ -76,20 +76,18 @@ export const header = (company: string, address: string, phone: string) => {
 }
 
 const grid = (
-  record: any,
-  compact: boolean = false,
-  type: string = PAGE_TYPES.ORIGINAL
+	record: any,
+	compact: boolean = false,
+	type: string = PAGE_TYPES.ORIGINAL
 ) => {
-  return `<div class="grid ${compact && 'compact'}">
-		${
-			type !== PAGE_TYPES.PENDING ? 
+	return `<div class="grid ${compact && 'compact'}">
+		${type !== PAGE_TYPES.PENDING ?
 			`<div class="left-content">
 				<div class="row serial-row">
 					<h3>
 						Serial: 
-						<b style="font-size: 18px; padding: 10px; letter-spacing: 3px;">${
-							record.serial
-						}</b> 
+						<b style="font-size: 18px; padding: 10px; letter-spacing: 3px;">${record.serial
+			}</b> 
 					</h3>
 				</div>
 				<div class="row">
@@ -109,14 +107,13 @@ const grid = (
 					</div>	
 				</div>
 
-				${
-					type === PAGE_TYPES.ATTACHMENT ? `
+				${type === PAGE_TYPES.ATTACHMENT ? `
 					<div class="row">
 						<h3>
 							Type: ${VEHICLE_TYPES_FORMAL[record.vehicle.type]}
 						</h3>
 					</div>` : ''
-				}
+			}
 
 				${record.weights[1] ? `
 					<div class="row">
@@ -135,8 +132,8 @@ const grid = (
 							<div>
 							</div>
 						</div>
-					</div>` 
-					: type === PAGE_TYPES.ATTACHMENT ? `
+					</div>`
+				: type === PAGE_TYPES.ATTACHMENT ? `
 					<div class="row">
 						<h3>First Weight</h3>
 
@@ -147,7 +144,7 @@ const grid = (
 							${record.weights[0].weight} KG
 						</div>
 					</div>` : '<div class="left-content"></div>'
-				}
+			}
 				${!compact && (record.seller || record.buyer) ? `
 					<div class="row">
 						<h3>Client Info</h3>
@@ -161,7 +158,7 @@ const grid = (
 									${record.seller.name.display}
 								</div>
 							</div>` : ''
-						}
+				}
 						${record.buyer ? `
 							<div class="row-field">
 								<div>
@@ -171,11 +168,11 @@ const grid = (
 									${record.buyer.name.display}
 								</div>
 							</div>` : ''
-						}
-					</div>` : ''
 				}
+					</div>` : ''
+			}
 				${!compact && (record.remarks) ? `
-					<div class="row">
+					<div class="row remarks-row">
 						<h3>Remarks</h3>
 
 						<b>${record.remarks.split('\n').join('</br><b>').split(':').join(':</b></br>')}
@@ -183,13 +180,12 @@ const grid = (
 				` : ''}
 			</div>` : ''
 		}
-		<div class="${ type !== PAGE_TYPES.PENDING ? 'right-content' : ''}">
-			${
-        record.weights[1] || type === PAGE_TYPES.PENDING
-          ? 
-          type === PAGE_TYPES.PENDING
-            ? 
-						`<div class="file-slip">
+		<div class="${type !== PAGE_TYPES.PENDING ? 'right-content' : ''}">
+			${record.weights[1] || type === PAGE_TYPES.PENDING
+			?
+			type === PAGE_TYPES.PENDING
+				?
+				`<div class="file-slip">
 							<div class="file-slip-content">
 								<div class="row">
 									<div class="weight-measure">
@@ -202,9 +198,8 @@ const grid = (
 								<div class="row serial-row">
 									<h3>
 										Serial: 
-										<b style="font-size: 18px; padding: 10px; letter-spacing: 3px;">${
-											record.serial
-										}</b> 
+										<b style="font-size: 18px; padding: 10px; letter-spacing: 3px;">${record.serial
+				}</b> 
 									</h3>
 								</div>
 								<div class="row">
@@ -231,8 +226,8 @@ const grid = (
 									</div>
 								</div>
 							</div>
-						</div>` : 
-						`<div class="row">
+						</div>` :
+				`<div class="row">
 							<h3>First Weight</h3>
 							<div class="weight-date">
 								${moment(+record.weights[0].createdAt).format('LLLL')}
@@ -242,7 +237,7 @@ const grid = (
 								${record.weights[0].weight} KG
 							</div>
 						</div>`
-          : `<div class="sms-notice">
+			: `<div class="sms-notice">
 						የሚዛኑ ውጤት በ<b>SMS</b> እንዲደርሳቹ የአቅራቢ እና የተረካቢ ስልክ ይፃፉ
           </div>
 					<div class="row">
@@ -283,11 +278,10 @@ const grid = (
 					</h3>
 				</div>
 				`
-      }
+		}
 			
-			${
-        record.weights[1]
-          ? `<div class="row">
+			${record.weights[1]
+			? `<div class="row">
 					<h3>Second Weight</h3>
 					<div class="weight-date">
 						${moment(+record.weights[1].createdAt).format('LLLL')}
@@ -299,29 +293,32 @@ const grid = (
 				</div>
 				<div class="row">
 					<h3>Net Weight</h3>
-					<div class="weight-date ${
-            moment(+record.weights[0].createdAt).isBefore(
-              moment(+record.weights[1].createdAt).subtract(3, 'days')
-            ) ||
-            moment(+record.weights[0].createdAt).isAfter(
-              moment(+record.weights[1].createdAt).add(10, 'minutes')
-            )
-              ? 'outdated-record'
-              : ''
-          }">
-						${moment(+record.weights[1].createdAt).diff(+record.weights[0].createdAt, 'days') >= 3 ? 
-							`IN <b>${moment(+record.weights[1].createdAt).diff(+record.weights[0].createdAt, 'days')}</b> DAYS </br></br>
+					<div class="weight-date ${moment(+record.weights[0].createdAt).isBefore(
+				moment(+record.weights[1].createdAt).subtract(3, 'days')
+			) ||
+				moment(+record.weights[0].createdAt).isAfter(
+					moment(+record.weights[1].createdAt).add(10, 'minutes')
+				)
+				? 'outdated-record'
+				: ''
+			}">
+						${moment(+record.weights[1].createdAt).diff(+record.weights[0].createdAt, 'days') >= 3 ?
+				`IN <b>${moment(+record.weights[1].createdAt).diff(+record.weights[0].createdAt, 'days')}</b> DAYS </br></br>
 
 						<b>ማሳሰብያ:</b> በሁለቱ ክብደቶች መካከል ያለው የቀናት ቁጥር ሲጨምር የውጤቱ ልዩነት ሊሰፋ ይችላል።` :
-						moment(+record.weights[1].createdAt).from(+record.weights[0].createdAt)
-					}
+				moment(+record.weights[1].createdAt).from(+record.weights[0].createdAt)
+			}
 					</div>
+
+					${record.isMistake &&
+			`<h2 class='mistake-remark'>ያልተረጋገጠ/የተሳሳተ ውጤት።</br>MISTAKE</h2>`
+			}
 
 					<div class="highlight-weight weight-measure">
 						${record.netWeight} KG
 					</div>
 					${record.shortKey &&
-						`<div class="online-result">
+			`<div class="online-result">
 							<div>የሚዛኑን ውጤት ኦንላይን</div>
 							<div class="online-result-url">
 								mizan.me/${record.shortKey.split('-').join('.')}
@@ -329,10 +326,10 @@ const grid = (
 							<div>ላይ ያረጋግጡ።</div>
 
 						</div>`
-					}
+			}
 				</div>`
-          : ''
-      }
+			: ''
+		}
 
 		</div>
 	</div>`
@@ -345,21 +342,19 @@ const printTime = (time: any) => `
 	`
 
 export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
-  return `
+	return `
 		${leftDetail}
 
 		<div class="container">
 			${watermark}
-			${
-        stamp === PAGE_TYPES.PENDING
-          ? putStamp('FILE', 'top', 'compact')
-          : putStamp(stamp)
-      }
-			${
-        stamp === PAGE_TYPES.PENDING
-          ? putStamp('ATTACHMENT', 'bottom', 'compact')
-          : ''
-      }
+			${stamp === PAGE_TYPES.PENDING
+			? putStamp('FILE', 'top', 'compact')
+			: putStamp(stamp)
+		}
+			${stamp === PAGE_TYPES.PENDING
+			? putStamp('ATTACHMENT', 'bottom', 'compact')
+			: ''
+		}
 			<div class="watermark"></div>
 			${stamp !== PAGE_TYPES.PENDING ? header(company, address, phone) : ''}
 
@@ -368,32 +363,30 @@ export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
 			${grid(record, stamp === PAGE_TYPES.PENDING, stamp)}
 			${stamp === PAGE_TYPES.PENDING ? '<div class="cut-line"><span></span></div>' : ''}
 
-			${
-        stamp === PAGE_TYPES.PENDING
-          ? `${header(company, address, phone)} ${printTime(
-              new Date().getTime()
-            )} ${grid(record, true, PAGE_TYPES.ATTACHMENT)}`
-          : `
+			${stamp === PAGE_TYPES.PENDING
+			? `${header(company, address, phone)} ${printTime(
+				new Date().getTime()
+			)} ${grid(record, true, PAGE_TYPES.ATTACHMENT)}`
+			: `
 				<div class="operator">
 					<div class="operator-signature">
 					</div>
 				</div>`
-      }
+		}
 
 			<div class="footer">
-				${
-          stamp === PAGE_TYPES.PENDING
-            ? '<div class="return-notice">ሲመለሱ ይህን ወረቀት ይዘው ይምጡ።</div>'
-            : `<div class="disclaimer">
+				${stamp === PAGE_TYPES.PENDING
+			? '<div class="return-notice">ሲመለሱ ይህን ወረቀት ይዘው ይምጡ።</div>'
+			: `<div class="disclaimer">
 						Disclaimer: We can only guarantee the weight, not the material.
 					</div>`
-        }
+		}
 			</div>
 		</div>`
 }
 
 export const template = (record: any, stamp: string) =>
-  `<html>
+	`<html>
     <head>
       <style>
         ${style}

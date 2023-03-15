@@ -103,7 +103,10 @@ const Display = (props: any) => {
           }
         </div>
         <div className={`display ${
-            +displayValue && Math.abs(+displayValue - +props.reading?.weight) >= 30 ? 'error' : ''
+            (
+              (+displayValue && Math.abs(+displayValue - +props.reading?.weight) ||
+              (+props.reading?.weight !== 0 && +props.reading?.weight <= 30)
+            ) >= 30) ? 'error' : ''
         }`}>{
         
           (isNaN(+displayValue) ? 

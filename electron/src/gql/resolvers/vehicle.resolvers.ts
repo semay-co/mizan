@@ -2,7 +2,7 @@ import DB from '../../db'
 import { v4 as uuid } from 'uuid'
 import { asVehicle } from '../../lib/vehicle.lib'
 
-const {log, info, error} = console
+const { log, info, error } = console
 
 export const createVehicle = async (parent: any, args: any) => {
   // const vehicles = await DB.vehicles.find({
@@ -21,10 +21,10 @@ export const createVehicle = async (parent: any, args: any) => {
   const existing = vehicles.rows
     .map(
       (row) =>
-        ({
-          ...row.doc,
-          id: row.id,
-        } as any)
+      ({
+        ...row.doc,
+        id: row.id,
+      } as any)
     )
     .filter(
       (row) =>
@@ -86,9 +86,13 @@ export const updateVehicle = async (parent: any, args: any) => {
     ...vehicleType,
   }
 
-  DB.vehicles.put( update)
+  DB.vehicles.put(update)
 
   return asVehicle(update)
+}
+
+export const search = async (parent: any, args: any) => {
+  // DB.vehicles.search
 }
 
 export const vehicles = async (parent: any, args: any) => {

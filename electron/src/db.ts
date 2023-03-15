@@ -1,4 +1,6 @@
 import PouchDB from 'pouchdb'
+// import * as search from 'pouchdb-quick-search'
+
 import PouchDBFind from 'pouchdb-find'
 import fs from 'fs'
 import os from 'os'
@@ -6,6 +8,7 @@ import path from 'path'
 import { PathLike } from 'node:fs'
 
 PouchDB.plugin(PouchDBFind)
+// PouchDB.plugin(search)
 
 const ensureExists = (path: PathLike, mask: number = 777) => {
   return new Promise((resolve, reject) => {
@@ -38,7 +41,7 @@ const DB = {
   meta: new PouchDB(`${dbDir}/meta`),
 }
 
-const remoteUrl = 'http://mizan:temppass@137.184.195.126:5984'
+const remoteUrl = 'http://mizanadmin:$implepass2022@159.223.1.144:5984'
 
 const remotes = {
   records: new PouchDB(`${remoteUrl}/records`),
