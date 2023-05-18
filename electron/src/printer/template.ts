@@ -14,15 +14,15 @@ const phone = process.env.PHONE_NUMBERS || '0118 83 8043 | 0968 34 3616 (SMS)'
 const getPrice = (type: number) => {
 	switch (type) {
 		case 0:
-			return 80
-		case 1:
 			return 100
-		case 2:
+		case 1:
 			return 150
-		case 3:
+		case 2:
 			return 200
-		case 4:
+		case 3:
 			return 250
+		case 4:
+			return 350
 		default:
 			return 0
 	}

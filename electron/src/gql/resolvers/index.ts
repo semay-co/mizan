@@ -23,7 +23,7 @@ export enum events {
 env.config()
 
 const pubsub = new PubSub()
-const comPort = process.env.SERIAL_PORT || '/dev/ttyS0'
+const comPort = process.env.SERIAL_PORT || '/dev/ttyUSB0'
 
 const publish = (reading: number) => {
   pubsub.publish(events.NEW_READING, {
