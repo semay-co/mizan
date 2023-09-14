@@ -1,0 +1,53 @@
+ion-split-pane {
+  --side-max-width: 60px;
+  --side-width: 60px;
+  --border: none;
+}
+
+.sidebar {
+  background: #ffffff22;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  position: fixed;
+
+  ion-list {
+    display: grid;
+    justify-items: stretch;
+
+    ion-item {
+      align-content: center;
+
+      ion-text {
+        text-transform: uppercase;
+        font-weight: bold;
+        margin-left: 1rem;
+        display: none;
+        transition: 2s;
+      }
+    }
+  }
+
+  &:hover {
+    ion-list {
+      ion-item {
+        ion-text {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+.wrap {
+  margin: 2rem 1rem;
+  display: grid;
+  justify-content: center;
+
+  .content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+    width: 100rem;
+    max-width: 100vw;
+  }
+}

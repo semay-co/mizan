@@ -11,4 +11,5 @@ export const asVehicle = (vehicle: any) =>
         code: vehicle.licensePlateRegion,
       },
     } as LicensePlate,
+    isDeleted: vehicle.isDeleted,
   } as Vehicle)

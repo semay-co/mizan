@@ -8,8 +8,13 @@ dotenv.config()
 
 const company = process.env.COMPANY_NAME || 'Furi Weighbridge Service'
 const address =
-	process.env.COMPANY_ADDRESS || 'Sebeta, Furi - Around Police Club'
+	process.env.COMPANY_ADDRESS || 'Sheger City, Furi Sub City - Around Police Club'
 const phone = process.env.PHONE_NUMBERS || '0118 83 8043 | 0968 34 3616 (SMS)'
+
+const quintalFormat = (s: string) => {
+    const l = s.length
+    return [s.substring(0,l-2), s.substring(l-2)]
+  }
 
 const getPrice = (type: number) => {
 	switch (type) {
@@ -28,7 +33,7 @@ const getPrice = (type: number) => {
 	}
 }
 
-export const watermarkText = Array(600)
+export const watermarkText = Array(800)
 	.fill(0)
 	.map((_, i: number) => {
 		const tag = i % 2 === 0 ? 'even' : 'odd'
@@ -75,6 +80,19 @@ export const header = (company: string, address: string, phone: string) => {
   </div>`
 }
 
+const phoneInput = `<div class="phone-input">
+	<div class="form-input">0</div>
+	<div class="form-input">9</div>
+	<div class="form-input"></div>
+	<div class="form-input"></div>
+	<div class="form-input"></div>
+	<div class="form-input"></div>
+	<div class="form-input"></div>
+	<div class="form-input"></div>
+	<div class="form-input"></div>
+	<div class="form-input"></div>
+</div>`
+
 const grid = (
 	record: any,
 	compact: boolean = false,
@@ -91,7 +109,7 @@ const grid = (
 					</h3>
 				</div>
 				<div class="row">
-					<h3>License Plate No.</h3>
+					<h3>License Plate:</h3>
 					<div class="license-plate">
 						<div class="license-plate-code">
 							${record.vehicle.licensePlate.code}
@@ -110,7 +128,7 @@ const grid = (
 				${type === PAGE_TYPES.ATTACHMENT ? `
 					<div class="row">
 						<h3>
-							Type: ${VEHICLE_TYPES_FORMAL[record.vehicle.type]}
+							SIZE: ${VEHICLE_TYPES_FORMAL[record.vehicle.type]}
 						</h3>
 					</div>` : ''
 			}
@@ -134,14 +152,24 @@ const grid = (
 						</div>
 					</div>`
 				: type === PAGE_TYPES.ATTACHMENT ? `
-					<div class="row">
-						<h3>First Weight</h3>
+					<div class="row numbered-row">
+						<div class=""></div>
 
-						<div class="weight-date">
-							${moment(+record.weights[0].createdAt).format('LLL')}
-						</div>
-						<div class="weight-measure highlight-weight">
-							${record.weights[0].weight} KG
+						<div>
+
+							<div class="weight-date">
+								<div>
+									${moment(+record.weights[0].createdAt).format('dddd, MMM DD, YYYY')}
+								</div>
+								<div>
+									${moment(+record.weights[0].createdAt).format('hh:mm')}
+								</div>
+							</div>
+							<div class="weight-measure highlight-weight">
+
+								<span class="weight-indicator">▶</span> 
+									${quintalFormat(record.weights[0].weight.toString()).map((c, i) => `<span class="quintal-${i}">${c}</span>`).join('')} KG
+							</div>
 						</div>
 					</div>` : '<div class="left-content"></div>'
 			}
@@ -192,7 +220,12 @@ const grid = (
 										${record.weights[0].weight} KG
 									</div>
 									<div class="weight-date">
-										${moment(+record.weights[0].createdAt).format('LLL')}
+										<div>
+											${moment(+record.weights[0].createdAt).format('dddd, MMM DD, YYYY')}
+										</div>
+										<div>
+											${moment(+record.weights[0].createdAt).format('hh:mm a')}
+										</div>
 									</div>
 								</div>
 								<div class="row serial-row">
@@ -203,7 +236,7 @@ const grid = (
 									</h3>
 								</div>
 								<div class="row">
-									<h3>License Plate No.</h3>
+									<h3>License Plate:</h3>
 									<div class="license-plate">
 										<div class="license-plate-code">
 											${record.vehicle.licensePlate.code}
@@ -227,16 +260,25 @@ const grid = (
 								</div>
 							</div>
 						</div>` :
-				`<div class="row">
-							<h3>First Weight</h3>
-							<div class="weight-date">
-								${moment(+record.weights[0].createdAt).format('LLLL')}
+				`<div class="row numbered-row">
+						<div class="row-number">
+							1
+						</div>
+						<div>
+						<div class="weight-date">
+							<div>
+								${moment(+record.weights[0].createdAt).format('dddd, MMM DD, YYYY')}
 							</div>
+							<div>
+								${moment(+record.weights[0].createdAt).format('hh:mm a')}
+							</div>
+						</div>
 
-							<div class=" weight-measure">
-								${record.weights[0].weight} KG
-							</div>
-						</div>`
+						<div class=" weight-measure">
+								${quintalFormat(record.weights[0].weight.toString()).map((c, i) => `<span class="quintal-${i}">${c}</span>`).join('')} KG
+						</div>
+						</div>
+					</div>`
 			: `<div class="sms-notice">
 						የሚዛኑ ውጤት በ<b>SMS</b> እንዲደርሳቹ የአቅራቢ እና የተረካቢ ስልክ ይፃፉ
           </div>
@@ -251,7 +293,7 @@ const grid = (
 						</div>
 						<div class="form-row">
 							<h3>ስልክ:</h3>
-							<div class="form-input"></div>
+							${phoneInput}
 						</div>
 					</div>
 					<div class="input-box"></div>
@@ -267,7 +309,7 @@ const grid = (
 						</div>
 						<div class="form-row">
 							<h3>ስልክ:</h3>
-							<div class="form-input"></div>
+							${phoneInput}
 						</div>
 					</div>
 					<div class="input-box"></div>
@@ -281,17 +323,26 @@ const grid = (
 		}
 			
 			${record.weights[1]
-			? `<div class="row">
-					<h3>Second Weight</h3>
+			? `<div class="row numbered-row">
+						<div class="row-number">
+							2
+						</div>
+						<div>
 					<div class="weight-date">
-						${moment(+record.weights[1].createdAt).format('LLLL')}
+						<div>
+							${moment(+record.weights[1].createdAt).format('dddd, MMM DD, YYYY')}
+						</div>
+						<div>
+							${moment(+record.weights[1].createdAt).format('hh:mm a')}
+						</div>
 					</div>
 
 					<div class="weight-measure">
-						${record.weights[1].weight} KG
+						${quintalFormat(record.weights[1].weight.toString()).map((c, i) => `<span class="quintal-${i}">${c}</span>`).join('')} KG
+					</div>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row net-weight-row">
 					<h3>Net Weight</h3>
 					<div class="weight-date ${moment(+record.weights[0].createdAt).isBefore(
 				moment(+record.weights[1].createdAt).subtract(3, 'days')
@@ -310,14 +361,16 @@ const grid = (
 			}
 					</div>
 
-					${record.isMistake &&
-			`<h2 class='mistake-remark'>ያልተረጋገጠ/የተሳሳተ ውጤት።</br>MISTAKE</h2>`
+					${record.isMistake ?
+			`<h2 class='mistake-remark'>ያልተረጋገጠ/የተሳሳተ ውጤት።</br>MISTAKE</h2>` : ''
 			}
 
 					<div class="highlight-weight weight-measure">
-						${record.netWeight} KG
+
+						<span class="weight-indicator">▶</span> 
+						${quintalFormat(record.netWeight.toString()).map((c, i) => `<span class="quintal-${i}">${c}</span>`).join('')} KG
 					</div>
-					${record.shortKey &&
+					${record.shortKey ?
 			`<div class="online-result">
 							<div>የሚዛኑን ውጤት ኦንላይን</div>
 							<div class="online-result-url">
@@ -325,7 +378,7 @@ const grid = (
 							</div>
 							<div>ላይ ያረጋግጡ።</div>
 
-						</div>`
+						</div>` : ''
 			}
 				</div>`
 			: ''

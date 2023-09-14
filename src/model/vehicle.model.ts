@@ -3,6 +3,7 @@ export interface Vehicle {
   type: number
   createdAt: number
   licensePlate: LicensePlate
+  isDeleted: boolean
 }
 
 export interface LicensePlate {
@@ -24,22 +25,23 @@ export const PLATE_REGIONS = [
   { code: 'OR', name: 'OROMIA' },
   { code: 'SI', name: 'SIDAMA' },
   { code: 'SM', name: 'SOMALI' },
+  { code: 'SW', name: 'SOUTH WEST' },
   { code: 'SP', name: 'SOUTHERN PEOPLE' },
   { code: 'TG', name: 'TIGRAY' },
 ]
 
 export const VEHICLE_TYPES = [
-  'PICK UP',
+  'PICKUP',
   'ISUZU',
   'FSR',
   'SINO TRUCK',
-  'TRAILER TRUCK',
+  'TRUCK & TRAILER',
 ]
 
 export const VEHICLE_TYPES_FORMAL = [
-  'PICK UP',
+  'SMALL VEHICLE',
   'LIGHT TRUCK',
   'MIDIUM TRUCK',
   'HEAVY TRUCK',
-  'HEAVY TRUCK + TRAILER',
+  'TRUCK & TRAILER',
 ]

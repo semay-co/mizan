@@ -8,6 +8,8 @@ import {
 import { updateUIState } from '../../state/actions/ui.action'
 import './RecordList.scss'
 import RecordItem from './RecordItem'
+import RecordItemNew from './item'
+import Card from '../common/card'
 import {
   IonButton,
   IonCard,
@@ -137,7 +139,12 @@ const RecordList = (props: any) => {
           props.recordQuery?.trim()?.length ? 
           <div className='records-wrap'>
             {recordsQuery.data?.records.payload?.map((record: any) => (
+              // <RecordItem key={record.id} record={record} />
+              <>
               <RecordItem key={record.id} record={record} />
+              
+              {/* <RecordItemNew key={record.id} record={record} /> */}
+              </>
             ))}
           </div>
           : <IonCard className='info-card'>Search Something...</IonCard>

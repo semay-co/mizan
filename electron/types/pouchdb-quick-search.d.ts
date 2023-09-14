@@ -1,1 +1,1 @@
-declare module "pouchdb-quick-search" 
+// declare module "pouchdb-quick-search" 

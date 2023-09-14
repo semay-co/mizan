@@ -51,11 +51,25 @@ const remotes = {
   meta: new PouchDB(`${remoteUrl}/meta`),
 }
 
-DB.records.sync(remotes.records, { live: true, retry: true })
-DB.vehicles.sync(remotes.vehicles, { live: true, retry: true })
-DB.customers.sync(remotes.customers, { live: true, retry: true })
-DB.materials.sync(remotes.materials, { live: true, retry: true })
-DB.meta.sync(remotes.meta, { live: true, retry: true })
+const syncOptions = {
+  batch_size: 5,
+  batches_limit: 2,
+  live: true,
+  retry: true,
+  back_off_function(delay: number) {
+    if (delay === 27000 || delay === 0) {
+      return 1000;
+    }
+
+    return delay * 3;
+  },
+}
+
+DB.records.sync(remotes.records, syncOptions)
+DB.vehicles.sync(remotes.vehicles, syncOptions)
+DB.customers.sync(remotes.customers, syncOptions)
+DB.materials.sync(remotes.materials, syncOptions)
+DB.meta.sync(remotes.meta, syncOptions)
 
 DB.records.createIndex({
   index: {

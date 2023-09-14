@@ -194,6 +194,31 @@ export const style = css`
 		margin-bottom: 25px;
 	}
 
+	.numbered-row {
+		display: grid;
+		grid-auto-flow: column;
+		grid-template-columns: auto 1fr;
+	}
+
+	.numbered-row .quintal-0 {
+		font-size: 26px;
+	}
+
+	.row-number {
+		font-size: 60px;
+		font-weight: bold;
+		display: grid;
+		align-items: end;
+		color: #0006;
+		border-right: 1px dashed #0006;
+		margin-right: 5px;
+		padding-right: 10px;
+	}
+
+	.net-weight-row {
+		text-align: right;
+	}
+
 	.row h3 {
 		margin-top: 0;
 		text-transform: uppercase;	
@@ -246,7 +271,7 @@ export const style = css`
 
 	.weight-measure {
 		font-size: 18px;
-		margin-top: 20px;
+		margin-top: 10px;
 	}
 
 	.file-slip {
@@ -266,7 +291,6 @@ export const style = css`
 		font-weight: bold;
 	}
 
-	.highlight-weight,
 	.highlight-price {
 		box-shadow: 100px 100px #9999 inset;
 		border-radius: 5px;
@@ -276,6 +300,16 @@ export const style = css`
 		padding: 20px;
 		text-align: right;
 		text-shadow: 1px 1px #fff, 1px -1px #fff, -1px -1px #fff, -1px 1px #fff;
+	}
+
+	.highlight-weight {
+		font-size: 28px;
+		justify-content: end;
+		font-weight: bold;
+	}
+
+	.highlight-weight .quintal-0 {
+		font-size: 32px;
 	}
 
 	.price-row h3 {
@@ -301,13 +335,24 @@ export const style = css`
 		align-items: center;
 	}
 
+	.customer-form-grid .form-row .phone-input {
+		display: grid;
+		gap: 5px; 
+		grid-auto-flow: column;
+		grid-template-columns: repeat(10, 1fr);
+	}
+
 	.customer-form-grid .form-row .form-input {
 		border: 1px dashed #000;	
 		background: #ddd0;
+		font-size: 22px;
 		height: 30px;
 		box-shadow: 100px 100px #fff8 inset;
 		outline: 3px solid #fff;
 		z-index: 100;
+		display: grid;
+		align-items: center;
+		justify-content: center;
 	}
 	
 	.customer-form-grid .form-title {

@@ -52,3 +52,24 @@ export const UPDATE_VEHICLE = gql`
     }
   }
 `
+export const DELETE_VEHICLE = gql`
+  mutation DeleteVehicle(
+    $id: String!
+    $isDeleted: Boolean!
+  ) {
+    deleteVehicle(
+      id: $id
+      isDeleted: $isDeleted
+    ) {
+      id
+      type
+      licensePlate {
+        code
+        plate
+        region {
+          code
+        }
+      }
+    }
+  }
+`

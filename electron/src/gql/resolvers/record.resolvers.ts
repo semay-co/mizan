@@ -63,7 +63,11 @@ export const records = async (parent: any, args: any) => {
     ...toTime,
   }
 
-  const result = await getRecords(createdAt)
+  const result = !args.vehicleId && args.query && args.query.length < 3 ? { docs: [] as {
+    _id: any
+  }[]} : await getRecords(createdAt)
+
+  // const result = await getRecords(createdAt)
 
   const rows = _.filter((row: any) => {
     return row.docType === 'record' && (!args.vehicleId || row.vehicleId === args.vehicleId) && 

@@ -1,7 +1,7 @@
 import { PubSub } from 'apollo-server'
 import SerialPort from 'serialport'
 import env from 'dotenv-flow'
-import { createVehicle, vehicles, vehicle, updateVehicle } from './vehicle.resolvers'
+import { createVehicle, vehicles, vehicle, updateVehicle, deleteVehicle } from './vehicle.resolvers'
 import { createCustomer, customers, customer, updateCustomer } from './customer.resolvers'
 import {
   record,
@@ -98,6 +98,7 @@ const resolvers = {
     updateRecord,
     createVehicle,
     updateVehicle,
+    deleteVehicle,
     createCustomer,
     updateCustomer,
     addSecondWeight,

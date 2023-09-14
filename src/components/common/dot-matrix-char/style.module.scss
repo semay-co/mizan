@@ -1,0 +1,22 @@
+.dot {
+  width: 10px;
+  height: 10px;
+  background-color: red;
+}
+.emptyDot {
+  background-color: #000;
+  border-radius: 50%;
+  height: 0.5rem;
+  width: 0.5rem;
+  margin: 0.1rem;
+  border: 0.1rem solid #000;
+}
+
+.fullDot {
+  background-color: #fff;
+  border-radius: 50%;
+  height: 0.5rem;
+  width: 0.5rem;
+  margin: 0.1rem;
+  border: 0.1rem solid #000;
+}

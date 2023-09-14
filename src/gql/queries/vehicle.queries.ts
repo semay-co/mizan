@@ -5,6 +5,7 @@ export const FETCH_VEHICLES = gql`
     vehicles(query: $query, limit: $limit) {
       id
       type
+      isDeleted
       licensePlate {
         plate
         code
@@ -21,6 +22,7 @@ export const FETCH_VEHICLE = gql`
     vehicle(id: $id) {
       id
       type
+      isDeleted
       licensePlate {
         plate
         code

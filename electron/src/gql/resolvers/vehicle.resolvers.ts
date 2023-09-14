@@ -91,6 +91,21 @@ export const updateVehicle = async (parent: any, args: any) => {
   return asVehicle(update)
 }
 
+export const deleteVehicle = async (parent: any, args: any) => {
+  const { id, isDeleted } = args
+
+  const vehicleDoc = (await DB.vehicles.get(id)) as any
+
+  const update = {
+    ...vehicleDoc,
+    isDeleted
+  }
+
+  DB.vehicles.put(update)
+
+  return asVehicle(update)
+}
+
 export const search = async (parent: any, args: any) => {
   // DB.vehicles.search
 }
@@ -100,7 +115,11 @@ export const vehicles = async (parent: any, args: any) => {
     include_docs: true,
   })
 
-  return (await vehicles).rows
+  const result = args.query.length < 4 ? {
+    rows: []
+  } : await vehicles
+
+  return (result).rows
     .map((row: any) => {
       return {
         ...row.doc,
@@ -115,10 +134,12 @@ export const vehicles = async (parent: any, args: any) => {
           .toLowerCase()
           .includes(args.query.toLowerCase())
     )
+    .filter((vehicle: any) => !vehicle.licensePlateNumber.match(/x/gi))
     .map((vehicle: any) => {
       return {
         id: vehicle.id.toString(),
         type: vehicle.type,
+        isDleeted: vehicle.isDeleted,
         licensePlate: {
           code: vehicle.licensePlateCode,
           region: {
@@ -134,10 +155,12 @@ export const vehicles = async (parent: any, args: any) => {
 export const vehicle = async (parent: any, args: any) => {
   const vehicle = (await DB.vehicles.get(args.id)) as any
 
+
   return {
     ...vehicle,
     id: vehicle._id,
     type: vehicle.type,
+    isDeleted: vehicle.isDeleted,
     licensePlate: {
       code: vehicle.licensePlateCode,
       plate: vehicle.licensePlateNumber,

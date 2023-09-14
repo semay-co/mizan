@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
-import './RecordItem.scss'
+import style from './style.module.scss'
 
 import {
   IonButton,
-  IonCard,
-  IonCardContent,
   IonChip,
   IonIcon,
   IonItem,
@@ -31,13 +29,13 @@ import {
   flashOutline,
 } from 'ionicons/icons'
 import moment from 'moment'
-import LicensePlate from '../LicensePlate/LicensePlate'
+import LicensePlate from '../../LicensePlate/LicensePlate'
 import { connect } from 'react-redux'
 import {
   updateRecordResult,
   deleteRecordDraft,
   updateRecordDraft,
-} from '../../state/actions/record.action'
+} from '../../../state/actions/record.action'
 import { useMutation, useQuery } from '@apollo/client'
 import {
   ADD_CUSTOMER,
@@ -46,16 +44,17 @@ import {
   DELETE_CUSTOMER,
   SEND_CONFIRMATION_SMS,
   UPDATE_RECORD,
-} from '../../gql/mutations/record.mutations'
-import { VEHICLE_TYPES } from '../../model/vehicle.model'
-import { PRINT_RECORD } from '../../gql/mutations/record.mutations'
+} from '../../../gql/mutations/record.mutations'
+import { VEHICLE_TYPES } from '../../../model/vehicle.model'
+import { PRINT_RECORD } from '../../../gql/mutations/record.mutations'
 import classNames from 'classnames'
-import { FETCH_RECORD, FETCH_RECORDS } from '../../gql/queries/record.queries'
-import { updateUIState } from '../../state/actions/ui.action'
-import CustomerForm from '../Form/CustomerForm'
-import { getPrice } from '../../lib/price'
+import { FETCH_RECORD, FETCH_RECORDS } from '../../../gql/queries/record.queries'
+import { updateUIState } from '../../../state/actions/ui.action'
+import CustomerForm from '../../Form/CustomerForm'
+import { getPrice } from '../../../lib/price'
+import Card from 'components/common/card'
 
-const RecordItem = (props: any) => {
+const RecordItemNew = (props: any) => {
   const record = props.record
   const [printRecord] = useMutation(PRINT_RECORD)
   const [sendConfirmationSms] = useMutation(SEND_CONFIRMATION_SMS)
@@ -175,22 +174,18 @@ const RecordItem = (props: any) => {
     })
 
     localStorage.setItem('displayFirstWeight', (record?.weights?.[0].weight || 0).toString())
-    localStorage.setItem('displayVehicle', JSON.stringify(record.vehicle))
 
     props.updateRecordResult(record.id)
 
     props.deleteRecordDraft()
   }
 
-  const onPrint = async (idInput = null) => {
+  const onPrint = async () => {
     setPrinting(true)
-    const id = idInput || record.id
-
-    console.log(id)
 
     return await printRecord({
       variables: {
-        id
+        id: record.id,
       },
     }).then(() => {
         setTimeout(() => {
@@ -241,7 +236,6 @@ const RecordItem = (props: any) => {
 
   const recordReading = () => {
     localStorage.setItem('displayValue', props.reading ? props.reading?.weight.toString() : '')
-    localStorage.setItem('displayVehicle', JSON.stringify(record.vehicle))
     if (props.reading) {
       props.updateRecordDraft({
         ...props.draft,
@@ -255,7 +249,7 @@ const RecordItem = (props: any) => {
     }
   }
 
-  const makeNewRecord = (weight: number, weightTime: string, quickFinish: boolean = false) => {
+  const makeNewRecord = (weight: number, weightTime: string) => {
     props.deleteRecordDraft()
     props.updateRecordDraft(undefined)
 
@@ -283,14 +277,7 @@ const RecordItem = (props: any) => {
         })
       },
     }).then((record) => {
-      const id = record.data.createRecord.id
-
-      props.updateRecordResult(id)
-
-      if (quickFinish) {
-
-        onPrint(id)
-      }
+      props.updateRecordResult(record.data.createRecord.id)
 
       if (props.result) {
         // recordQuery.refetch()
@@ -353,28 +340,27 @@ const RecordItem = (props: any) => {
   const isLoaded = () => props.draft?.reading?.weight > 1000
 
   const rightButtons = () => (
-
-                  <div className='right-button'>
-                    {record.seller || record.buyer ? (
-                      <IonButton onClick={() => onSendSms()}>
-                        <IonIcon icon={send} />
-                        Send SMS
-                      </IonButton>
-                    ) : (
-                      <></>
-                    )}
-                    <IonButton onClick={() => onPrint()}>
-                      <IonIcon icon={print} />
-                      Print
-                    </IonButton>
-                  </div>
+    <div className='right-button'>
+      {record.seller || record.buyer ? (
+        <button onClick={() => onSendSms()}>
+          <IonIcon icon={send} />
+          Send SMS
+        </button>
+      ) : (
+        <></>
+      )}
+      <button onClick={onPrint}>
+        <IonIcon icon={print} />
+        Print
+      </button>
+    </div>
   )
 
   return (
-    <>
+    <Card>
       {record && (
         <>
-          <IonCard
+          <Card
             className={classNames(
               'record-card',
               record.isMistake ? 'error-card' : '',
@@ -428,20 +414,18 @@ const RecordItem = (props: any) => {
                         <IonChip>{record.seller.phoneNumber?.number}</IonChip>
 
                         <div>
-                          <IonButton
-                            fill='outline'
+                          <button
                             color='danger'
                             onClick={() => onDeleteCustomer('seller')}
                           >
                             <IonIcon icon={trashOutline} />
-                          </IonButton>
+                          </button>
 
-                          <IonButton
-                            fill='outline'
+                          <button
                             onClick={() => onSendSms('buyer')}
                           >
                             <IonIcon icon={send} />
-                          </IonButton>
+                          </button>
                         </div>
                       </div>
                     </IonLabel>
@@ -462,19 +446,16 @@ const RecordItem = (props: any) => {
                       </div>
 
                       <div>
-                        <IonButton
-                          fill='outline'
-                          color='danger'
+                        <button
                           onClick={() => onDeleteCustomer('buyer')}
                         >
                           <IonIcon icon={trashOutline} />
-                        </IonButton>
-                        <IonButton
-                          fill='outline'
+                        </button>
+                        <button
                           onClick={() => onSendSms('buyer')}
                         >
                           <IonIcon icon={send} />
-                        </IonButton>
+                        </button>
                       </div>
                     </IonLabel>
                   </IonItem>
@@ -515,8 +496,7 @@ const RecordItem = (props: any) => {
                   moment(+record.weights[0].createdAt).isAfter(
                     moment().subtract(3, 'days')
                   ) && (
-                    <div style={{display: 'grid', gridAutoFlow: 'column'}}>
-                    <IonButton
+                    <button
                       onClick={() =>
                         makeNewRecord(
                           record.weights[0].weight,
@@ -524,33 +504,15 @@ const RecordItem = (props: any) => {
                         )
                       }
                       className='use-record-button'
-                      color='success'
-                      fill='outline'
                     >
                       <IonIcon icon={addOutline}></IonIcon>
                       New Record
-                    </IonButton>
-                    <IonButton
-                      onClick={() =>
-                        makeNewRecord(
-                          record.weights[0].weight,
-                          record.weights[0].createdAt,
-                          true
-                        )
-                      }
-                      className='use-record-button'
-                      color='success'
-                      fill='outline'
-                    >
-                      <IonIcon icon={flashOutline}></IonIcon>
-                    </IonButton>
-
-                    </div>
+                    </button>
                   )}
               </div>
 
               {props.type === 'result' && !record?.weights[1] ? (
-                <IonCard
+                <Card
                   className='price-card'
                   color={
                     record.isPaid !== true && record.isPaid !== false
@@ -564,35 +526,29 @@ const RecordItem = (props: any) => {
                   </h1>
 
                   {/* {!(record.isPaid !== true && record.isPaid !== false) && ( */}
-                  <IonCardContent>
-                    <IonButton
+                  <div>
+                    <button
                       onClick={() => {
                         onSetAsUnpaid(true)
                         setPaymentConfirmed(true)
                       }}
-                      color='danger'
-                      fill='outline'
-                      slot='end'
                     >
                       <IonIcon icon={closeOutline} />
-                      <IonLabel>Unpaid</IonLabel>
-                    </IonButton>
+                      <div>Unpaid</div>
+                    </button>
 
-                    <IonButton
+                    <button
                       onClick={() => {
                         onSetAsUnpaid(false)
                         setPaymentConfirmed(true)
                       }}
-                      color='success'
-                      fill='solid'
-                      slot='start'
                     >
                       <IonIcon icon={checkmarkOutline} />
-                      <IonLabel>Paid</IonLabel>
-                    </IonButton>
-                  </IonCardContent>
+                      <div>Paid</div>
+                    </button>
+                  </div>
                   {/* )} */}
-                </IonCard>
+                </Card>
               ) : (
                 <>
                   {!record?.weights[1] && !weightDraft() ? (
@@ -622,7 +578,7 @@ const RecordItem = (props: any) => {
                             </div>
                             {moment(+record.weights[1].createdAt).isAfter(
                               moment().subtract(3, 'days')
-                            ) && (<div style={{display: 'grid', gridAutoFlow: 'column'}}>
+                            ) && (
                               <IonButton
                                 onClick={() =>
                                   makeNewRecord(
@@ -637,22 +593,6 @@ const RecordItem = (props: any) => {
                                 <IonIcon icon={addOutline}></IonIcon>
                                 New Record
                               </IonButton>
-                              <IonButton
-                                onClick={() =>
-                                  makeNewRecord(
-                                    record.weights[1].weight,
-                                    record.weights[1].createdAt,
-                                    true
-                                  )
-                                }
-                                className='use-record-button'
-                                color='success'
-                                fill='outline'
-                              >
-                                <IonIcon icon={flashOutline}></IonIcon>
-                              </IonButton>
-                              
-                              </div>
                             )}
                           </>
                         ) : (
@@ -767,7 +707,7 @@ const RecordItem = (props: any) => {
                 <>
                                     {rightButtons()}
                                     {record.isUnpaid && (
-                    <IonCard color='warning'>
+                    <Card color='warning'>
                       <IonButton
                         onClick={() => {
                           onSetAsUnpaid(false)
@@ -775,12 +715,11 @@ const RecordItem = (props: any) => {
                         }}
                         color='success'
                         fill='solid'
-                        slot='start'
                       >
                         <IonIcon icon={checkmarkOutline} />
                         SET PAID
                       </IonButton>
-                    </IonCard>
+                    </Card>
                     
                   )}
                   <div className='right-button'>
@@ -798,11 +737,11 @@ const RecordItem = (props: any) => {
                 </>
               )}
             </div>
-          </IonCard>
+          </Card>
 
           {props.ui.addCustomerForm &&
             props.ui.addCustomerForm.recordId === record.id && (
-              <IonCard className='add-customer-card'>
+              <Card className='add-customer-card'>
                 <IonButton
                   shape='round'
                   fill='clear'
@@ -818,7 +757,7 @@ const RecordItem = (props: any) => {
                   type='card-form'
                   onSelectCustomer={onAddCustomer}
                 />
-              </IonCard>
+              </Card>
             )}
           <IonToast
             color='success'
@@ -830,7 +769,7 @@ const RecordItem = (props: any) => {
           />
         </>
       )}
-    </>
+    </Card>
   )
 }
 
@@ -847,4 +786,4 @@ export default connect(mapStateToProps, {
   updateRecordDraft,
   deleteRecordDraft,
   updateUIState,
-})(RecordItem)
+})(RecordItemNew)

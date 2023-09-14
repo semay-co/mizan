@@ -7,6 +7,8 @@ const startBrowser = async () => {
   const browser = await puppeteer.launch({
     headless: false,
     executablePath: process.env.CHROMIUM_PATH || undefined,
+    //set always on top
+    args: ['--start-maximized', '--always-on-top', '--disable-infobars'],
   })
 
   const page = await browser.newPage()

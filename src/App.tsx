@@ -1,5 +1,5 @@
 import { Redirect, Route } from 'react-router-dom'
-import { IonApp, IonRouterOutlet } from '@ionic/react'
+import { IonApp, IonPage, IonRouterOutlet } from '@ionic/react'
 import { IonReactRouter } from '@ionic/react-router'
 import Home from './pages/Home'
 
@@ -33,6 +33,8 @@ import { onError } from '@apollo/client/link/error'
 import { WebSocketLink } from '@apollo/client/link/ws'
 import { getMainDefinition } from '@apollo/client/utilities'
 import Display from './components/Display'
+import Sidebar from 'components/common/sidebar'
+import VehiclesPage from 'components/pages/vehicles'
 
 const errorLink = onError(({ graphQLErrors }) => {
   graphQLErrors?.map(console.error)
@@ -91,13 +93,16 @@ const App = () => (
       <IonReactRouter>
         <IonRouterOutlet>
           <Route exact path='/home'>
-            <Home />
+            <Redirect to='/' />
           </Route>
           <Route exact path='/'>
-            <Redirect to='/home' />
+            <Home />
           </Route>
           <Route exact path='/display'>
             <Display />
+          </Route>
+          <Route exact path='/vehicles'>
+            <VehiclesPage />
           </Route>
         </IonRouterOutlet>
       </IonReactRouter>
