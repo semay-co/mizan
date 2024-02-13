@@ -29,7 +29,22 @@ const init = async () => {
 init()
 
 const DB = new PouchDB(`${dbDir}/indicators`)
-DB.sync(`${remoteUrl}/indicators`, { live: true, retry: true })
+
+
+const syncOptions = {
+  batch_size: 5,
+  batches_limit: 2,
+  live: false,
+  retry: true,
+  back_off_function(delay: number) {
+    if (delay === 27000 || delay === 0) {
+      return 1000;
+    }
+    return delay * 3;
+  },
+}
+
+// DB.sync(`${remoteUrl}/indicators`, syncOptions)
 
 let redOn = false
 let greenOn = false
@@ -189,6 +204,7 @@ const indicator = (
               change !== 0 &&
               change < 15 &&
               lastTime >= now.getTime() - 3000
+
             if (outdated || !smallChange) {
               onResult(signed, signed, stable)
 
