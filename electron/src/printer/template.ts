@@ -66,7 +66,9 @@ export const putStamp = (
 	stamp: string = 'Original',
 	position: 'top' | 'bottom' | 'center' = 'center',
 	style: 'compact' | 'large' = 'large'
-) => `<div class="stamp ${position} ${style}"><span>${stamp}</span></div>`
+) => `<div class="stamp ${position} ${style}"><span>${
+	
+	stamp}</span></div>`
 
 export const header = (company: string, address: string, phone: string) => {
 	return `<div class="header">
@@ -258,6 +260,10 @@ const grid = (
 										${getPrice(record.vehicle.type)} BIRR
 									</div>
 								</div>
+								${['a', 'e'].includes(record.serial.charAt(record.serial.length - 1)) ? `
+								<div class='highlight-price'>
+									...
+								</div>` : ''}
 							</div>
 						</div>` :
 				`<div class="row numbered-row">
@@ -402,7 +408,9 @@ export const receipt = (record: any, stamp: string = PAGE_TYPES.ORIGINAL) => {
 			${watermark}
 			${stamp === PAGE_TYPES.PENDING
 			? putStamp('FILE', 'top', 'compact')
-			: putStamp(stamp)
+			: putStamp(moment(+record.weights[1].createdAt).isBefore(
+				moment().subtract(1, 'day')
+			) ? 'REPRINT' : stamp)
 		}
 			${stamp === PAGE_TYPES.PENDING
 			? putStamp('ATTACHMENT', 'bottom', 'compact')

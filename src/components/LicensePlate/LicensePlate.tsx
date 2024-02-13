@@ -6,7 +6,7 @@ const LicensePlate = (props: any) => {
     <div className={classNames('licensePlate', `code-${props.code}`)}>
       <div className="licensePlateInner">
         <span className="licensePlateCode">{props.code}</span>
-        <span className="licensePlateNumber">{props.number}</span>
+        <span className="licensePlateNumber">{props.number.replace('?', '')}</span>
         <span className="licensePlateRegion">
           {props.region?.code?.slice(0, 2)}
         </span>

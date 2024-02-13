@@ -193,10 +193,10 @@ const RecordItem = (props: any) => {
         id
       },
     }).then(() => {
-        setTimeout(() => {
-          window.location.reload()
-        }, 2000)
-      })
+      setTimeout(() => {
+        window.location.reload()
+      }, 2000)
+    })
       .catch(console.error)
 
     // sendConfirmationSms({
@@ -354,20 +354,20 @@ const RecordItem = (props: any) => {
 
   const rightButtons = () => (
 
-                  <div className='right-button'>
-                    {record.seller || record.buyer ? (
-                      <IonButton onClick={() => onSendSms()}>
-                        <IonIcon icon={send} />
-                        Send SMS
-                      </IonButton>
-                    ) : (
-                      <></>
-                    )}
-                    <IonButton onClick={() => onPrint()}>
-                      <IonIcon icon={print} />
-                      Print
-                    </IonButton>
-                  </div>
+    <div className='right-button'>
+      {record.seller || record.buyer ? (
+        <IonButton onClick={() => onSendSms()}>
+          <IonIcon icon={send} />
+          Send SMS
+        </IonButton>
+      ) : (
+        <></>
+      )}
+      <IonButton onClick={() => onPrint()}>
+        <IonIcon icon={print} />
+        Print
+      </IonButton>
+    </div>
   )
 
   return (
@@ -490,6 +490,23 @@ const RecordItem = (props: any) => {
             </div>
 
             <div className='card-right-content'>
+
+              {
+              !record?.weights[1] && ['a', 'e'].includes(record?.serial.toLowerCase()[record?.serial.length-1]) ? <div style={{ padding: '10px 20px', borderRadius: 20, margin: '10px 20px', background: '#ff3388'}} ><h1>...</h1></div> : ''}
+              {
+                record.vehicle?.licensePlate?.plate.includes('?') &&
+                <h1 style={{ background: 'black', fontSize: 40 }}>
+                  BLACKLISTED
+                </h1>
+              }
+              {
+                record?.remarks && <div className='row' style={{ marginBottom: 20 }}>
+                  <h1>REMARK</h1>
+                  <div style={{ fontSize: 20 }}>
+                    {record?.remarks}
+                  </div>
+                </div>
+              }
               <div className='weight-entry first-weight'>
                 <h3>First Weight</h3>
                 <span className='capture-date'>
@@ -515,35 +532,35 @@ const RecordItem = (props: any) => {
                   moment(+record.weights[0].createdAt).isAfter(
                     moment().subtract(3, 'days')
                   ) && (
-                    <div style={{display: 'grid', gridAutoFlow: 'column'}}>
-                    <IonButton
-                      onClick={() =>
-                        makeNewRecord(
-                          record.weights[0].weight,
-                          record.weights[0].createdAt
-                        )
-                      }
-                      className='use-record-button'
-                      color='success'
-                      fill='outline'
-                    >
-                      <IonIcon icon={addOutline}></IonIcon>
-                      New Record
-                    </IonButton>
-                    <IonButton
-                      onClick={() =>
-                        makeNewRecord(
-                          record.weights[0].weight,
-                          record.weights[0].createdAt,
-                          true
-                        )
-                      }
-                      className='use-record-button'
-                      color='success'
-                      fill='outline'
-                    >
-                      <IonIcon icon={flashOutline}></IonIcon>
-                    </IonButton>
+                    <div style={{ display: 'grid', gridAutoFlow: 'column' }}>
+                      <IonButton
+                        onClick={() =>
+                          makeNewRecord(
+                            record.weights[0].weight,
+                            record.weights[0].createdAt
+                          )
+                        }
+                        className='use-record-button'
+                        color='success'
+                        fill='outline'
+                      >
+                        <IonIcon icon={addOutline}></IonIcon>
+                        New Record
+                      </IonButton>
+                      <IonButton
+                        onClick={() =>
+                          makeNewRecord(
+                            record.weights[0].weight,
+                            record.weights[0].createdAt,
+                            true
+                          )
+                        }
+                        className='use-record-button'
+                        color='success'
+                        fill='outline'
+                      >
+                        <IonIcon icon={flashOutline}></IonIcon>
+                      </IonButton>
 
                     </div>
                   )}
@@ -622,7 +639,7 @@ const RecordItem = (props: any) => {
                             </div>
                             {moment(+record.weights[1].createdAt).isAfter(
                               moment().subtract(3, 'days')
-                            ) && (<div style={{display: 'grid', gridAutoFlow: 'column'}}>
+                            ) && (<div style={{ display: 'grid', gridAutoFlow: 'column' }}>
                               <IonButton
                                 onClick={() =>
                                   makeNewRecord(
@@ -651,9 +668,9 @@ const RecordItem = (props: any) => {
                               >
                                 <IonIcon icon={flashOutline}></IonIcon>
                               </IonButton>
-                              
-                              </div>
-                            )}
+
+                            </div>
+                              )}
                           </>
                         ) : (
                           <>
@@ -702,7 +719,7 @@ const RecordItem = (props: any) => {
                             {record?.weights[0] &&
                               moment(
                                 +record.weights[1]?.createdAt ||
-                                  new Date().getTime()
+                                new Date().getTime()
                               ).from(+record.weights[0]?.createdAt)}
                           </span>
                           <div className='weight-measure'>{getNetWeight()}</div>
@@ -715,32 +732,32 @@ const RecordItem = (props: any) => {
 
               {weightDraft() ? (
                 <>
-                <div
-                  className={classNames({
-                    'bottom-button': true,
-                    'danger-button': !isLoaded() || !isSynced(),
-                    'warn-button': moment(
-                      +record.weights[0].createdAt
-                    ).isBefore(moment().subtract(3, 'days')),
-                  })}
-                >
-                  {!record?.weights[1] &&
-                    moment(+record?.weights[0].createdAt).isBefore(
-                      moment().subtract(3, 'days')
-                    ) && (
-                      <>
-                        <IonButton
-                          color='warning'
-                          disabled
-                          className='time-warning'
-                        >
-                          <IonIcon icon={alertCircleOutline} />
-                          <IonLabel>
-                            {moment(+record?.weights[0].createdAt).fromNow()}
-                          </IonLabel>
-                        </IonButton>
-                      </>
-                    )}
+                  <div
+                    className={classNames({
+                      'bottom-button': true,
+                      'danger-button': !isLoaded() || !isSynced(),
+                      'warn-button': moment(
+                        +record.weights[0].createdAt
+                      ).isBefore(moment().subtract(3, 'days')),
+                    })}
+                  >
+                    {!record?.weights[1] &&
+                      moment(+record?.weights[0].createdAt).isBefore(
+                        moment().subtract(3, 'days')
+                      ) && (
+                        <>
+                          <IonButton
+                            color='warning'
+                            disabled
+                            className='time-warning'
+                          >
+                            <IonIcon icon={alertCircleOutline} />
+                            <IonLabel>
+                              {moment(+record?.weights[0].createdAt).fromNow()}
+                            </IonLabel>
+                          </IonButton>
+                        </>
+                      )}
                     <div className='use-second-buttons'>
                       <IonButton
                         onClick={() => onSaveSecondWeight()}
@@ -757,16 +774,16 @@ const RecordItem = (props: any) => {
                       >
                         <IonIcon icon={flashOutline} />
                       </IonButton>
-                  </div>
+                    </div>
 
-                </div>
-                                    {rightButtons()}
-                                    
-                                    </>
+                  </div>
+                  {rightButtons()}
+
+                </>
               ) : (
                 <>
-                                    {rightButtons()}
-                                    {record.isUnpaid && (
+                  {rightButtons()}
+                  {record.isUnpaid && (
                     <IonCard color='warning'>
                       <IonButton
                         onClick={() => {
@@ -781,7 +798,7 @@ const RecordItem = (props: any) => {
                         SET PAID
                       </IonButton>
                     </IonCard>
-                    
+
                   )}
                   <div className='right-button'>
                     <IonButton

@@ -25,6 +25,7 @@ export const FETCH_RECORDS = gql`
         id
         createdAt
         serial
+        remarks
         weights {
           weight
           manual

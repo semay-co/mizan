@@ -36,7 +36,7 @@ export const sendSms = async (numbers: string, text: string) => {
         await goToLoginPage(),
         await page
           // TODO: make it an env var
-          .type('#login_password', '$implepass')
+          .type('#login_password', '12345678')
           .catch((err) => console.log('writing password failed')),
         await page.waitForSelector('#login_btn'),
         await page

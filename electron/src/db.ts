@@ -32,23 +32,27 @@ const init = async () => {
 }
 
 init()
-
-const DB = {
-  records: new PouchDB(`${dbDir}/records`),
-  vehicles: new PouchDB(`${dbDir}/vehicles`),
-  customers: new PouchDB(`${dbDir}/customers`),
-  materials: new PouchDB(`${dbDir}/materials`),
-  meta: new PouchDB(`${dbDir}/meta`),
-}
-
 const remoteUrl = 'http://mizanadmin:$implepass2022@159.223.1.144:5984'
 
+const db = (name: string, remote: boolean = false) => {
+  return new PouchDB(`${remote ? remoteUrl : dbDir}/${name}`)
+}
+
+const DB = {
+  records: db('records'),
+  vehicles: db('vehicles'),
+  customers: db('customers'),
+  materials: db('materials'),
+  meta: db('meta'),
+}
+
+
 const remotes = {
-  records: new PouchDB(`${remoteUrl}/records`),
-  vehicles: new PouchDB(`${remoteUrl}/vehicles`),
-  customers: new PouchDB(`${remoteUrl}/customers`),
-  materials: new PouchDB(`${remoteUrl}/materials`),
-  meta: new PouchDB(`${remoteUrl}/meta`),
+  records: db('records', true),
+  vehicles: db('vehicles', true),
+  customers: db('customers', true),
+  materials: db('materials', true),
+  meta: db('meta', true),
 }
 
 const syncOptions = {
@@ -57,19 +61,19 @@ const syncOptions = {
   live: true,
   retry: true,
   back_off_function(delay: number) {
-    if (delay === 27000 || delay === 0) {
+    if (delay >= 1000*60 || delay === 0) {
       return 1000;
     }
 
-    return delay * 3;
+    return delay * 3
   },
 }
 
-DB.records.sync(remotes.records, syncOptions)
-DB.vehicles.sync(remotes.vehicles, syncOptions)
-DB.customers.sync(remotes.customers, syncOptions)
-DB.materials.sync(remotes.materials, syncOptions)
-DB.meta.sync(remotes.meta, syncOptions)
+DB.records.sync(remotes.records, syncOptions).then(() => console.log('synced', 'records')).catch(console.error).finally(() => console.log('sync finished'))
+DB.vehicles.sync(remotes.vehicles, syncOptions).then(() => console.log('synced', 'vehicles')).catch(console.error).finally(() => console.log('sync finished'))
+DB.customers.sync(remotes.customers, syncOptions).then(() => console.log('synced', 'customers')).catch(console.error).finally(() => console.log('sync finished'))
+DB.materials.sync(remotes.materials, syncOptions).then(() => console.log('synced', 'materials')).catch(console.error).finally(() => console.log('sync finished'))
+DB.meta.sync(remotes.meta, syncOptions).then(() => console.log('synced', 'meta')).catch(console.error).finally(() => console.log('sync finished'))
 
 DB.records.createIndex({
   index: {

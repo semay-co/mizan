@@ -681,6 +681,10 @@ export const printRecord = async (parent: any, args: any) => {
 
   console.timeEnd('printRecord')
 
+  if (vehicleSpread?.vehicle?.licensePlate?.plate?.includes('?') && record.isUnpaid !== false) {
+    return
+  }
+
   return record.weights?.length > 1
     ? print(record, PAGE_TYPES.ORIGINAL) && print(record, PAGE_TYPES.COPY)
     : print(record, PAGE_TYPES.PENDING)
